@@ -1,8 +1,7 @@
 from flask import Flask, render_template, request, redirect, jsonify, \
     url_for, flash
 
-# from sqlalchemy import create_engine, asc, desc, \
-#     func, distinct
+from sqlalchemy import create_engine, asc, desc, func, distinct
 # from sqlalchemy.orm import sessionmaker
 # from sqlalchemy.ext.serializer import loads, dumps
 
@@ -15,22 +14,26 @@ import json
 import httplib2
 import requests
 
+
+import config
 from github import GitHubAPI
 
 app = Flask(__name__)
 
 
 # Connect to database and create database session
-# engine = create_engine('sqlite:///flaskstarter.db')
-# Base.metadata.bind = engine
+db_uri = 'mysql://' + config.db_user + ':' + config.db_password + '@' + config.db_host + '/' + config.db_database
+db = create_engine(db_uri)
 
 # DBSession = sessionmaker(bind=engine)
 # session = DBSession()
 
+@app.route('/all-projects', methods=['GET', 'POST'])
+def AllProjectData():
+    return "test"
 
-# Display all things
-@app.route('/validateRepo', methods=['GET', 'POST'])
-def validateRepo():
+@app.route('/project/<pUID>', methods=['GET', 'POST'])
+def SingleProjectData(pUID):
     github = GitHubAPI('up-for-grabs', 'up-for-grabs.net')
     print(github.get_stargazers_count())
     return str(github.get_stargazers_count())
