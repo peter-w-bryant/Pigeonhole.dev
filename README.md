@@ -1,2 +1,2 @@
 # pigeonhole.dev
-A aggregated list of open source projects and issues waiting looking for contributors.
+An aggregated list of open source projects with issues looking for contributors.
