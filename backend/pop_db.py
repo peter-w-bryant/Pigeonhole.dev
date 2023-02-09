@@ -28,6 +28,15 @@ class PopulateDB:
         # Get the data from GitHub API
         gh_repo_url = gh.get_repo_url()
         gh_description = gh.get_repo_description()
+
+        # Topics / tech stack
+        gh_topics = [''] * 6 # empty list of 6 strings to store the topics
+        gh_topics[:len(gh.get_topics())] = gh.get_topics() # get the topics
+
+        # Issues / labels
+        gh_issues = [''] * 3 # empty list of 3 strings to store the issues
+        gh_issues[:len(gh.get_issues())] = gh.get_issues() # get the issues
+
         gh_stargazers_count = gh.get_stargazers_count()
         gh_forks_count = gh.get_forks_count()
         gh_watchers_count = gh.get_watchers_count()
@@ -35,8 +44,15 @@ class PopulateDB:
         # Insert the data into the database
         try:
             cursor = self.conn.cursor()
-            cols = "(gh_repo_name, gh_repo_url, gh_description, gh_username, num_stars, num_forks, num_watchers)"
-            values = f"(N'{repo_name}', N'{gh_repo_url}', N'{gh_description}', N'{gh_username}', {gh_stargazers_count}, {gh_forks_count}, {gh_watchers_count})"
+
+            topics_cols = "gh_topics0, gh_topics1, gh_topics2, gh_topics3, gh_topics4, gh_topics5" # Topic column names
+            issues_cols = "issue_label_1, issue_label_2, issue_label_3" # Issues column names
+            cols = f"(gh_repo_name, gh_repo_url, gh_description, gh_username, num_stars, num_forks, num_watchers, {topics_cols}, {issues_cols})" # All column names
+
+            topics_vals = f"N'{gh_topics[0]}', N'{gh_topics[1]}', N'{gh_topics[2]}', N'{gh_topics[3]}', N'{gh_topics[4]}', N'{gh_topics[5]}'" # Topic values
+            issues_vals = f"N'{gh_issues[0]}', N'{gh_issues[1]}', N'{gh_issues[2]}'" # Issues values
+            values = f"(N'{repo_name}', N'{gh_repo_url}', N'{gh_description}', N'{gh_username}', {gh_stargazers_count}, {gh_forks_count}, {gh_watchers_count}, {topics_vals}, {issues_vals})" # All values
+            
             q = f"INSERT INTO projects {cols} VALUES {values}"
             cursor.execute(q)
             self.conn.commit()
