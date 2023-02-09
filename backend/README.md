@@ -6,8 +6,9 @@ First clone this repo,
 ```{bash}
 git clone https://github.com/peter-w-bryant/pigeonhole.dev.git
 ```
-then create a virtual environment, activate it, and install all dependencies within the `backend` project directory,
+then enter the `pigeonhole.dev/backend` directory, create a virtual environment, activate it, and install all dependencies,
 ```{bash}
+cd pigeonhole.dev/backend
 python3 -m venv ./env
 env/Scripts/activate
 pip3 install -r requirements.txt
