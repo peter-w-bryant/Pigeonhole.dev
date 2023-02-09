@@ -1,5 +1,6 @@
 # Path: backend\github.py
 import requests
+import config
 
 class GitHubAPI:
     """GitHub API wrapper class"""
@@ -8,10 +9,19 @@ class GitHubAPI:
         self.repo_name = repo_name
         self.base_url = "https://api.github.com/repos/{0}/{1}".format(
             self.username, self.repo_name)
+        self.auth_headers = {'Authorization': 'token ' + config.github_token}
 
     def get_repo(self):
         """Get the repo"""
-        return requests.get(self.base_url).json()
+        return requests.get(self.base_url, headers=self.auth_headers).json()
+
+    def get_repo_url(self):
+        """Get the repo URL"""
+        return self.get_repo()["html_url"]
+
+    def get_repo_description(self):
+        """Get the repo description"""
+        return self.get_repo()["description"]
 
     def get_stargazers_count(self):
         """Get the number of stargazers (people who starred the repo)"""
@@ -35,7 +45,7 @@ class GitHubAPI:
     
     def get_issues(self):
         """Get the issues"""
-        return requests.get(self.base_url + "/issues").json()
+        return requests.get(self.base_url + "/issues", headers=self.auth_headers).json()
 
     
 
