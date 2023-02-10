@@ -20,6 +20,6 @@ pop = PopulateDB()
 pop.pop_project(repo)
 ```
 Alternatively, populate the DB with a collection of repositories that are stored in `static_repo_data.json` by running the `init_db.py` script.
-"""{python3}
+```{python3}
 python3 init_db.py
-"""
+```
