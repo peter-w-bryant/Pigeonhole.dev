@@ -15,9 +15,8 @@ pip3 install -r requirements.txt
 ```
 Populate the DB with an single public repository's information by passing the public GitHub URL to the `pop_project()` function defined in the `PopulateDB` class,
 ```{python3}
-repo = 'https://github.com/pallets/flask'
 pop = PopulateDB()
-pop.pop_project(repo)
+pop.pop_project('https://github.com/GITHUB-USERNAME/REPO-NAME')
 ```
 Alternatively, populate the DB with a collection of repositories that are stored in `static_repo_data.json` by running the `init_db.py` script.
 ```{python3}
