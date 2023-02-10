@@ -13,9 +13,13 @@ python3 -m venv ./env
 env/Scripts/activate
 pip3 install -r requirements.txt
 ```
-Populate the DB by passing the public URL of any GitHub repository in the main function of `pop_db.py`,
+Populate the DB with an single public repository's information by passing the public GitHub URL to the `pop_project()` function defined in the `PopulateDB` class,
 ```{python3}
 repo = 'https://github.com/pallets/flask'
 pop = PopulateDB()
 pop.pop_project(repo)
 ```
+Alternatively, populate the DB with a collection of repositories that are stored in `static_repo_data.json` by running the `init_db.py` script.
+"""{python3}
+python3 init_db.py
+"""
