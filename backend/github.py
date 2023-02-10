@@ -64,10 +64,10 @@ class GitHubAPI:
         date_of_last_merged_pull_request = pulls_json["items"][0]["closed_at"].split("T")[0]
         return date_of_last_merged_pull_request
 
-if __name__ == '__main__':
-    repo_url = 'https://github.com/up-for-grabs/up-for-grabs.net'
-    gh = GitHubAPI(repo_url)
-    gh.get_date_of_last_merged_pull_request()
+# if __name__ == '__main__':
+#     repo_url = 'https://github.com/up-for-grabs/up-for-grabs.net'
+#     gh = GitHubAPI(repo_url)
+#     gh.get_date_of_last_merged_pull_request() 
     
 
     
