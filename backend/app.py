@@ -13,6 +13,8 @@ import logging
 import json
 import httplib2
 import requests
+import mysql.connector
+
 
 
 import config
@@ -20,11 +22,13 @@ from github import GitHubAPI
 
 app = Flask(__name__)
 
-
-# Connect to database and create database session
-db_uri = 'mysql://' + config.db_user + ':' + config.db_password + '@' + config.db_host + '/' + config.db_database
-db = create_engine(db_uri)
-
+conn = mysql.connector.connect(
+                        user=config.db_user,
+                        password=config.db_password,
+                        host=config.db_host,
+                        database=config.db_database,
+                        charset='utf8mb4'
+                    )
 # DBSession = sessionmaker(bind=engine)
 # session = DBSession()
 
