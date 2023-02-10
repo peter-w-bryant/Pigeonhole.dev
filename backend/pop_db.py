@@ -1,24 +1,20 @@
-import random
-import string
-import logging
-import json
-import httplib2
-import requests
+import time
 
 import mysql.connector
+from _mysql_connector import MySQLInterfaceError
 
 import config
 from github import GitHubAPI
 
-class PopulateDB:
-    """Populate the database with data from GitHub API"""
-    def __init__(self):
-        self.conn = mysql.connector.connect(
+conn = mysql.connector.connect(
                         user=config.db_user,
                         password=config.db_password,
                         host=config.db_host,
                         database=config.db_database
                     )
+
+class PopulateDB:
+    """Populate the database with data from GitHub API"""
 
     def pop_project(self, gh_repo_url):
         """Populate the project table"""
@@ -51,7 +47,8 @@ class PopulateDB:
 
         # Insert the data into the database
         try:
-            cursor = self.conn.cursor()
+            conn.reconnect()
+            cursor = conn.cursor()
 
             topics_cols = "gh_topics0, gh_topics1, gh_topics2, gh_topics3, gh_topics4, gh_topics5" # Topic column names
             issues_cols = "issue_label_1, issue_label_2, issue_label_3" # Issues column names
@@ -63,14 +60,31 @@ class PopulateDB:
             
             q = f"INSERT INTO projects {cols} VALUES {values}"
             cursor.execute(q)
-            self.conn.commit()
+            conn.commit()
         except Exception as e:
             print(e)
-            self.conn.rollback()
+            conn.rollback()
         
         # Close the connection
-        self.conn.close()
+        conn.close()
 
 if __name__ == '__main__':
+    start = time.time()
+    repo_pop_list = []
     pop = PopulateDB()
-    pop.pop_project('https://github.com/up-for-grabs/up-for-grabs.net')
+    
+    repo_pop_list.append('https://github.com/pallets/flask')
+    repo_pop_list.append("https://github.com/up-for-grabs/up-for-grabs.net")
+    repo_pop_list.append("https://github.com/pytorch/pytorch")
+    repo_pop_list.append("https://github.com/huggingface/datasets")
+    repo_pop_list.append("https://github.com/tiangolo/fastapi")
+    repo_pop_list.append("https://github.com/aws/s2n-tls")
+    try:
+        for repo in repo_pop_list:
+            pop.pop_project(repo)
+    except MySQLInterfaceError as e:
+        print(repo)
+        pass
+
+    end = time.time()
+    print("Total ", end-start)
