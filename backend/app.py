@@ -1,42 +1,34 @@
 from flask import Flask, render_template, request, redirect, jsonify, \
     url_for, flash
 
-from sqlalchemy import create_engine, asc, desc, func, distinct
-# from sqlalchemy.orm import sessionmaker
-# from sqlalchemy.ext.serializer import loads, dumps
-
-# from database_setup import Base, Things
-
-import random
-import string
-import logging
-import json
-import httplib2
-import requests
-
-
 import config
 from github import GitHubAPI
+from db import DB
+from pop_db import PopulateDB
 
 app = Flask(__name__)
 
-
-# Connect to database and create database session
-db_uri = 'mysql://' + config.db_user + ':' + config.db_password + '@' + config.db_host + '/' + config.db_database
-db = create_engine(db_uri)
-
-# DBSession = sessionmaker(bind=engine)
-# session = DBSession()
-
+@app.route('/add-project', methods=['GET', 'POST'])
+def AddNewProject():
+    """Add a new project to the database given a ?gh_url=GIT_HUB_REPO_URL"""
+    if request.method == 'GET': # will be POST in production
+        gh_url = request.args.get('gh_url')
+        gh_url = "https://github.com/pallets/flask" # valid repo for testing
+        gh = GitHubAPI(gh_url)
+        is_valid = gh.verify_repo_url()
+        if not is_valid:
+            return {"error": "Invalid GitHub URL"}
+        else:
+            insert_result = PopulateDB().pop_project(gh_url)
+            return insert_result
+            
 @app.route('/all-projects', methods=['GET', 'POST'])
 def AllProjectData():
-    return "test"
-
-@app.route('/project/<pUID>', methods=['GET', 'POST'])
-def SingleProjectData(pUID):
-    github = GitHubAPI('up-for-grabs', 'up-for-grabs.net')
-    print(github.get_stargazers_count())
-    return str(github.get_stargazers_count())
+    """Get all project data from the database"""
+    if request.method == 'GET':
+        all_projects = DB().fetchall("projects")
+        DB().__exit__
+        return jsonify(all_projects)
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'

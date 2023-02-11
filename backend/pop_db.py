@@ -2,20 +2,22 @@ import time
 import mysql.connector
 import config
 from github import GitHubAPI
+from db import DB
 
 class PopulateDB:
     """Populate the database with data from GitHub API"""
-    def __init__(self):
-        self.conn = mysql.connector.connect(
-                        user=config.db_user,
-                        password=config.db_password,
-                        host=config.db_host,
-                        database=config.db_database,
-                        charset='utf8mb4'
-                    )
 
-    def pop_project(self, gh_repo_url):
+    def pop_project(self, gh_repo_url: dict): 
         """Populate the project table"""
+
+        db = DB() # Database wrapper
+
+        # Check if the repo is already in the database
+        db.cursor.execute(f"SELECT gh_repo_url FROM projects WHERE gh_repo_url = '{gh_repo_url}'")
+        
+        if db.cursor.fetchone() is not None:
+            return {"error": "Repo already in database"}
+
         gh = GitHubAPI(gh_repo_url) # GitHub API wrapper
 
         gh_repo_name = gh.repo_name
@@ -45,8 +47,7 @@ class PopulateDB:
 
         # Insert the data into the database
         try:
-            self.conn.reconnect()
-            cursor = self.conn.cursor()
+            db.conn.reconnect()
 
             topics_cols = "gh_topics0, gh_topics1, gh_topics2, gh_topics3, gh_topics4, gh_topics5" # Topic column names
             issues_cols = "issue_label_1, issue_label_2, issue_label_3" # Issues column names
@@ -57,11 +58,12 @@ class PopulateDB:
             values = f"(N'{gh_repo_name}', N'{gh_repo_url}', N'{gh_description}', N'{gh_username}', {gh_stargazers_count}, {gh_forks_count}, {gh_watchers_count}, {topics_vals}, {issues_vals}, N'{gh_date_of_last_commit}', N'{gh_date_of_last_merged_pull_request}')" # All values
             
             q = f"INSERT INTO projects {cols} VALUES {values}"
-            cursor.execute(q)
-            self.conn.commit()
+            db.insert(q)
+
         except Exception as e:
             print(e)
-            self.conn.rollback()
+            db.rollback()
         
         # Close the connection
-        self.conn.close()
+        db.__exit__
+        return {"success": "Repo added to database"}
