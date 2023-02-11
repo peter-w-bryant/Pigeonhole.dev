@@ -13,6 +13,14 @@ class GitHubAPI:
         self.auth_headers = {'Authorization': 'token ' + config.github_token}
         self.repo_data = requests.get(self.base_url, headers=self.auth_headers).json()
 
+    def verify_repo_url(self):
+        """Verify if the repo url is valid"""
+        try:
+            if self.repo_data["message"] == "Not Found":
+                return False
+        except KeyError:
+            return True
+
     def get_repo_description(self):
         """Get the repo description"""
         return self.repo_data["description"]
