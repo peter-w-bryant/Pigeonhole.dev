@@ -26,9 +26,7 @@ def AddNewProject():
 def AllProjectData():
     """Get all project data from the database"""
     if request.method == 'GET':
-        all_projects = DB().fetchall("projects")
-        DB().__exit__
-        return jsonify(all_projects)
+        return DB().fetchall("projects")
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
