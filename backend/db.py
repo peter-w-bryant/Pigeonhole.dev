@@ -40,7 +40,7 @@ class DB:
             single_project_dict["issue_label_2"]= project[8]
             single_project_dict["issue_label_3"]= project[9]
             single_project_dict["gh_username"]= project[10]
-            single_project_dict["date_last_merged_PR"]: project[11]
+            single_project_dict["date_last_merged_PR"]= project[11]
             single_project_dict["date_last_commit"]= project[12]
             single_project_dict["image"]= project[13]
             single_project_dict["gh_topics_0"]= project[14]
