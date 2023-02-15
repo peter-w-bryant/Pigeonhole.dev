@@ -1,6 +1,7 @@
 {
     "TypeScript": {
         "date_last_commit": "2023-02-15",
+        "date_last_merged_PR": "2023-02-14",
         "gh_description": "TypeScript is a superset of JavaScript that compiles to clean JavaScript output.",
         "gh_rep_url": "https://github.com/microsoft/TypeScript",
         "gh_repo_name": "TypeScript",
@@ -22,6 +23,7 @@
     },
     "cypress": {
         "date_last_commit": "2023-02-15",
+        "date_last_merged_PR": "2023-02-15",
         "gh_description": "Fast, easy and reliable testing for anything that runs in a browser.",
         "gh_rep_url": "https://github.com/cypress-io/cypress",
         "gh_repo_name": "cypress",
@@ -43,6 +45,7 @@
     },
     "flask": {
         "date_last_commit": "2023-02-10",
+        "date_last_merged_PR": "2023-02-10",
         "gh_description": "The Python micro framework for building web applications.",
         "gh_rep_url": "https://github.com/pallets/flask",
         "gh_repo_name": "flask",
@@ -64,6 +67,7 @@
     },
     "go-ethereum": {
         "date_last_commit": "2023-02-15",
+        "date_last_merged_PR": "2023-02-15",
         "gh_description": "Official Go implementation of the Ethereum protocol",
         "gh_rep_url": "https://github.com/ethereum/go-ethereum",
         "gh_repo_name": "go-ethereum",
@@ -85,6 +89,7 @@
     },
     "julia": {
         "date_last_commit": "2023-02-15",
+        "date_last_merged_PR": "2023-02-15",
         "gh_description": "The Julia Programming Language",
         "gh_rep_url": "https://github.com/JuliaLang/julia",
         "gh_repo_name": "julia",
@@ -106,6 +111,7 @@
     },
     "kubernetes": {
         "date_last_commit": "2023-02-15",
+        "date_last_merged_PR": "2023-02-15",
         "gh_description": "Production-Grade Container Scheduling and Management",
         "gh_rep_url": "https://github.com/kubernetes/kubernetes",
         "gh_repo_name": "kubernetes",
@@ -127,6 +133,7 @@
     },
     "mastodon": {
         "date_last_commit": "2023-02-15",
+        "date_last_merged_PR": "2023-02-14",
         "gh_description": "Your self-hosted, globally interconnected microblogging community",
         "gh_rep_url": "https://github.com/mastodon/mastodon",
         "gh_repo_name": "mastodon",
@@ -148,6 +155,7 @@
     },
     "node": {
         "date_last_commit": "2023-02-14",
+        "date_last_merged_PR": "2023-02-14",
         "gh_description": "Node.js JavaScript runtime :sparkles::turtle::rocket::sparkles:",
         "gh_rep_url": "https://github.com/nodejs/node",
         "gh_repo_name": "node",
@@ -169,6 +177,7 @@
     },
     "pandas": {
         "date_last_commit": "2023-02-15",
+        "date_last_merged_PR": "2023-02-15",
         "gh_description": "Flexible and powerful data analysis / manipulation library for Python, providing labeled data structures similar to R data.frame objects, statistical functions, and much more",
         "gh_rep_url": "https://github.com/pandas-dev/pandas",
         "gh_repo_name": "pandas",
@@ -190,6 +199,7 @@
     },
     "pytorch": {
         "date_last_commit": "2023-02-15",
+        "date_last_merged_PR": "2023-02-09",
         "gh_description": "Tensors and Dynamic neural networks in Python with strong GPU acceleration",
         "gh_rep_url": "https://github.com/pytorch/pytorch",
         "gh_repo_name": "pytorch",
@@ -211,6 +221,7 @@
     },
     "rust": {
         "date_last_commit": "2023-02-15",
+        "date_last_merged_PR": "2023-02-15",
         "gh_description": "Empowering everyone to build reliable and efficient software.",
         "gh_rep_url": "https://github.com/rust-lang/rust",
         "gh_repo_name": "rust",
@@ -232,6 +243,7 @@
     },
     "s2n-tls": {
         "date_last_commit": "2023-02-15",
+        "date_last_merged_PR": "2023-02-14",
         "gh_description": "An implementation of the TLS/SSL protocols",
         "gh_rep_url": "https://github.com/aws/s2n-tls",
         "gh_repo_name": "s2n-tls",
@@ -253,6 +265,7 @@
     },
     "tensorflow": {
         "date_last_commit": "2023-02-15",
+        "date_last_merged_PR": "2023-02-15",
         "gh_description": "An Open Source Machine Learning Framework for Everyone",
         "gh_rep_url": "https://github.com/tensorflow/tensorflow",
         "gh_repo_name": "tensorflow",
@@ -274,6 +287,7 @@
     },
     "up-for-grabs.net": {
         "date_last_commit": "2023-02-10",
+        "date_last_merged_PR": "2023-02-10",
         "gh_description": "This is a list of projects which have curated tasks specifically for new contributors. These issues are a great way to get started with a project, or to help share the load of working on open source projects. Jump in!",
         "gh_rep_url": "https://github.com/up-for-grabs/up-for-grabs.net",
         "gh_repo_name": "up-for-grabs.net",
@@ -295,6 +309,7 @@
     },
     "vscode": {
         "date_last_commit": "2023-02-15",
+        "date_last_merged_PR": "2023-02-15",
         "gh_description": "Visual Studio Code",
         "gh_rep_url": "https://github.com/microsoft/vscode",
         "gh_repo_name": "vscode",
