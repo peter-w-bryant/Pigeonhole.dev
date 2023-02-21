@@ -13,12 +13,13 @@ python3 -m venv ./env
 env/Scripts/activate
 pip3 install -r requirements.txt
 ```
-Populate the DB with an single public repository's information by passing the public GitHub URL to the `pop_project()` function defined in the `PopulateDB` class,
+Populate the DB with an single public repository's information by passing the public GitHub URL to the `pop_project()` function defined in the `DB` class,
 ```{python3}
-pop = PopulateDB()
-pop.pop_project('https://github.com/GITHUB-USERNAME/REPO-NAME')
+with DB() as db:
+  db.pop_project('https://github.com/GITHUB-USERNAME/REPO-NAME')
 ```
-Alternatively, populate the DB with a collection of repositories that are stored in `static_repo_data.json` by running the `init_db.py` script.
+Alternatively, populate the DB with a collection of repositories that are stored in `static_repo_data.json` by running the `pop_projects_from_json()` function defined in the `DB` class,
 ```{python3}
-python3 init_db.py
+with DB() as db:
+  db.pop_projects_from_json()
 ```
