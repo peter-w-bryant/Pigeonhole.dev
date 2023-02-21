@@ -4,7 +4,6 @@ from flask import Flask, render_template, request, redirect, jsonify, \
 import config
 from github import GitHubAPI
 from db import DB
-from pop_db import PopulateDB
 
 app = Flask(__name__)
 
@@ -19,14 +18,17 @@ def AddNewProject():
         if not is_valid:
             return {"error": "Invalid GitHub URL"}
         else:
-            insert_result = PopulateDB().pop_project(gh_url)
+            with DB() as db:
+                insert_result = db.pop_project(gh)
+            
             return insert_result
             
 @app.route('/all-projects', methods=['GET', 'POST'])
 def AllProjectData():
     """Get all project data from the database"""
     if request.method == 'GET':
-        return DB().fetchall("projects")
+        with DB() as db:
+            return db.fetchall("projects")
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
