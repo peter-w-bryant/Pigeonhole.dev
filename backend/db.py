@@ -1,5 +1,9 @@
+import time
+import json
 import mysql.connector
+from _mysql_connector import MySQLInterfaceError
 import config
+from github import GitHubAPI
 
 class DB:
     def __init__(self):
@@ -12,7 +16,10 @@ class DB:
                     )
         self.cursor = self.conn.cursor()
 
-    def __exit__(self):
+    def __enter__(self):
+        return self
+        
+    def __exit__(self, exc_type, exc_val, exc_tb):
         self.cursor.close()
         self.conn.close() 
 
@@ -23,7 +30,13 @@ class DB:
     def rollback(self):
         self.conn.rollback()
 
-    def fetchall(self, table_name):
+    def fetchall(self, table_name: str):
+        """Fetch all data from the projects table.
+
+        Returns:
+            all_projects_dict (dict): A dictionary of dictionaries containing all the data from the projects table.
+        """
+
         self.cursor.execute("SELECT * FROM " + table_name)
         all_projects = self.cursor.fetchall()
         all_projects_dict = {}
@@ -52,3 +65,100 @@ class DB:
             all_projects_dict[single_project_dict["gh_repo_name"]] = single_project_dict
 
         return all_projects_dict
+
+    def pop_project(self, gh_repo_url: str):
+        """Populate the project table with data for a single project.
+        
+        Args:
+            gh_repo_url (str): The GitHub repo URL for the project to be added to the database.
+
+        Returns:
+            insert_result (dict): A dictionary containing the result of the insert operation (success or error)
+        """
+
+        db = self
+
+        # Check if the repo is already in the database
+        db.cursor.execute(f"SELECT gh_repo_url FROM projects WHERE gh_repo_url = '{gh_repo_url}'")
+            
+        if db.cursor.fetchone() is not None:
+            return {"error": "Repo already in database"}
+
+        gh = GitHubAPI(gh_repo_url) # GitHub API wrapper
+
+        gh_repo_name = gh.repo_name
+        gh_username = gh.username
+
+        # Get the data from GitHub API
+        gh_description = gh.get_repo_description()
+
+        # Topics / tech stack
+        gh_topics = [''] * 6 # empty list of 6 strings to store the topics
+        gh_topics[:len(gh.get_topics())] = gh.get_topics() # get the topics
+
+        # Issues / labels
+        gh_issues = [''] * 3 # empty list of 3 strings to store the issues
+        gh_issues[:len(gh.get_issues())] = gh.get_issues() # get the issues
+
+        # Stars, forks, watchers count
+        gh_stargazers_count = gh.get_stargazers_count()
+        gh_forks_count = gh.get_forks_count()
+        gh_watchers_count = gh.get_watchers_count()
+
+        # Date of last commit
+        gh_date_of_last_commit = gh.get_date_of_last_commit()
+
+        # Data of last MERGED pull request
+        gh_date_of_last_merged_pull_request = gh.get_date_of_last_merged_pull_request()
+
+        # Insert the data into the database
+        try:
+            db.conn.reconnect()
+
+            topics_cols = "gh_topics0, gh_topics1, gh_topics2, gh_topics3, gh_topics4, gh_topics5" # Topic column names
+            issues_cols = "issue_label_1, issue_label_2, issue_label_3" # Issues column names
+            cols = f"(gh_repo_name, gh_repo_url, gh_description, gh_username, num_stars, num_forks, num_watchers, {topics_cols}, {issues_cols}, date_last_commit, date_last_merged_PR)" # All column names
+
+            topics_vals = f"N'{gh_topics[0]}', N'{gh_topics[1]}', N'{gh_topics[2]}', N'{gh_topics[3]}', N'{gh_topics[4]}', N'{gh_topics[5]}'" # Topic values
+            issues_vals = f"N'{gh_issues[0]}', N'{gh_issues[1]}', N'{gh_issues[2]}'" # Issues values
+            values = f"(N'{gh_repo_name}', N'{gh_repo_url}', N'{gh_description}', N'{gh_username}', {gh_stargazers_count}, {gh_forks_count}, {gh_watchers_count}, {topics_vals}, {issues_vals}, N'{gh_date_of_last_commit}', N'{gh_date_of_last_merged_pull_request}')" # All values
+                
+            q = f"INSERT INTO projects {cols} VALUES {values}"
+            db.insert(q)
+
+        except Exception as e:
+            print(e)
+            db.rollback()
+        
+        # Close the connection
+        return {"success": "Repo added to database"}
+
+    def pop_projects_from_json(self, testing: bool = False):
+        """Populate the project table with projects links from a json file.
+        
+        Returns:
+            int: Number of projects successfully added to the database
+        """
+        if testing:
+            start = time.time()
+        
+        db = self
+        repo_data = json.load(open('static_repo_data.json', 'r')) 
+        
+        success_count = 0
+        try:
+            for repo_url in repo_data.values():
+                db.pop_project(repo_url)            
+                success_count += 1
+        except MySQLInterfaceError as e:
+            print("MySQLInterfaceError occured when inserting:", repo_url)
+            pass 
+        if testing:
+            end = time.time()
+            print(f"Time taken: {end - start} seconds. Added {success_count} projects.")
+        return success_count
+
+if __name__ == "__main__":
+    gh_repo_url = "https://github.com/torvalds/linux"
+    with DB() as db:
+        db.pop_projects_from_json(testing=True)
