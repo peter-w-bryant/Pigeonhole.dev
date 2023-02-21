@@ -2,6 +2,7 @@
 An aggregated list of open source projects with issues looking for contributors.
 
 ## Usage
+### Cloning repo & Installing Dependencies
 First clone this repo,
 ```{bash}
 git clone https://github.com/peter-w-bryant/pigeonhole.dev.git
@@ -13,6 +14,7 @@ python3 -m venv ./env
 env/Scripts/activate
 pip3 install -r requirements.txt
 ```
+### Populating the Database
 Populate the DB with an single public repository's information by passing the public GitHub URL to the `pop_project()` function defined in the `DB` class,
 ```{python3}
 with DB() as db:
