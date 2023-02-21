@@ -23,3 +23,25 @@ Alternatively, populate the DB with a collection of repositories that are stored
 with DB() as db:
   db.pop_projects_from_json()
 ```
+Example of `static_repo_data.json`:
+```{json}
+{
+    "flask": "https://github.com/pallets/flask",
+    "up_for_grabs": "https://github.com/up-for-grabs/up-for-grabs.net",
+    "pytorch": "https://github.com/pytorch/pytorch",
+    "huggingface_datasets": "https://github.com/huggingface/datasets",
+    "fastapi": "https://github.com/huggingface/datasets",
+    "s2n_tls" : "https://github.com/aws/s2n-tls",
+    "tensorflow": "https://github.com/tensorflow/tensorflow",
+    "go_ethereum": "https://github.com/ethereum/go-ethereum",
+    "node_js": "https://github.com/nodejs/node",
+    "kubernetes": "https://github.com/kubernetes/kubernetes",
+    "julia": "https://github.com/JuliaLang/julia",
+    "rust": "https://github.com/rust-lang/rust",
+    "pandas": "https://github.com/pandas-dev/pandas",
+    "cyprus": "https://github.com/cypress-io/cypress",
+    "mastodon": "https://github.com/mastodon/mastodon",
+    "typescript": "https://github.com/microsoft/TypeScript",
+    "vscode": "https://github.com/microsoft/vscode"
+}
+```
