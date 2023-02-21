@@ -23,14 +23,17 @@ const Home = () => {
             return(setProjects(oldProjects => [...oldProjects, value]));
         });
     }, [projectData]);
+
+    // TODO: search functionality (Form)
  
     return (
         <Container fluid>
-            <Row>
+            <Row><h1>pigeonhole.dev</h1></Row>
+            <Row className="g-4">
                 {
                     projects.map(project => {
                         return (
-                            <Col xs={12} sm={6} md={4} lg={3} xl={2} key={project.pUID}>
+                            <Col xs={12} sm={6} md={4} lg={3} key={project.pUID}> 
                                 <Project {...project}/>
                             </Col>
                         );
