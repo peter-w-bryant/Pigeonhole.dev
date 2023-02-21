@@ -245,7 +245,7 @@
         "date_last_commit": "2023-02-15",
         "date_last_merged_PR": "2023-02-14",
         "gh_description": "An implementation of the TLS/SSL protocols",
-        "gh_rep_url": "https://github.com/aws/s2n-tls",
+        "gh_rep_url": "https://github.com/aws/s2n-tls", 
         "gh_repo_name": "s2n-tls",
         "gh_topics_0": "c",
         "gh_topics_1": "c99",
