@@ -158,7 +158,7 @@ class DB:
             print(f"Time taken: {end - start} seconds. Added {success_count} projects.")
         return success_count
 
-if __name__ == "__main__":
-    gh_repo_url = "https://github.com/torvalds/linux"
-    with DB() as db:
-        db.pop_projects_from_json(testing=True)
+# if __name__ == "__main__":
+#     gh_repo_url = "https://github.com/torvalds/linux"
+#     with DB() as db:
+#         db.pop_projects_from_json(testing=True)
