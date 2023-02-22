@@ -110,13 +110,24 @@ class GitHubAPI:
 
         return resorted_issue_dict
 
+    def get_contribute_url(self):
+        """Get the CONTRIBUTING.md url"""
+        contribute_url = self.repo_data["html_url"] + "/blob/master/CONTRIBUTING.md"
+        if requests.get(contribute_url).status_code == 404:
+            return ""
+        else:
+            return contribute_url
+
+    # TODO
     def generate_new_contributor_score(self):
         """Generate a new contributor score"""
         return self.get_open_issues_count() + self.get_forks_count() + self.get_watchers_count()
 
-# if __name__ == '__main__':
-#     repo_url = 'https://github.com/up-for-grabs/up-for-grabs.net'
-#     gh = GitHubAPI(repo_url)
+if __name__ == '__main__':
+    # repo_url = 'https://github.com/up-for-grabs/up-for-grabs.net'
+    repo_url = 'https://github.com/Bhupesh-V/defe'
+    gh = GitHubAPI(repo_url)
+    print(gh.get_contribute_url())
    
     
 
