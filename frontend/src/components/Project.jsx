@@ -61,7 +61,7 @@ const Project = (props) => {
                         padding: '0',
                         margin: '0',
                     }}>
-                    {[1, 2, 3].map(index => (
+                    {[1, 2, 3, 4, 5, 6, 7].map(index => (
                         props[`issue_label_${index}`] !== "" && (
                             <ListGroup.Item
                                 key={index}
