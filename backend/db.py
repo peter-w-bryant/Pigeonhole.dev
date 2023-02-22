@@ -75,6 +75,7 @@ class DB:
             single_project_dict["gh_topics_3"]= project[27]
             single_project_dict["gh_topics_4"]= project[28]
             single_project_dict["gh_topics_5"]= project[29]
+            single_project_dict["gh_contributing_url"]= project[30]
             all_projects_dict[single_project_dict["gh_repo_name"]] = single_project_dict
 
         return all_projects_dict
@@ -124,6 +125,9 @@ class DB:
         # Data of last MERGED pull request
         gh_date_of_last_merged_pull_request = gh.get_date_of_last_merged_pull_request()
 
+        # Get CONTRIBUTING.md URL
+        gh_contributing_url = gh.get_contribute_url()
+
         # Insert the data into the database
         try:
             db.conn.reconnect()
@@ -131,7 +135,8 @@ class DB:
             topics_cols = "gh_topics0, gh_topics1, gh_topics2, gh_topics3, gh_topics4, gh_topics5" # Topic column names
             issues_cols = "issue_label_1, issue_label_2, issue_label_3, issue_label_4, issue_label_5, issue_label_6, issue_label_7" # Issues column names
             issues_counts_cols = "issue_label_1_count, issue_label_2_count, issue_label_3_count, issue_label_4_count, issue_label_5_count, issue_label_6_count, issue_label_7_count"
-            cols = f"(gh_repo_name, gh_repo_url, gh_description, gh_username, num_stars, num_forks, num_watchers, {topics_cols}, {issues_cols}, {issues_counts_cols}, date_last_commit, date_last_merged_PR)" # All column names
+            
+            cols = f"(gh_repo_name, gh_repo_url, gh_description, gh_username, num_stars, num_forks, num_watchers, {topics_cols}, {issues_cols}, {issues_counts_cols}, date_last_commit, date_last_merged_PR, contrib_url)" # All column names
 
             topics_vals = f"N'{gh_topics[0]}', N'{gh_topics[1]}', N'{gh_topics[2]}', N'{gh_topics[3]}', N'{gh_topics[4]}', N'{gh_topics[5]}'" # Topic values
 
@@ -140,7 +145,7 @@ class DB:
             issue_counts = f"N'{gh_issues_dict[gh_issues[0]]}', N'{gh_issues_dict[gh_issues[1]]}', N'{gh_issues_dict[gh_issues[2]]}', N'{gh_issues_dict[gh_issues[3]]}', \
                              N'{gh_issues_dict[gh_issues[4]]}', N'{gh_issues_dict[gh_issues[5]]}', N'{gh_issues_dict[gh_issues[6]]}'" 
                              
-            values = f"(N'{gh_repo_name}', N'{gh_repo_url}', N'{gh_description}', N'{gh_username}', {gh_stargazers_count}, {gh_forks_count}, {gh_watchers_count}, {topics_vals}, {issues_vals}, {issue_counts}, N'{gh_date_of_last_commit}', N'{gh_date_of_last_merged_pull_request}')" # All values
+            values = f"(N'{gh_repo_name}', N'{gh_repo_url}', N'{gh_description}', N'{gh_username}', {gh_stargazers_count}, {gh_forks_count}, {gh_watchers_count}, {topics_vals}, {issues_vals}, {issue_counts}, N'{gh_date_of_last_commit}', N'{gh_date_of_last_merged_pull_request}', N'{gh_contributing_url}')" # All values
                 
             q = f"INSERT INTO projects {cols} VALUES {values}"
             db.insert(q)
