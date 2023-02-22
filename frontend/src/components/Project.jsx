@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-has-content */
 
-import { Card, ListGroup, Container } from 'react-bootstrap';
+import { Card, ListGroup } from 'react-bootstrap';
 import { AiOutlineStar, AiOutlineFork, AiOutlineEye, AiOutlineCopyright, AiOutlineGithub} from 'react-icons/ai'
 
 const Project = (props) => {
@@ -25,7 +25,7 @@ const Project = (props) => {
                             display: 'flex',
                             flexWrap: 'wrap',
                             listStyle: 'none',
-                            fontSize: '0.5rem',
+                            fontSize: '0.75rem',
                             padding: '0',
                             margin: '0',
                         }}>
@@ -57,7 +57,7 @@ const Project = (props) => {
                         display: 'flex',
                         flexWrap: 'wrap',
                         listStyle: 'none',
-                        fontSize: '0.5rem',
+                        fontSize: '0.75rem',
                         padding: '0',
                         margin: '0',
                     }}>
@@ -89,11 +89,11 @@ const Project = (props) => {
                     </Card.Text>
 
                 </div>
-                <a href={props.gh_rep_url} class="stretched-link"></a>
+                <a href={props.gh_rep_url} className="stretched-link"></a>
             </Card.Body>
             <Card.Footer>
-                <small className='text-muted small' style={{ fontSize: '0.8 rem', padding: '0' }}>Last commit: {props.date_last_commit}<br></br>
-                    Last merged PR: {props.date_last_merged_PR}</small>
+                <small className='text-muted float-start' style={{ fontSize: '0.8 rem', padding: '0' }}>Last commit: {props.date_last_commit}</small>
+                <small className='text-muted float-end' style={{ fontSize: '0.8 rem', padding: '0' }}>Last merged PR: {props.date_last_merged_PR}</small>
             </Card.Footer>
         </Card >
     );

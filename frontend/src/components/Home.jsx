@@ -33,7 +33,7 @@ const Home = () => {
                 {
                     projects.map(project => {
                         return (
-                            <Col xs={12} sm={6} md={4} lg={3} key={project.pUID}> 
+                            <Col style={{ display: 'flex' }} xs={12} sm={6} md={4} key={project.pUID}> 
                                 <Project {...project}/>
                             </Col>
                         );
