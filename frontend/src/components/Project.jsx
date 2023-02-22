@@ -1,15 +1,15 @@
 /* eslint-disable jsx-a11y/anchor-has-content */
 
 
-import { Card, ListGroup } from 'react-bootstrap';
+import { Card, ListGroup, Container } from 'react-bootstrap';
 import { AiOutlineStar, AiOutlineFork, AiOutlineEye } from 'react-icons/ai'
-import { FaGithub } from "react-icons/fa";
+import { FaGithub, FaCopyright } from "react-icons/fa";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 const Project = (props) => {
     return (
-        <Card bg='light'>
+        <Card bg='light' style={{ width: '100%' }}>
             <Card.Body >
                 <div style={{ paddingBottom: '20px' }} >
                     <Card.Title>{props.gh_repo_name}<span className="float-end">
@@ -22,7 +22,7 @@ const Project = (props) => {
                     <Card.Text className="small">{props.gh_description}</Card.Text>
                 </div>
 
-                <div>
+                <div style={{ paddingBottom: '10px' }}>
                     <Card.Subtitle className='mb-1 text-muted small'>Topics:</Card.Subtitle>
                     <ListGroup horizontal
                         style={{
@@ -52,47 +52,54 @@ const Project = (props) => {
                         ))}
                     </ListGroup>
                 </div>
-
-                {/* <div >
-                    <Card.Subtitle className='mb-1 text-muted small'>Open Issue Tags:</Card.Subtitle>
-                    <ListGroup horizontal
-                        style={{
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            listStyle: 'none',
-                            fontSize: '0.5rem',
-                            padding: '0',
-                            margin: '0',
-                        }}>
-                        {[1, 2, 3].map(index => (
-                            props[`issue_label_${index}`] !== "" && (
-                                <ListGroup.Item 
-                                    key={index}
-                                    style={{
-                                        height: 'fit-content',
-                                        width: 'fit-content',
-                                        borderRadius: '50px',
-                                        backgroundColor: '#6c757d',
-                                        color: '#ffffff',
-                                        padding: '5px 10px',
-                                        margin: '5px',
-                                    }}>
-                                    {props[`issue_label_${index}`]}
-                                </ListGroup.Item>
-                            )
-                        ))}
-                    </ListGroup> */}
-
-                {/* </div> */}
+                <Card.Subtitle className='mb-1 text-muted small' style={{ background: 'transparent', border: 'none' }}>Issue Labels:</Card.Subtitle>
 
 
+
+                <ListGroup horizontal
+                    style={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        listStyle: 'none',
+                        fontSize: '0.5rem',
+                        padding: '0',
+                        margin: '0',
+                    }}>
+                    {[1, 2, 3].map(index => (
+                        props[`issue_label_${index}`] !== "" && (
+                            <ListGroup.Item
+                                key={index}
+                                style={{
+                                    height: 'fit-content',
+                                    width: 'fit-content',
+                                    borderRadius: '50px',
+                                    backgroundColor: '#6c757d',
+                                    color: '#ffffff',
+                                    padding: '5px 10px',
+                                    margin: '5px',
+                                }}>
+                                {props[`issue_label_${index}`]}
+                            </ListGroup.Item>
+                        )
+                    ))}
+                </ListGroup>
+                {/* create a green heading that says Pigeonhole Score with the trademark */}
+                <div style={{ paddingTop: '10px' }}>
+
+                    <Card.Text className="small" style={{ fontSize: '0.6rem', fontWeight: 'bold' }}>Pigeonhole<br></br>New Contributor Score&nbsp;
+                    
+                        <FaCopyright />:
+                 
+                    </Card.Text>
+
+                </div>
                 <a href={props.gh_rep_url} class="stretched-link"></a>
             </Card.Body>
             <Card.Footer>
-                <small className='text-muted small' style={{fontSize: '0.8 rem', padding: '0'}}>Last commit: {props.date_last_commit}<br></br>
-                Last merged PR: {props.date_last_merged_PR}</small>
+                <small className='text-muted small' style={{ fontSize: '0.8 rem', padding: '0' }}>Last commit: {props.date_last_commit}<br></br>
+                    Last merged PR: {props.date_last_merged_PR}</small>
             </Card.Footer>
-        </Card>
+        </Card >
     );
 }
 
