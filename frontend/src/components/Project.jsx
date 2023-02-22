@@ -84,7 +84,7 @@ const Project = (props) => {
 
                     <Card.Text className="small" style={{ fontSize: '0.6rem', fontWeight: 'bold' }}>Pigeonhole<br></br>New Contributor Score&nbsp;
 
-                        <AiOutlineCopyright />:
+                        <AiOutlineCopyright />&nbsp;:
 
                     </Card.Text>
 
