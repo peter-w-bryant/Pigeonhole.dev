@@ -2,6 +2,8 @@ import time
 import json
 import mysql.connector
 from _mysql_connector import MySQLInterfaceError
+from mysql.connector.errors import DatabaseError
+
 import config
 from github import GitHubAPI
 
@@ -12,7 +14,8 @@ class DB:
                         password=config.db_password,
                         host=config.db_host,
                         database=config.db_database,
-                        charset='utf8mb4'
+                        charset='utf8mb4',
+                        collation='utf8mb4_unicode_ci'
                     )
         self.cursor = self.conn.cursor()
 
@@ -52,16 +55,26 @@ class DB:
             single_project_dict["issue_label_1"]= project[7]
             single_project_dict["issue_label_2"]= project[8]
             single_project_dict["issue_label_3"]= project[9]
-            single_project_dict["gh_username"]= project[10]
-            single_project_dict["date_last_merged_PR"]= project[11]
-            single_project_dict["date_last_commit"]= project[12]
-            single_project_dict["image"]= project[13]
-            single_project_dict["gh_topics_0"]= project[14]
-            single_project_dict["gh_topics_1"]= project[15]
-            single_project_dict["gh_topics_2"]= project[16]
-            single_project_dict["gh_topics_3"]= project[17]
-            single_project_dict["gh_topics_4"]= project[18]
-            single_project_dict["gh_topics_5"]= project[19]
+            single_project_dict["issue_label_4"]= project[10]
+            single_project_dict["issue_label_5"]= project[11]
+            single_project_dict["issue_label_6"]= project[12]
+            single_project_dict["issue_label_7"]= project[13]
+            single_project_dict["issue_label_1_count"]= project[14]
+            single_project_dict["issue_label_2_count"]= project[15]
+            single_project_dict["issue_label_3_count"]= project[16]
+            single_project_dict["issue_label_4_count"]= project[17]
+            single_project_dict["issue_label_5_count"]= project[18]
+            single_project_dict["issue_label_6_count"]= project[19]
+            single_project_dict["issue_label_7_count"]= project[20]
+            single_project_dict["gh_username"]= project[21]
+            single_project_dict["date_last_merged_PR"]= project[22]
+            single_project_dict["date_last_commit"]= project[23]
+            single_project_dict["gh_topics_0"]= project[24]
+            single_project_dict["gh_topics_1"]= project[25]
+            single_project_dict["gh_topics_2"]= project[26]
+            single_project_dict["gh_topics_3"]= project[27]
+            single_project_dict["gh_topics_4"]= project[28]
+            single_project_dict["gh_topics_5"]= project[29]
             all_projects_dict[single_project_dict["gh_repo_name"]] = single_project_dict
 
         return all_projects_dict
@@ -97,8 +110,8 @@ class DB:
         gh_topics[:len(gh.get_topics())] = gh.get_topics() # get the topics
 
         # Issues / labels
-        gh_issues = [''] * 3 # empty list of 3 strings to store the issues
-        gh_issues[:len(gh.get_issues())] = gh.get_issues() # get the issues
+        gh_issues_dict = gh.get_issues()
+        gh_issues = list(gh_issues_dict.keys())
 
         # Stars, forks, watchers count
         gh_stargazers_count = gh.get_stargazers_count()
@@ -116,19 +129,36 @@ class DB:
             db.conn.reconnect()
 
             topics_cols = "gh_topics0, gh_topics1, gh_topics2, gh_topics3, gh_topics4, gh_topics5" # Topic column names
-            issues_cols = "issue_label_1, issue_label_2, issue_label_3" # Issues column names
-            cols = f"(gh_repo_name, gh_repo_url, gh_description, gh_username, num_stars, num_forks, num_watchers, {topics_cols}, {issues_cols}, date_last_commit, date_last_merged_PR)" # All column names
+            issues_cols = "issue_label_1, issue_label_2, issue_label_3, issue_label_4, issue_label_5, issue_label_6, issue_label_7" # Issues column names
+            issues_counts_cols = "issue_label_1_count, issue_label_2_count, issue_label_3_count, issue_label_4_count, issue_label_5_count, issue_label_6_count, issue_label_7_count"
+            cols = f"(gh_repo_name, gh_repo_url, gh_description, gh_username, num_stars, num_forks, num_watchers, {topics_cols}, {issues_cols}, {issues_counts_cols}, date_last_commit, date_last_merged_PR)" # All column names
 
             topics_vals = f"N'{gh_topics[0]}', N'{gh_topics[1]}', N'{gh_topics[2]}', N'{gh_topics[3]}', N'{gh_topics[4]}', N'{gh_topics[5]}'" # Topic values
-            issues_vals = f"N'{gh_issues[0]}', N'{gh_issues[1]}', N'{gh_issues[2]}'" # Issues values
-            values = f"(N'{gh_repo_name}', N'{gh_repo_url}', N'{gh_description}', N'{gh_username}', {gh_stargazers_count}, {gh_forks_count}, {gh_watchers_count}, {topics_vals}, {issues_vals}, N'{gh_date_of_last_commit}', N'{gh_date_of_last_merged_pull_request}')" # All values
+
+            issues_vals = f"N'{gh_issues[0]}', N'{gh_issues[1]}', N'{gh_issues[2]}', N'{gh_issues[3]}', N'{gh_issues[4]}', N'{gh_issues[5]}', N'{gh_issues[6]}'" # Issues values
+
+            issue_counts = f"N'{gh_issues_dict[gh_issues[0]]}', N'{gh_issues_dict[gh_issues[1]]}', N'{gh_issues_dict[gh_issues[2]]}', N'{gh_issues_dict[gh_issues[3]]}', \
+                             N'{gh_issues_dict[gh_issues[4]]}', N'{gh_issues_dict[gh_issues[5]]}', N'{gh_issues_dict[gh_issues[6]]}'" 
+                             
+            values = f"(N'{gh_repo_name}', N'{gh_repo_url}', N'{gh_description}', N'{gh_username}', {gh_stargazers_count}, {gh_forks_count}, {gh_watchers_count}, {topics_vals}, {issues_vals}, {issue_counts}, N'{gh_date_of_last_commit}', N'{gh_date_of_last_merged_pull_request}')" # All values
                 
             q = f"INSERT INTO projects {cols} VALUES {values}"
             db.insert(q)
 
-        except Exception as e:
-            print(e)
+        except IndexError as ie:
+            #print(ie)
+            pass
+
+        except MySQLInterfaceError as msqle:
+            print("MySQLInterfaceError occured when inserting:", gh_repo_url)
             db.rollback()
+
+        except DatabaseError as dbe:
+            # If the error is due to incorrect string value 
+            if dbe.errno == mysql.connector.errorcode.ER_TRUNCATED_WRONG_VALUE_FOR_FIELD:
+                print(dbe)
+                print("DatabaseError occured when inserting:", gh_repo_url)
+                db.rollback()
         
         # Close the connection
         return {"success": "Repo added to database"}
@@ -158,7 +188,9 @@ class DB:
             print(f"Time taken: {end - start} seconds. Added {success_count} projects.")
         return success_count
 
-# if __name__ == "__main__":
-#     gh_repo_url = "https://github.com/torvalds/linux"
-#     with DB() as db:
-#         db.pop_projects_from_json(testing=True)
+if __name__ == "__main__":
+    # gh_repo_url = 'https://github.com/up-for-grabs/up-for-grabs.net'
+    # gh_repo_url = "https://github.com/Kentico/ems-extension-marketplace"    
+    with DB() as db:
+        db.pop_projects_from_json(True)
+        # db.pop_projects_from_json(testing=True)
