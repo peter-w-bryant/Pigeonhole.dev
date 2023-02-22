@@ -15,5 +15,15 @@
     "cyprus": "https://github.com/cypress-io/cypress",
     "mastodon": "https://github.com/mastodon/mastodon",
     "typescript": "https://github.com/microsoft/TypeScript",
-    "vscode": "https://github.com/microsoft/vscode"
+    "vscode": "https://github.com/microsoft/vscode",
+    "pygame": "https://github.com/pygame/pygame",
+    "Cardinal IRC Bot": "https://github.com/JohnMaguire/Cardinal",
+    "defe": "https://github.com/Bhupesh-V/defe",
+    "Mudlet": "https://github.com/Mudlet/Mudlet",
+    "Raneto": "https://github.com/ryanlelek/Raneto",
+    "NBA-Search": "https://github.com/skekre98/NBA-Search",
+    "Nextcloud": "https://github.com/nextcloud/server",
+    "Travel-Mate": "https://github.com/project-travel-mate/Travel-Mate",
+    "Metadata-Remover": "https://github.com/Anish-M-code/Metadata-Remover",
+    "bbox-visualizer": "https://github.com/shoumikchow/bbox-visualizer"
 }
