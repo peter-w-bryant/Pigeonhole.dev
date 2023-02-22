@@ -1,11 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-has-content */
 
-
 import { Card, ListGroup, Container } from 'react-bootstrap';
-import { AiOutlineStar, AiOutlineFork, AiOutlineEye } from 'react-icons/ai'
-import { FaGithub, FaCopyright } from "react-icons/fa";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap-icons/font/bootstrap-icons.css';
+import { AiOutlineStar, AiOutlineFork, AiOutlineEye, AiOutlineCopyright, AiOutlineGithub} from 'react-icons/ai'
 
 const Project = (props) => {
     return (
@@ -13,7 +9,7 @@ const Project = (props) => {
             <Card.Body >
                 <div style={{ paddingBottom: '20px' }} >
                     <Card.Title>{props.gh_repo_name}<span className="float-end">
-                        <FaGithub />
+                        <AiOutlineGithub />
                     </span></Card.Title>
                     <Card.Subtitle className='mb-1 small' style={{ color: '#007BFF' }}>{props.gh_username}</Card.Subtitle>
 
@@ -87,9 +83,9 @@ const Project = (props) => {
                 <div style={{ paddingTop: '10px' }}>
 
                     <Card.Text className="small" style={{ fontSize: '0.6rem', fontWeight: 'bold' }}>Pigeonhole<br></br>New Contributor Score&nbsp;
-                    
-                        <FaCopyright />:
-                 
+
+                        <AiOutlineCopyright />:
+
                     </Card.Text>
 
                 </div>
