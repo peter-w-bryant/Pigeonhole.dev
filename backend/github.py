@@ -13,9 +13,37 @@ class GitHubAPI:
             self.search_url = f"https://api.github.com/search/issues?q=repo:{self.username}/{self.repo_name}"
             self.auth_headers = {'Authorization': 'token ' + config.github_token}
             self.repo_data = requests.get(self.base_url, headers=self.auth_headers).json()
-        except Exception as e:
-            print(e)
 
+            # Get the data from GitHub API
+            self.gh_description = self.get_repo_description()
+
+            # Topics / tech stack
+            self.gh_topics = [''] * 6 # empty list of 6 strings to store the topics
+            self.gh_topics[:len(self.get_topics())] = self.get_topics() # get the topics
+
+            # Issues / labels
+            self.gh_issues_dict = self.get_issues()
+            self.gh_issues = list(self.gh_issues_dict.keys())
+
+            # Stars, forks, watchers count
+            self.gh_stargazers_count = self.get_stargazers_count()
+            self.gh_forks_count = self.get_forks_count()
+            self.gh_watchers_count = self.get_watchers_count()
+
+            # Date of last commit
+            self.gh_date_of_last_commit = self.get_date_of_last_commit()
+
+            # Data of last MERGED pull request
+            self.gh_date_of_last_merged_pull_request = self.get_date_of_last_merged_pull_request()
+
+            # Get CONTRIBUTING.md URL
+            self.gh_contributing_url = self.get_contribute_url()
+
+            # Generate New Contributor Score
+            self.gh_new_contributor_score = self.generate_new_contributor_score()
+
+        except Exception as e:
+            print("Error in GitHubAPI INIT:", e)
 
     def verify_repo_url(self):
         """Verify if the repo url is valid"""
@@ -121,7 +149,7 @@ class GitHubAPI:
     # TODO
     def generate_new_contributor_score(self):
         """Generate a new contributor score"""
-        return self.get_open_issues_count() + self.get_forks_count() + self.get_watchers_count()
+        return 0
 
 if __name__ == '__main__':
     # repo_url = 'https://github.com/up-for-grabs/up-for-grabs.net'
