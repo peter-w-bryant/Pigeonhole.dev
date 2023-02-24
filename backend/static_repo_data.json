@@ -25,5 +25,16 @@
     "Nextcloud": "https://github.com/nextcloud/server",
     "Travel-Mate": "https://github.com/project-travel-mate/Travel-Mate",
     "Metadata-Remover": "https://github.com/Anish-M-code/Metadata-Remover",
-    "bbox-visualizer": "https://github.com/shoumikchow/bbox-visualizer"
+    "bbox-visualizer": "https://github.com/shoumikchow/bbox-visualizer",
+    "Periodic2048": "https://github.com/Griffintaur/Periodic2048",
+    "Hilary": "https://github.com/oaeproject/Hilary",
+    "airbnb-clone": "https://github.com/aryamankha/airbnb-clone",
+    "tutorialdb": "https://github.com/Bhupesh-V/tutorialdb",
+    "dotman": "https://github.com/Bhupesh-V/dotman",
+    "keylime": "https://github.com/keylime/keylime",
+    "athenaeum": "https://github.com/aedart/athenaeum",
+    "atrium": "https://github.com/robstoll/atrium",
+    "einsteinpy": "https://github.com/einsteinpy/einsteinpy",
+    "enum-fp": "https://github.com/phenax/enum-fp",
+    "arrayslice": "https://github.com/Codealike/arrayslice"
 }
