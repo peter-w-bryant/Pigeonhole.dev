@@ -89,7 +89,7 @@ const Project = (props) => {
                         <AiOutlineCopyright />:&nbsp;
                         <span style={{ color: props.new_contrib_score > 75 ? '#99C140' : props.new_contrib_score > 45 ? '#E8B100' : '#CC3232', fontSize: '1rem', textShadow: '0.2px 0.2px 0.2px #000000' }}>
                         {props.new_contrib_score}
-                        </span> /100
+                        </span>/100
                     </Card.Text>
                 </div>
             </Card.Body>
