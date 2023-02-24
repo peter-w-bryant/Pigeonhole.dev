@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-has-content */
 
 import { Card, ListGroup } from 'react-bootstrap';
-import { AiOutlineStar, AiOutlineFork, AiOutlineEye, AiOutlineCopyright, AiOutlineGithub} from 'react-icons/ai'
+import { AiOutlineStar, AiOutlineFork, AiOutlineEye, AiOutlineCopyright, AiOutlineGithub } from 'react-icons/ai'
 
 const Project = (props) => {
     return (
@@ -37,11 +37,13 @@ const Project = (props) => {
                             props[`gh_topics_${index}`] !== "" && (
                                 <ListGroup.Item
                                     key={index}
+                                    action
                                     style={{
                                         height: 'fit-content',
                                         width: 'fit-content',
                                         borderRadius: '50px',
                                         backgroundColor: '#007BFF',
+                                        fontWeight: 'bold',
                                         color: '#ffffff',
                                         padding: '5px 10px',
                                         margin: '5px',
@@ -53,9 +55,6 @@ const Project = (props) => {
                     </ListGroup>
                 </div>
                 <Card.Subtitle className='mb-1 text-muted small' style={{ background: 'transparent', border: 'none' }}>Issue Labels:</Card.Subtitle>
-
-
-
                 <ListGroup horizontal
                     style={{
                         display: 'flex',
@@ -69,14 +68,16 @@ const Project = (props) => {
                         props[`issue_label_${index}`] !== "" && (
                             <ListGroup.Item
                                 key={index}
+                                action
                                 style={{
                                     height: 'fit-content',
                                     width: 'fit-content',
                                     borderRadius: '50px',
-                                    backgroundColor: '#6c757d',
                                     color: '#ffffff',
+                                    fontWeight: 'bold',
                                     padding: '5px 10px',
                                     margin: '5px',
+                                    backgroundColor: '#555555'
                                 }}>
                                 {props[`issue_label_${index}`]}
                             </ListGroup.Item>
@@ -88,7 +89,7 @@ const Project = (props) => {
                     <Card.Text className="small" style={{ fontSize: '0.6rem', fontWeight: 'bold' }}>Pigeonhole New Contributor Score&nbsp;
                         <AiOutlineCopyright />:&nbsp;
                         <span style={{ color: props.new_contrib_score > 75 ? '#99C140' : props.new_contrib_score > 45 ? '#E8B100' : '#CC3232', fontSize: '1rem', textShadow: '0.2px 0.2px 0.2px #000000' }}>
-                        {props.new_contrib_score}
+                            {props.new_contrib_score}
                         </span>/100
                     </Card.Text>
                 </div>
