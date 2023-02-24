@@ -1,6 +1,7 @@
 # Path: backend\github.py
 import requests
 import config
+from datetime import datetime
 
 class GitHubAPI:
     """GitHub API wrapper class"""
@@ -85,8 +86,12 @@ class GitHubAPI:
 
     def get_date_of_last_merged_pull_request(self):
         """Get the date of the last merged pull request"""
-        pulls_json = requests.get(self.search_url + "+is:pr+is:merged", headers=self.auth_headers).json()
-        date_of_last_merged_pull_request = pulls_json["items"][0]["closed_at"].split("T")[0]
+        try:
+            pulls_json = requests.get(self.search_url + "+is:pr+is:merged", headers=self.auth_headers).json()
+            date_of_last_merged_pull_request = pulls_json["items"][0]["closed_at"].split("T")[0]
+        except Exception as e:
+            print("Exception in get_date_of_last_merged_pull_request():", e)
+        
         return date_of_last_merged_pull_request
 
     def get_issues(self):
@@ -149,7 +154,59 @@ class GitHubAPI:
     # TODO
     def generate_new_contributor_score(self):
         """Generate a new contributor score"""
-        return 0
+        score = 0
+
+        # Number of stars
+        num_stars = self.gh_stargazers_count
+        if 0 <= num_stars <= 5:
+            score += 2
+        elif 5 < num_stars <= 15:
+            score += 1
+        elif 15 < num_stars <= 30:
+            score += 0.75
+        elif 30 < num_stars <= 50:
+            score += 0.5
+        elif 50 < num_stars <= 100:
+            score += 0.25
+        elif 100 < num_stars <= 150:
+            score += 0.1
+    
+        # Number of Forks
+        num_forks = self.gh_forks_count
+        if 0 <= num_forks <= 5:
+            score += 2
+        elif 5 < num_forks <= 15:
+            score += 1
+        elif 15 < num_forks <= 30:
+            score += 0.5
+        elif 30 < num_forks <= 50:
+            score += 0.1
+
+        # Contains CONTRIBUTING.md
+        if self.gh_contributing_url != "":
+            score += 3
+
+        # Issue Labels
+        for label in self.gh_issues:
+            if label in ["good first issue", "up-for-grabs", "easy to fix", "easy"]:
+                score += self.gh_issues_dict[label] * 0.1
+            if label in ["help wanted"] or "beginner" in label:
+                score += self.gh_issues_dict[label] * 0.05
+        
+        # Date of last merged PR
+        date_last_pr = datetime.date(datetime.strptime(self.gh_date_of_last_merged_pull_request, "%Y-%m-%d")) 
+        date_today = datetime.date(datetime.today())
+        days_since_last_pr = abs((date_today - date_last_pr).days)
+        if days_since_last_pr <= 7:
+            score += 2
+        elif 7 < days_since_last_pr <= 14:
+            score += 1
+        elif 14 < days_since_last_pr <= 30:
+            score += 0.75
+        elif 30 <= days_since_last_pr <= 60:
+            score += 0.5
+
+        return score
 
 if __name__ == '__main__':
     # repo_url = 'https://github.com/up-for-grabs/up-for-grabs.net'

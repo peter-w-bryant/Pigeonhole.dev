@@ -169,7 +169,7 @@ class DB:
 
 if __name__ == "__main__":
     # gh_repo_url = 'https://github.com/up-for-grabs/up-for-grabs.net'
-    # gh_repo_url = "https://github.com/Kentico/ems-extension-marketplace"    
+    gh_repo_url = "https://github.com/Kentico/ems-extension-marketplace"    
     with DB() as db:
+        # db.pop_project(gh_repo_url)
         db.pop_projects_from_json(True)
-        # db.pop_projects_from_json(testing=True)
