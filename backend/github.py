@@ -1,6 +1,7 @@
 # Path: backend\github.py
 import requests
 import config
+from datetime import datetime
 
 class GitHubAPI:
     """GitHub API wrapper class"""
@@ -13,9 +14,37 @@ class GitHubAPI:
             self.search_url = f"https://api.github.com/search/issues?q=repo:{self.username}/{self.repo_name}"
             self.auth_headers = {'Authorization': 'token ' + config.github_token}
             self.repo_data = requests.get(self.base_url, headers=self.auth_headers).json()
-        except Exception as e:
-            print(e)
 
+            # Get the data from GitHub API
+            self.gh_description = self.get_repo_description()
+
+            # Topics / tech stack
+            self.gh_topics = [''] * 6 # empty list of 6 strings to store the topics
+            self.gh_topics[:len(self.get_topics())] = self.get_topics() # get the topics
+
+            # Issues / labels
+            self.gh_issues_dict = self.get_issues()
+            self.gh_issues = list(self.gh_issues_dict.keys())
+
+            # Stars, forks, watchers count
+            self.gh_stargazers_count = self.get_stargazers_count()
+            self.gh_forks_count = self.get_forks_count()
+            self.gh_watchers_count = self.get_watchers_count()
+
+            # Date of last commit
+            self.gh_date_of_last_commit = self.get_date_of_last_commit()
+
+            # Data of last MERGED pull request
+            self.gh_date_of_last_merged_pull_request = self.get_date_of_last_merged_pull_request()
+
+            # Get CONTRIBUTING.md URL
+            self.gh_contributing_url = self.get_contribute_url()
+
+            # Generate New Contributor Score
+            self.gh_new_contributor_score = self.generate_new_contributor_score()
+
+        except Exception as e:
+            print("Error in GitHubAPI INIT:", e)
 
     def verify_repo_url(self):
         """Verify if the repo url is valid"""
@@ -57,8 +86,12 @@ class GitHubAPI:
 
     def get_date_of_last_merged_pull_request(self):
         """Get the date of the last merged pull request"""
-        pulls_json = requests.get(self.search_url + "+is:pr+is:merged", headers=self.auth_headers).json()
-        date_of_last_merged_pull_request = pulls_json["items"][0]["closed_at"].split("T")[0]
+        try:
+            pulls_json = requests.get(self.search_url + "+is:pr+is:merged", headers=self.auth_headers).json()
+            date_of_last_merged_pull_request = pulls_json["items"][0]["closed_at"].split("T")[0]
+        except Exception as e:
+            print("Exception in get_date_of_last_merged_pull_request():", e)
+        
         return date_of_last_merged_pull_request
 
     def get_issues(self):
@@ -121,7 +154,79 @@ class GitHubAPI:
     # TODO
     def generate_new_contributor_score(self):
         """Generate a new contributor score"""
-        return self.get_open_issues_count() + self.get_forks_count() + self.get_watchers_count()
+        try:
+            score = 0
+            # Number of stars
+            num_stars = self.gh_stargazers_count
+            if 0 <= num_stars <= 25:
+                score += 20
+            elif 25 < num_stars <= 50:
+                score += 15
+            elif 50 < num_stars <= 100:
+                score += 10
+            elif 100 < num_stars <= 500:
+                score += 5
+            elif 500 < num_stars <= 1000:
+                score += 3
+            elif 1000 < num_stars <= 2500:
+                score += 2
+            elif 2500 < num_stars <= 5000:
+                score += 1
+        
+            # Number of Forks
+            num_forks = self.gh_forks_count
+            if 0 <= num_forks <= 5:
+                score += 20
+            elif 5 < num_forks <= 50:
+                score += 15
+            elif 50 < num_forks <= 100:
+                score += 10
+            elif 100 < num_forks <= 500:
+                score += 5
+            elif 500 < num_forks <= 1000:
+                score += 3
+            elif 1000 < num_forks <= 2500:
+                score += 2
+            elif 2500 < num_forks <= 5000:
+                score += 1
+
+            # Contains CONTRIBUTING.md
+            if self.gh_contributing_url != "":
+                score += 5
+
+            # Issue Labels
+            label_score = 0
+            for label in self.gh_issues:
+                if label in ["good first issue", "up-for-grabs", "easy to fix", "easy", "help wanted"] or "beginner" in label :
+                    label_count = self.gh_issues_dict[label]
+                    if 0 <= label_count <= 5:
+                        label_score += self.gh_issues_dict[label] * 0.25
+                    elif 5 < label_count <= 10:
+                        label_score += self.gh_issues_dict[label] * 0.1
+                    elif 10 < label_count <= 20:
+                        label_score += self.gh_issues_dict[label] * 0.05
+            
+            if 10 < label_score:
+                score += 10
+            else:
+                score += label_score
+            
+            # Date of last merged PR
+            date_last_pr = datetime.date(datetime.strptime(self.gh_date_of_last_merged_pull_request, "%Y-%m-%d")) 
+            date_today = datetime.date(datetime.today())
+            days_since_last_pr = abs((date_today - date_last_pr).days)
+            if days_since_last_pr <= 7:
+                score += 3
+            elif 7 < days_since_last_pr <= 14:
+                score += 2
+            elif 14 < days_since_last_pr <= 30:
+                score += 1
+            elif 30 <= days_since_last_pr <= 60:
+                score += 0.5
+            max_score = 58
+        except Exception as e:
+            print("Error in generate_contrib_score:" ,e)
+        return (score/max_score) * 100
 
 if __name__ == '__main__':
     # repo_url = 'https://github.com/up-for-grabs/up-for-grabs.net'
