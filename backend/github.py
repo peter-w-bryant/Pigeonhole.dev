@@ -89,8 +89,14 @@ class GitHubAPI:
         try:
             pulls_json = requests.get(self.search_url + "+is:pr+is:merged", headers=self.auth_headers).json()
             date_of_last_merged_pull_request = pulls_json["items"][0]["closed_at"].split("T")[0]
+        except IndexError as ie:
+            date_of_last_merged_pull_request = ""
+        except KeyError as ke:
+            date_of_last_merged_pull_request = ""
         except Exception as e:
-            print("Exception in get_date_of_last_merged_pull_request():", e)
+            template = "get_date_of_last_merged_pull_request(): An exception of type {0} occurred. Arguments:\n{1!r}" # !r is used to get the raw representation of the argument
+            message = template.format(type(e).__name__, e.args) # type(e).__name__ gets the name of the exception type and e.args gets the arguments passed to the exception
+            print(message)
         
         return date_of_last_merged_pull_request
 
@@ -212,17 +218,18 @@ class GitHubAPI:
                 score += label_score
             
             # Date of last merged PR
-            date_last_pr = datetime.date(datetime.strptime(self.gh_date_of_last_merged_pull_request, "%Y-%m-%d")) 
-            date_today = datetime.date(datetime.today())
-            days_since_last_pr = abs((date_today - date_last_pr).days)
-            if days_since_last_pr <= 7:
-                score += 3
-            elif 7 < days_since_last_pr <= 14:
-                score += 2
-            elif 14 < days_since_last_pr <= 30:
-                score += 1
-            elif 30 <= days_since_last_pr <= 60:
-                score += 0.5
+            if self.gh_date_of_last_merged_pull_request != "":
+                date_last_pr = datetime.date(datetime.strptime(self.gh_date_of_last_merged_pull_request, "%Y-%m-%d")) 
+                date_today = datetime.date(datetime.today())
+                days_since_last_pr = abs((date_today - date_last_pr).days)
+                if days_since_last_pr <= 7:
+                    score += 3
+                elif 7 < days_since_last_pr <= 14:
+                    score += 2
+                elif 14 < days_since_last_pr <= 30:
+                    score += 1
+                elif 30 <= days_since_last_pr <= 60:
+                    score += 0.5
             max_score = 58
         except Exception as e:
             print("Error in generate_contrib_score:" ,e)
@@ -232,7 +239,7 @@ if __name__ == '__main__':
     # repo_url = 'https://github.com/up-for-grabs/up-for-grabs.net'
     repo_url = 'https://github.com/Bhupesh-V/defe'
     gh = GitHubAPI(repo_url)
-    print(gh.get_contribute_url())
+    # print(gh.get_contribute_url())
    
     
 
