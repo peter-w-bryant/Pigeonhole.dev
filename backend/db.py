@@ -76,6 +76,7 @@ class DB:
             single_project_dict["gh_topics_4"]= project[28]
             single_project_dict["gh_topics_5"]= project[29]
             single_project_dict["gh_contributing_url"]= project[30]
+            single_project_dict["new_contrib_score"]= project[31]
             all_projects_dict[single_project_dict["gh_repo_name"]] = single_project_dict
 
         return all_projects_dict
