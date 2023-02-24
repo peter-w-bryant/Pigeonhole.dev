@@ -104,22 +104,41 @@ class DB:
         try:
             db.conn.reconnect()
 
-            topics_cols = "gh_topics0, gh_topics1, gh_topics2, gh_topics3, gh_topics4, gh_topics5" # Topic column names
-            issues_cols = "issue_label_1, issue_label_2, issue_label_3, issue_label_4, issue_label_5, issue_label_6, issue_label_7" # Issues column names
-            issues_counts_cols = "issue_label_1_count, issue_label_2_count, issue_label_3_count, issue_label_4_count, issue_label_5_count, issue_label_6_count, issue_label_7_count"
+            # DB Topics Column Names
+            topics_cols = "gh_topics0, gh_topics1, gh_topics2, gh_topics3, gh_topics4, gh_topics5" 
+
+            # DB Issues Column Names
+            issues_cols = "issue_label_1, issue_label_2, issue_label_3, issue_label_4, issue_label_5, \
+                           issue_label_6, issue_label_7" 
             
-            cols = f"(gh_repo_name, gh_repo_url, gh_description, gh_username, num_stars, num_forks, num_watchers, {topics_cols}, {issues_cols}, {issues_counts_cols}, date_last_commit, date_last_merged_PR, contrib_url, new_contrib_score)" # All column names
+            # DB Issues Counts Column Names
+            issues_counts_cols = "issue_label_1_count, issue_label_2_count, issue_label_3_count, \
+                                  issue_label_4_count, issue_label_5_count, issue_label_6_count, issue_label_7_count"
+            
+            # All DB Column Names
+            cols = f"(gh_repo_name, gh_repo_url, gh_description, gh_username, num_stars, num_forks, num_watchers, \
+                     {topics_cols}, {issues_cols}, {issues_counts_cols}, \
+                     date_last_commit, date_last_merged_PR, contrib_url, new_contrib_score)" 
 
-            topics_vals = f"N'{gh.gh_topics[0]}', N'{gh.gh_topics[1]}', N'{gh.gh_topics[2]}', N'{gh.gh_topics[3]}', N'{gh.gh_topics[4]}', N'{gh.gh_topics[5]}'" # Topic values
+            # DB Topics Column Values
+            topics_vals = f"N'{gh.gh_topics[0]}', N'{gh.gh_topics[1]}', N'{gh.gh_topics[2]}', N'{gh.gh_topics[3]}', \
+                            N'{gh.gh_topics[4]}', N'{gh.gh_topics[5]}'" 
 
-            issues_vals = f"N'{gh.gh_issues[0]}', N'{gh.gh_issues[1]}', N'{gh.gh_issues[2]}', N'{gh.gh_issues[3]}', N'{gh.gh_issues[4]}', N'{gh.gh_issues[5]}', N'{gh.gh_issues[6]}'" # Issues values
+            # DB Issues Column Values
+            issues_vals = f"N'{gh.gh_issues[0]}', N'{gh.gh_issues[1]}', N'{gh.gh_issues[2]}', N'{gh.gh_issues[3]}', \
+                            N'{gh.gh_issues[4]}', N'{gh.gh_issues[5]}', N'{gh.gh_issues[6]}'"
 
-            issue_counts = f"N'{gh.gh_issues_dict[gh.gh_issues[0]]}', N'{gh.gh_issues_dict[gh.gh_issues[1]]}', N'{gh.gh_issues_dict[gh.gh_issues[2]]}', N'{gh.gh_issues_dict[gh.gh_issues[3]]}', \
-                             N'{gh.gh_issues_dict[gh.gh_issues[4]]}', N'{gh.gh_issues_dict[gh.gh_issues[5]]}', N'{gh.gh_issues_dict[gh.gh_issues[6]]}'" 
-                             
+            # DB Issues Counts Column Values
+            issue_counts = f"N'{gh.gh_issues_dict[gh.gh_issues[0]]}', N'{gh.gh_issues_dict[gh.gh_issues[1]]}', \
+                             N'{gh.gh_issues_dict[gh.gh_issues[2]]}', N'{gh.gh_issues_dict[gh.gh_issues[3]]}', \
+                             N'{gh.gh_issues_dict[gh.gh_issues[4]]}', N'{gh.gh_issues_dict[gh.gh_issues[5]]}', \
+                             N'{gh.gh_issues_dict[gh.gh_issues[6]]}'" 
+
+            # All DB Column Values  
             values = f"(N'{gh.repo_name}', N'{gh_repo_url}', N'{gh.gh_description}', N'{gh.username}', \
-                       {gh.gh_stargazers_count}, {gh.gh_forks_count}, {gh.gh_watchers_count}, {topics_vals}, {issues_vals}, {issue_counts}, N'{gh.gh_date_of_last_commit}', \
-                       N'{gh.gh_date_of_last_merged_pull_request}', N'{gh.gh_contributing_url}', N'{gh.gh_new_contributor_score}')" # All values
+                       {gh.gh_stargazers_count}, {gh.gh_forks_count}, {gh.gh_watchers_count}, \
+                       {topics_vals}, {issues_vals}, {issue_counts}, N'{gh.gh_date_of_last_commit}', \
+                       N'{gh.gh_date_of_last_merged_pull_request}', N'{gh.gh_contributing_url}', N'{gh.gh_new_contributor_score}')" 
                 
             q = f"INSERT INTO projects {cols} VALUES {values}"
             db.insert(q)
