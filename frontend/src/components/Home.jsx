@@ -26,7 +26,9 @@ const Home = () => {
                 const gh_repo_name = project.gh_repo_name?.toLowerCase();
                 const topics = Array.from({ length: 5 }).flatMap((_, i) => project[`gh_topics_${i + 1}`]).filter(Boolean);
                 const matches = topics.some(topic => topic.toLowerCase().includes(searchTerm));
-                return gh_repo_name.includes(searchTerm) || matches;
+                const issues = Array.from({ length: 7 }).flatMap((_, i) => project[`issue_label_${i + 1}`]).filter(Boolean);
+                const issueMatches = issues.some(issue => issue.toLowerCase().includes(searchTerm));
+                return gh_repo_name.includes(searchTerm) || matches || issueMatches;
             });
             setFilteredProjects(newFilteredProjects);
         } else {
@@ -34,12 +36,15 @@ const Home = () => {
                 const gh_repo_name = project.gh_repo_name?.toLowerCase();
                 const topics = Array.from({ length: 5 }).flatMap((_, i) => project[`gh_topics_${i + 1}`]).filter(Boolean);
                 const matches = topics.some(topic => topic.toLowerCase().includes(searchTerm));
-                return gh_repo_name.includes(searchTerm) || matches;
+                const issues = Array.from({ length: 7 }).flatMap((_, i) => project[`issue_label_${i + 1}`]).filter(Boolean);
+                const issueMatches = issues.some(issue => issue.toLowerCase().includes(searchTerm));
+                return gh_repo_name.includes(searchTerm) || matches || issueMatches;
             }) : projects;
             setFilteredProjects(newFilteredProjects);
         }
         setSearchTerm(searchTerm);
     };
+
 
     const handleTopicFilter = (event) => {
         const topic = event.target.value;
@@ -157,7 +162,7 @@ const Home = () => {
                                 <Form className="d-flex">
                                     <FormControl
                                         type="text"
-                                        placeholder="Search projects by keyword or topic"
+                                        placeholder="Search projects by keyword"
                                         value={searchTerm}
                                         onChange={handleSearch}
                                         style={{ paddingBottom: "0.5rem" }}
