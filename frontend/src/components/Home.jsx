@@ -2,6 +2,7 @@ import json from '../assets/sample_data/all-projects.json';
 import Project from './Project';
 import { useEffect, useState } from 'react';
 import { Container, Card, Form, Navbar, Nav, FormControl, Button, Row, Col } from "react-bootstrap";
+import { Slider } from 'antd';
 
 const Home = () => {
     const [projectData, setProjectData] = useState({});
@@ -126,8 +127,6 @@ const Home = () => {
         return newFilteredProjects;
     };
 
-
-
     const handleClearFilter = (filter) => {
         setTopicFilters([]);
         setIssueFilters([]);
@@ -135,11 +134,9 @@ const Home = () => {
         setSearchTerm('');
     };
 
-
     const activeFilters = [...topicFilters, ...issueFilters].map(filter => (
         <span key={filter} className="badge rounded-pill bg-secondary me-2">{filter} <i className="bi bi-x-circle" onClick={() => handleClearFilter(filter)}></i></span>
     ));
-
 
     return (
         <Container fluid>
@@ -208,7 +205,7 @@ const Home = () => {
                                                     return uniqueIssues.map(issue => <option key={`issue${i + 1}-${issue}`} value={issue}>{issue}</option>);
                                                 })}
                                             </Form.Select>
-                                        </Col>
+                                        </Col>  
                                     </Row>
                                     <Card.Footer>
                                         {activeFilters.length > 0 &&
