@@ -2,7 +2,6 @@ import json from '../assets/sample_data/all-projects.json';
 import Project from './Project';
 import { useEffect, useState } from 'react';
 import { Container, Card, Form, Navbar, Nav, FormControl, Button, Row, Col } from "react-bootstrap";
-import { Slider } from 'antd';
 
 const Home = () => {
     const [projectData, setProjectData] = useState({});
@@ -114,7 +113,6 @@ const Home = () => {
             activeFilters.forEach((filter) => {
                 const isTopicFilter = topicFilters.includes(filter);
                 const filterKey = isTopicFilter ? 'gh_topics' : 'issue_label';
-                const filterNum = isTopicFilter ? topicFilters.indexOf(filter) + 1 : issueFilters.indexOf(filter) + 1;
                 newFilteredProjects = newFilteredProjects.filter((project) => {
                     return Array.from({ length: 5 + (isTopicFilter ? 0 : 2) })
                         .some((_, i) => project[`${filterKey}_${i + 1}`] === filter ||
