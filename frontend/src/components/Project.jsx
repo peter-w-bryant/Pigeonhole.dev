@@ -9,11 +9,10 @@ const Project = (props) => {
             <Card.Body >
                 <div style={{ paddingBottom: '20px' }} >
                     <Card.Title>
-                        {props.gh_repo_name}&nbsp;
+                        <a href={props.gh_rep_url} style={{ color: '#212529', textDecoration: "none"}}>{props.gh_repo_name}&nbsp;<AiOutlineGithub /></a>
                         {props.gh_contributing_url !== "" && (
-                            <a href={props.gh_contributing_url} className="badge bg-dark" style={{ fontSize: '0.4rem' }}>w/ CONTRIBUTING.md</a>
+                            <a href={props.gh_contributing_url} className="badge bg-dark float-end" style={{ fontSize: '0.4rem' }}>w/ CONTRIBUTING.md</a>
                         )}
-                        <a href={props.gh_rep_url} className="btn btn-dark btn-sm float-end" style={{ fontSize: '0.8rem', fontWeight: 'bold' }}><AiOutlineGithub /> Visit Repo</a>
                     </Card.Title>
                     <Card.Subtitle className='mb-1 small' style={{ color: '#007BFF' }}>{props.gh_username}</Card.Subtitle>
 
