@@ -3,7 +3,7 @@ import json
 import mysql.connector
 from _mysql_connector import MySQLInterfaceError
 from mysql.connector.errors import DatabaseError
-
+import os
 import config
 from github import GitHubAPI
 
@@ -101,6 +101,9 @@ class DB:
 
         gh = GitHubAPI(gh_repo_url) # GitHub API wrapper
 
+        if gh.is_valid is False:
+            return {"error": f"Unable to add {gh_repo_url} to database."}
+
         # Insert the data into the database
         try:
             db.conn.reconnect()
@@ -158,7 +161,8 @@ class DB:
                 print(dbe)
                 print("DatabaseError occured when inserting:", gh_repo_url)
                 db.rollback()
-        
+                return {"error": "DatabaseError occured when inserting: " + gh_repo_url}
+
         # Close the connection
         return {"success": "Repo added to database"}
 
@@ -171,17 +175,25 @@ class DB:
         if testing:
             start = time.time()
         
+        failed_repos = {}
+
         db = self
-        repo_data = json.load(open('static_repo_data.json', 'r')) 
+        file_path = os.path.join(os.getcwd(), 'repo_scrapers', 'static_repo_data.json')
+        repo_data = json.load(open(file_path, 'r')) 
         
         success_count = 0
         try:
             for repo_url in repo_data.values():
-                db.pop_project(repo_url)            
+                result = db.pop_project(repo_url)
+                if "error" in result.keys():
+                    failed_repos[repo_url.split('/')[-1]] = repo_url
                 success_count += 1
         except MySQLInterfaceError as e:
             print("MySQLInterfaceError occured when inserting:", repo_url)
-            pass 
+            pass
+        # Write failed repos to a file
+        with open(os.path.join(os.getcwd(), 'failed_repos.json'), 'w') as f:
+            json.dump(failed_repos, f, indent=4)
         if testing:
             end = time.time()
             print(f"Time taken: {end - start} seconds. Added {success_count} projects.")
@@ -189,7 +201,7 @@ class DB:
 
 if __name__ == "__main__":
     # gh_repo_url = 'https://github.com/up-for-grabs/up-for-grabs.net'
-    gh_repo_url = "https://github.com/Kentico/ems-extension-marketplace"    
+    gh_repo_url = "https://github.com/demokratie-live/democracy-client"    
     with DB() as db:
-        # db.pop_project(gh_repo_url)
+        db.pop_project(gh_repo_url)
         db.pop_projects_from_json(True)
