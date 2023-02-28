@@ -4,16 +4,17 @@ import mysql.connector
 from _mysql_connector import MySQLInterfaceError
 from mysql.connector.errors import DatabaseError
 import os
-import config
 from github import GitHubAPI
+from dotenv import dotenv_values
 
 class DB:
     def __init__(self):
+        self.config = dotenv_values(".env")
         self.conn = mysql.connector.connect(
-                        user=config.db_user,
-                        password=config.db_password,
-                        host=config.db_host,
-                        database=config.db_database,
+                        user=self.config["MySQL_USER"],
+                        password=self.config["MySQL_PASSWORD"],
+                        host=self.config["MySQL_HOST"],
+                        database=self.config["MySQL_DB"],
                         charset='utf8mb4',
                         collation='utf8mb4_unicode_ci'
                     )
@@ -97,12 +98,12 @@ class DB:
         db.cursor.execute(f"SELECT gh_repo_url FROM projects WHERE gh_repo_url = '{gh_repo_url}'")
             
         if db.cursor.fetchone() is not None:
-            return {"error": "Repo already in database"}
+            return True
 
         gh = GitHubAPI(gh_repo_url) # GitHub API wrapper
 
         if gh.is_valid is False:
-            return {"error": f"Unable to add {gh_repo_url} to database."}
+            return False
 
         # Insert the data into the database
         try:
@@ -158,13 +159,13 @@ class DB:
         except DatabaseError as dbe:
             # If the error is due to incorrect string value 
             if dbe.errno == mysql.connector.errorcode.ER_TRUNCATED_WRONG_VALUE_FOR_FIELD:
-                print(dbe)
-                print("DatabaseError occured when inserting:", gh_repo_url)
+                #print(dbe)
+                #print("DatabaseError occured when inserting:", gh_repo_url)
                 db.rollback()
-                return {"error": "DatabaseError occured when inserting: " + gh_repo_url}
+                return False
 
         # Close the connection
-        return {"success": "Repo added to database"}
+        return True
 
     def pop_projects_from_json(self, testing: bool = False):
         """Populate the project table with projects links from a json file.
@@ -175,33 +176,38 @@ class DB:
         if testing:
             start = time.time()
         
-        failed_repos = {}
-
         db = self
         file_path = os.path.join(os.getcwd(), 'repo_scrapers', 'static_repo_data.json')
         repo_data = json.load(open(file_path, 'r')) 
+        failed_repos = {}
         
         success_count = 0
         try:
             for repo_url in repo_data.values():
                 result = db.pop_project(repo_url)
-                if "error" in result.keys():
+                if result is False:
                     failed_repos[repo_url.split('/')[-1]] = repo_url
-                success_count += 1
+                else:
+                    success_count += 1
+
         except MySQLInterfaceError as e:
             print("MySQLInterfaceError occured when inserting:", repo_url)
             pass
+
         # Write failed repos to a file
-        with open(os.path.join(os.getcwd(), 'failed_repos.json'), 'w') as f:
+        with open(os.path.join(os.getcwd(), 'sample_data', 'failed_repos.json'), 'w') as f:
             json.dump(failed_repos, f, indent=4)
+
         if testing:
             end = time.time()
             print(f"Time taken: {end - start} seconds. Added {success_count} projects.")
+
         return success_count
 
 if __name__ == "__main__":
     # gh_repo_url = 'https://github.com/up-for-grabs/up-for-grabs.net'
-    gh_repo_url = "https://github.com/demokratie-live/democracy-client"    
+    # gh_repo_url = "https://github.com/demokratie-live/democracy-client"    
+    gh_repo_url  = 'https://github.com/rocketchat/rocket.chat'
     with DB() as db:
         db.pop_project(gh_repo_url)
-        db.pop_projects_from_json(True)
+        # db.pop_projects_from_json(True)

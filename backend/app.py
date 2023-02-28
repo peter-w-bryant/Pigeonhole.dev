@@ -1,7 +1,5 @@
 from flask import Flask, render_template, request, redirect, jsonify, \
     url_for, flash
-
-import config
 from github import GitHubAPI
 from db import DB
 

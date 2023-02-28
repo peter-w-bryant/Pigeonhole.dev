@@ -1,19 +1,20 @@
 # Path: backend\github.py
 import requests
-import config
 from datetime import datetime
+from dotenv import dotenv_values
 
 class GitHubAPI:
     """GitHub API wrapper class"""
     def __init__(self, repo_url):
         try:
+            self.config = dotenv_values(".env")
             self.is_valid = True
             self.repo_url = repo_url
             self.username = repo_url.split('/')[3]
             self.repo_name = repo_url.split('/')[4]
             self.base_url = f"https://api.github.com/repos/{self.username}/{self.repo_name}"
             self.search_url = f"https://api.github.com/search/issues?q=repo:{self.username}/{self.repo_name}"
-            self.auth_headers = {'Authorization': 'token ' + config.github_token}
+            self.auth_headers = {'Authorization': 'token ' + self.config['GITHUB_TOKEN']}
             self.repo_data = requests.get(self.base_url, headers=self.auth_headers).json()
 
             # Get the data from GitHub API
