@@ -9,7 +9,7 @@ projects = Blueprint('projects', __name__) # blueprint for auth routes
 
 # Custom imports
 from github import GitHubAPI
-from db import DB
+from db import db
 
 @projects.route('/add-project', methods=['GET', 'POST'])
 def AddNewProject():
@@ -30,6 +30,6 @@ def AddNewProject():
 @projects.route('/all-projects', methods=['GET', 'POST'])
 def AllProjectData():
     """Get all project data from the database"""
-    if request.method == 'GET':
-        with DB() as db:
-            return db.fetchall("projects")
+    # if request.method == 'GET':
+    #     with DB() as db:
+    #         return db.fetchall("projects")

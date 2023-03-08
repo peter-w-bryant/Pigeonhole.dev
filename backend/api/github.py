@@ -14,7 +14,8 @@ class GitHubAPI:
             self.repo_name = repo_url.split('/')[4]
             self.base_url = f"https://api.github.com/repos/{self.username}/{self.repo_name}"
             self.search_url = f"https://api.github.com/search/issues?q=repo:{self.username}/{self.repo_name}"
-            self.auth_headers = {'Authorization': 'token ' + self.config['GITHUB_TOKEN']}
+            # self.auth_headers = {'Authorization': 'token ' + self.config['GITHUB_TOKEN']}
+            self.auth_headers = {'Authorization': 'token ' + "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"}
             self.repo_data = requests.get(self.base_url, headers=self.auth_headers).json()
 
             # Get the data from GitHub API

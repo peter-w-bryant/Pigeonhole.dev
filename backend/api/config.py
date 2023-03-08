@@ -8,10 +8,10 @@ class Config:
     SQLALCHEMY_DATABASE_URI = "sqlite:///database.db"
 
     # MySQL Database
-    MYSQL_USER = os.environ.get('MySQL_USER')
-    MYSQL_PASSWORD = os.environ.get('MySQL_PASSWORD')
-    MYSQL_HOST = os.environ.get('MySQL_HOST')
-    MYSQL_DB = os.environ.get('MySQL_DB')
+    # MYSQL_USER = os.environ.get('MySQL_USER')
+    # MYSQL_PASSWORD = os.environ.get('MySQL_PASSWORD')
+    # MYSQL_HOST = os.environ.get('MySQL_HOST')
+    # MYSQL_DB = os.environ.get('MySQL_DB')
 
     # Auth Tokens
     GITHUB_TOKEN = os.environ.get('GITHUB_TOKEN')
