@@ -1,66 +1,23 @@
-import mysql.connector
-from _mysql_connector import MySQLInterfaceError
-from mysql.connector.errors import DatabaseError
+# Flask/SQLAlchemy imports
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import text
+
+# Other imports
 import time
 import json
 import os
+import sys
 from dotenv import dotenv_values
-from github import GitHubAPI
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) # Add the parent directory to the path
+
+# Custom imports
+from utils import GitHubAPIWrapper
 from db import db
 from models import Users, Projects
 from app import create_app
 
-config_class = "development"
-app = create_app(config_class)
-
-def fetchall(self, table_name: str):
-    """Fetch all data from the projects table.
-
-     Returns:
-        all_projects_dict (dict): A dictionary of dictionaries containing all the data from the projects table.
-    """
-    self.cursor.execute("SELECT * FROM " + table_name)
-    all_projects = self.cursor.fetchall()
-    all_projects_dict = {}
-    for project in all_projects:
-        single_project_dict = {}
-        single_project_dict["pUID"] = project[0]
-        single_project_dict["gh_repo_name"]= project[1]
-        single_project_dict["gh_description"]= project[2]
-        single_project_dict["gh_rep_url"]= project[3]
-        single_project_dict["num_stars"]= project[4]
-        single_project_dict["num_forks"]= project[5]
-        single_project_dict["num_watchers"]=project[6]
-        single_project_dict["issue_label_1"]= project[7]
-        single_project_dict["issue_label_2"]= project[8]
-        single_project_dict["issue_label_3"]= project[9]
-        single_project_dict["issue_label_4"]= project[10]
-        single_project_dict["issue_label_5"]= project[11]
-        single_project_dict["issue_label_6"]= project[12]
-        single_project_dict["issue_label_7"]= project[13]
-        single_project_dict["issue_label_1_count"]= project[14]
-        single_project_dict["issue_label_2_count"]= project[15]
-        single_project_dict["issue_label_3_count"]= project[16]
-        single_project_dict["issue_label_4_count"]= project[17]
-        single_project_dict["issue_label_5_count"]= project[18]
-        single_project_dict["issue_label_6_count"]= project[19]
-        single_project_dict["issue_label_7_count"]= project[20]
-        single_project_dict["gh_username"]= project[21]
-        single_project_dict["date_last_merged_PR"]= project[22]
-        single_project_dict["date_last_commit"]= project[23]
-        single_project_dict["gh_topics_0"]= project[24]
-        single_project_dict["gh_topics_1"]= project[25]
-        single_project_dict["gh_topics_2"]= project[26]
-        single_project_dict["gh_topics_3"]= project[27]
-        single_project_dict["gh_topics_4"]= project[28]
-        single_project_dict["gh_topics_5"]= project[29]
-        single_project_dict["gh_contributing_url"]= project[30]
-        single_project_dict["new_contrib_score"]= project[31]
-        all_projects_dict[single_project_dict["gh_repo_name"]] = single_project_dict
-    return all_projects_dict
+app = create_app()
 
 def pop_project(gh_repo_url: str):
     """Populate the project table with data for a single project.
@@ -78,7 +35,7 @@ def pop_project(gh_repo_url: str):
     if exists is not None:
         return False, False
     
-    gh = GitHubAPI(gh_repo_url) # GitHub API wrapper
+    gh = GitHubAPIWrapper(gh_repo_url) # GitHub API wrapper
 
     if gh.is_valid is False:
         return True, False
@@ -155,10 +112,11 @@ def pop_projects_from_json(source_json_path = False, testing: bool = False):
         start = time.time()
 
     if not source_json_path:
+        parent_dir = os.path.dirname(os.getcwd())
         # file_path = os.path.join(os.getcwd(), 'resources', 'repo_scrapers', 'static_repo_data.json')
-        file_path = os.path.join(os.getcwd(), 'resources', 'repo_scrapers', 'small_repo_data.json')
+        file_path = os.path.join(parent_dir, 'resources', 'repo_scrapers', 'small_repo_data.json')
     else: 
-        file_path = os.path.join(os.getcwd(), 'resources', 'repo_scrapers', source_json_path)
+        file_path = os.path.join(parent_dir, 'resources', 'repo_scrapers', source_json_path)
     
     repo_data = json.load(open(file_path, 'r')) 
     failed_repos = {}
@@ -186,9 +144,19 @@ def pop_projects_from_json(source_json_path = False, testing: bool = False):
 
     return success_count
 
+def delete_projects():
+    """Delete all projects from the database"""
+    try:
+        num_rows_deleted = db.session.query(Projects).delete()
+        db.session.commit()
+        print(f"{num_rows_deleted} projects deleted.")
+    except Exception as e:
+        print(e)
+
 if __name__ == "__main__":
     # gh_repo_url  = 'https://github.com/rocketchat/rocket.chat'  
     print("Populating Projects table...")
     with app.app_context():
         # pop_project(gh_repo_url) # solo project pop
-        pop_projects_from_json(testing= True)  # JSON project popss
+        pop_projects_from_json(testing= True)  # JSON project pops
+        # delete_projects() # delete all projects

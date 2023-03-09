@@ -1,16 +1,23 @@
 import os
+
+# Flask/SQLAlchemy imports
 from flask import Flask, Blueprint, render_template, request, redirect, url_for, flash, session
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user # for handling user sessions
 from flask_bcrypt import Bcrypt # for hashing passwords
 from flask_sqlalchemy import SQLAlchemy
 
-# Custom Imports
-from config import config
-from github import GitHubAPI
+# Import SQLAlchemy instance
+from utils.db import db
+from models import Users, Projects
 
-def create_app(config_class=None):
+# Blueprints
+from routes.projects import projects
+
+# Import config
+from config import config
+
+def create_app(config_class='development'):
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///database.db"
 
     # if configuration class specified as param, init app with provided config
     if config_class != None:
@@ -20,9 +27,7 @@ def create_app(config_class=None):
     else:
         config_class = os.getenv('FLASK_CONFIG') # get configuration "development" or "production"
         app.config.from_object(config[config_class]) # initialize environment variables from config
-
-    # Initialize db object with app config
-    from db import db
+    
     db.init_app(app)
 
     bcrypt = Bcrypt() # Bcrypt for hashing passwords
@@ -30,16 +35,10 @@ def create_app(config_class=None):
     login_manager.init_app(app)
     login_manager.login_view = 'login'
     
-    # Routes
-    from routes.projects import projects
-
+    # Register blueprints
     with app.app_context():
-        # Register blueprints
         app.register_blueprint(projects)
-
-    # Create database tables for our data models
-    from models import Users, Projects
-
+        
     return app
 
 if __name__ == '__main__':
