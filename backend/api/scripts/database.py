@@ -13,7 +13,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) # A
 
 # Custom imports
 from utils import GitHubAPIWrapper
-from db import db
+from utils.db import db
 from models import Users, Projects
 from app import create_app
 
@@ -154,7 +154,7 @@ def delete_projects():
         print(e)
 
 if __name__ == "__main__":
-    # gh_repo_url  = 'https://github.com/rocketchat/rocket.chat'  
+    gh_repo_url  = 'https://github.com/rocketchat/rocket.chat'  
     print("Populating Projects table...")
     with app.app_context():
         # pop_project(gh_repo_url) # solo project pop

@@ -1,9 +1,13 @@
 import os
+from dotenv import load_dotenv
 
 class Config:
+    load_dotenv()
     DEBUG = False
     TESTING = False
     SQLALCHEMY_DATABASE_URI = "sqlite:///database.db" # database file path
+    PROJECT_BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) # project base directory
+    
     # Auth Tokens
     GITHUB_TOKEN = os.environ.get('GITHUB_TOKEN')
 
