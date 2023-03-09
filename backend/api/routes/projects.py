@@ -4,12 +4,10 @@ from flask_login import UserMixin, login_user, LoginManager, login_required, log
 from flask_bcrypt import Bcrypt # for hashing passwords
 from flask_sqlalchemy import SQLAlchemy # for database
 from sqlalchemy.exc import IntegrityError # for handling duplicate entries
+from utils import GitHubAPIWrapper, fetch_all_projects
+from utils.db import db
 
 projects = Blueprint('projects', __name__) # blueprint for auth routes
-
-# Custom imports
-from github import GitHubAPI
-from db import DB
 
 @projects.route('/add-project', methods=['GET', 'POST'])
 def AddNewProject():
@@ -17,7 +15,7 @@ def AddNewProject():
     if request.method == 'GET': # will be POST in production
         gh_url = request.args.get('gh_url')
         gh_url = "https://github.com/pallets/flask" # valid repo for testing
-        gh = GitHubAPI(gh_url)
+        gh = GitHubAPIWrapper(gh_url)
         is_valid = gh.verify_repo_url()
         if not is_valid:
             return {"error": "Invalid GitHub URL"}
@@ -31,5 +29,4 @@ def AddNewProject():
 def AllProjectData():
     """Get all project data from the database"""
     if request.method == 'GET':
-        with DB() as db:
-            return db.fetchall("projects")
+        return fetch_all_projects()
