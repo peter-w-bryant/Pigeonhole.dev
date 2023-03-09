@@ -42,4 +42,14 @@ cd instance
 sqlite3 database.db
 sqlite> .tables
 ```
-you should then see ```projects  users``` indicating that both the projects and users tables were created successfully.
+you should then see ```projects  users``` indicating that both the projects and users tables were created successfully. To populate the projects table, you need to run the ```backend/api/scripts/database.py``` script. You should go to the main method located in this script and make sure it contains,
+```python
+with app.app_context():
+  pop_projects_from_json()
+```
+this will populate the database with the projects stored in ```small_repo_data.json```, but you can also pass in the name of another JSON file which contains more projects. You can run,
+```python
+with app.app_context():
+  pop_projects_from_json("static_repo_data.json")
+```
+which has many more projects to populate the database with.
