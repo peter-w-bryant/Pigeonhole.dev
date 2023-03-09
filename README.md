@@ -36,10 +36,10 @@ now from interactive mode,
 > with app.app_context():
 >    db.create_all()
 ```
-this will create a SQLite DB instance named ```database.db``` in the ```/backend/api/instance```. Check that your DB was created correctly by checking that the executing the following commands from your terminal,
+this will create a SQLite DB instance named ```database.db``` in the ```/backend/api/instance```. Check that your DB was created correctly by checking that executing the following commands from your terminal,
 ```bash
 cd instance
 sqlite3 database.db
 sqlite> .tables
 ```
-you should then see ```projects  users``` indicating that both the projects and users tables were created successfully. 
+you should then see ```projects  users``` indicating that both the projects and users tables were created successfully.
