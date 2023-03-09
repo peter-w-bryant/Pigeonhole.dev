@@ -31,7 +31,7 @@ python3
 now from interactive mode,
 ```python
 > from app import create_app
-> from db import db
+> from utils.db import db
 > app = create_app()
 > with app.app_context():
 >    db.create_all()
