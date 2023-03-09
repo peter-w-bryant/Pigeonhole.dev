@@ -1,2 +1,6 @@
+# Backend
 backend/env/
+backend/.env
 backend/config.py
+backend/api/instance/
+*pyc
