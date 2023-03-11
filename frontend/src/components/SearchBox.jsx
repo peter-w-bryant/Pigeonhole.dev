@@ -13,8 +13,6 @@ const SearchBox = (props) => {
     const [topicFilters, setTopicFilters] = useState([]);
     const [issueFilters, setIssueFilters] = useState([]);
 
-    const [filteredProjects, setFilteredProjects] = useState([]);
-
     useEffect(() => {
         const projectList = Object.values(props); 
         setProjects(projectList);
@@ -32,6 +30,14 @@ const SearchBox = (props) => {
             setIssues(uniqueIssues);
         })
     }, [projects]); 
+
+    const handleClearFilter = () => {
+        setSearch('');
+        setSearchFilters([]);
+        setTopicFilters([]);
+        setIssueFilters([]);
+        setFilteredProjects(projects);
+    };
 
     const handleSearch = (event) => {
         setSearch(event.target.value.toLowerCase());
@@ -55,11 +61,10 @@ const SearchBox = (props) => {
 
 
 
-
-
-
-    const handleTopicFilter = (event) => {
+    const handleTopicFilter = (event) => { // TODO: revamp this function
+        /*
         const topic = event.target.value;
+
         if (topic) {
             setTopicFilters((prevFilters) => [...prevFilters, topic]);
             const newFilteredProjects = projects.filter(project =>
@@ -70,9 +75,11 @@ const SearchBox = (props) => {
             setTopicFilters([]);
             setFilteredProjects(getFilteredProjects(issueFilters, []));
         }
+        */
     };
 
-    const handleIssueFilter = (event) => {
+    const handleIssueFilter = (event) => { // TODO: revamp this function
+        /*
         const issue = event.target.value;
         if (issue) {
             setIssueFilters((prevFilters) => [...prevFilters, issue]);
@@ -84,71 +91,14 @@ const SearchBox = (props) => {
             setIssueFilters([]);
             setFilteredProjects(getFilteredProjects([], topicFilters));
         }
+        */
     };
 
-    const getFilteredProjects = () => {
-        let newFilteredProjects = projects;
-
-        const activeFilters = [...new Set([...topicFilters, ...issueFilters])];
-
-        if (search) {
-            newFilteredProjects = newFilteredProjects.filter((project) => {
-                const gh_repo_name = project.gh_repo_name?.toLowerCase();
-                const topics = Array.from({ length: 5 })
-                    .flatMap((_, i) => project[`gh_topics_${i + 1}`])
-                    .filter(Boolean);
-                const matches = topics.some((topic) =>
-                    topic.toLowerCase().includes(search)
-                );
-                return gh_repo_name.includes(search) && matches;
-            });
-        }
-
-        if (activeFilters.length > 0) {
-            newFilteredProjects = newFilteredProjects.filter((project) => {
-                const matchedTopicFilters = topicFilters.every((topicFilter) => {
-                    return Array.from({ length: 5 }).some(
-                        (_, i) => project[`gh_topics_${i + 1}`] === topicFilter
-                    );
-                });
-
-                const matchedIssueFilters = issueFilters.every((issueFilter) => {
-                    return Array.from({ length: 7 }).some(
-                        (_, i) => project[`issue_label_${i + 1}`] === issueFilter
-                    );
-                });
-
-                return matchedTopicFilters && matchedIssueFilters;
-            });
-
-            // Ensure that only projects that match all activeFilters are returned
-            activeFilters.forEach((filter) => {
-                const isTopicFilter = topicFilters.includes(filter);
-                const filterKey = isTopicFilter ? 'gh_topics' : 'issue_label';
-                newFilteredProjects = newFilteredProjects.filter((project) => {
-                    return Array.from({ length: 5 + (isTopicFilter ? 0 : 2) })
-                        .some((_, i) => project[`${filterKey}_${i + 1}`] === filter ||
-                            (isTopicFilter && i >= 5 && project[`gh_topics_${i + 1}`] === filter) ||
-                            (!isTopicFilter && i >= 7 && project[`issue_label_${i + 1}`] === filter));
-                });
-            });
-        }
-
-        return newFilteredProjects;
-    };
-
-    const handleClearFilter = (filter) => {
-        setTopicFilters([]);
-        setIssueFilters([]);
-        setFilteredProjects(projects);
-        setSearch('');
-    };
-
-    const activeFilters = [...topicFilters, ...issueFilters].map(filter => (
+    const activeFilters = [...topicFilters, ...issueFilters].map(filter => ( // TODO: make activeFilters looks better (solution may be in return function)
         <span key={filter} className="badge rounded-pill bg-secondary me-2">{filter} <i className="bi bi-x-circle" onClick={() => handleClearFilter(filter)}></i></span>
     ));
 
-
+    // TODO: using the three filtered lists and the callback function, alter filteredProjects in ./Home
 
 
 
