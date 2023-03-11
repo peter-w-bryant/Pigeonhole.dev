@@ -1,5 +1,3 @@
-// FIX: there's a state update somewhere that is causing maximum depth update and breaking filtering by topics and issues (if you click on filters with console open it fixes this issue for some reason)
-
 import { useCallback, useEffect, useState } from 'react';
 import { Container, Card, Form, FormControl, Button, Row, Col } from "react-bootstrap";
 import { AiOutlineCloseCircle } from 'react-icons/ai'
@@ -77,7 +75,7 @@ const SearchBox = (props) => {
             return isFiltered;
         });
         handleUpdate(filtered);
-    }, [topicFilters, issueFilters, filterSearch, handleUpdate]);
+    }, [topicFilters, issueFilters, filterSearch, handleUpdate]); // TODO: filterSearch and handleUpdate causing maximum depth update reached
 
     const handleSearch = (event) => {
         setSearch(event.target.value.toLowerCase());
