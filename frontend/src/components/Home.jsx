@@ -137,18 +137,7 @@ const Home = () => {
     ));
 
     return (
-        <Container fluid>
-            <Navbar bg="light" expand="lg">
-                <Navbar.Brand href="#home">pigeonhole.dev</Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                <Navbar.Collapse id="basic-navbar-nav">
-                    <Nav className="mr-auto">
-                        <Nav.Link href="#projects">Projects</Nav.Link>
-                        <Nav.Link href="#about">About</Nav.Link>
-                    </Nav>
-                </Navbar.Collapse>
-            </Navbar>
-
+        <>
             <Container className="mt-3">
                 <Row className="justify-content-center">
                     <Col md={6}>
@@ -239,7 +228,7 @@ const Home = () => {
                     ))}
                 </Row>
             </Container>
-        </Container>
+        </>
     );
 };
 
