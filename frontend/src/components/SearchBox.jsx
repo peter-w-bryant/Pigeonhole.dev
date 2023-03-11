@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Container, Card, Form, FormControl, Button, Row, Col } from "react-bootstrap";
+import { AiOutlineCloseCircle } from 'react-icons/ai'
 
 const SearchBox = (props) => {
     const [projects, setProjects] = useState([]);
@@ -12,19 +13,13 @@ const SearchBox = (props) => {
     const [topicFilters, setTopicFilters] = useState([]);
     const [issueFilters, setIssueFilters] = useState([]);
 
-    const [final, setFinal] = useState([]);
-
-    useEffect(() => {
-        console.log(final)
-    }, [final])
-
     useEffect(() => {
         const projectList = Object.values(props); 
         setProjects(projectList);
-        setFinal(projectList);
     }, [props]);
 
-    useEffect(() => { // TODO: generate final filtered list (currently does not work)
+    useEffect(() => {
+        /* TODO: generate final filtered list (currently does not work, need to check functionality of filters)
         const filtered = searchFilters.filter(project => {
             let isFiltered = false;
             Array.from({ length: 5 }).map((_, i) => {
@@ -40,7 +35,9 @@ const SearchBox = (props) => {
             });
             return isFiltered;
         });
-        setFinal(filtered);
+        console.log(filtered)
+        handleUpdate(filtered);
+        */
     }, [searchFilters, topicFilters, issueFilters]);
 
     useEffect(() => {
@@ -56,12 +53,15 @@ const SearchBox = (props) => {
         })
     }, [projects]); 
 
+    const handleUpdate = (filtered) => {
+        props.updateFilter(filtered); 
+    };
+
     const handleClearFilter = () => {
         setSearch('');
         setSearchFilters([]);
         setTopicFilters([]);
         setIssueFilters([]);
-        setFinal([]);
     };
 
     const handleSearch = (event) => {
@@ -71,7 +71,7 @@ const SearchBox = (props) => {
 
     const handleSearchFilter = () => {
         const filtered = projects.filter(project => {
-            const gh_repo_name = project.gh_repo_name.toLowerCase();
+            const gh_repo_name = project.gh_repo_name?.toLowerCase();
 
             const topics = Array.from({ length: 5 }).flatMap((_, i) => project[`gh_topics_${i + 1}`]).filter(Boolean);
             const topicMatches = topics.some(topic => topic.toLowerCase().includes(search));
@@ -79,7 +79,7 @@ const SearchBox = (props) => {
             const issues = Array.from({ length: 7 }).flatMap((_, i) => project[`issue_label_${i + 1}`]).filter(Boolean);
             const issueMatches = issues.some(issue => issue.toLowerCase().includes(search));
 
-            return gh_repo_name.includes(search) || topicMatches || issueMatches;
+            return gh_repo_name?.includes(search) || topicMatches || issueMatches;
         });
         setSearchFilters(filtered);
     };
@@ -98,10 +98,16 @@ const SearchBox = (props) => {
         });
     };
 
+    const handleRemoveFilter = (filter) => {
+        topicFilters.includes(filter) ? setTopicFilters(
+            oldFilters => oldFilters.filter(oldFilter => oldFilter !== filter)
+        ) : setIssueFilters(
+            oldFilters => oldFilters.filter(oldFilter => oldFilter !== filter)
+        );
+    };
 
-
-    const activeFilters = [...topicFilters, ...issueFilters].map(filter => ( // TODO: make activeFilters looks better (solution may be in return function)
-        <span key={filter} className="badge rounded-pill bg-secondary me-2">{filter} <i className="bi bi-x-circle" onClick={() => handleClearFilter(filter)}></i></span>
+    const activeFilters = [...topicFilters, ...issueFilters].map(filter => (
+        <Col key={filter} className="badge rounded-pill bg-secondary me-2">{filter}   <AiOutlineCloseCircle onClick={() => handleRemoveFilter(filter)} /></Col>
     ));
 
 
@@ -154,7 +160,7 @@ const SearchBox = (props) => {
                                                 <Row className="mb-2">
                                                     <h6>Active Filters:</h6>
                                                     {activeFilters}
-                                                    <Button className="ms-2" variant="secondary" size="sm" onClick={handleClearFilter}>
+                                                    <Button className="mt-2" variant="secondary" size="sm" onClick={handleClearFilter}>
                                                         Clear Filters
                                                     </Button>
                                                 </Row>
