@@ -145,37 +145,34 @@ const Home = () => {
                             <Card.Body>
                                 <Form className="d-flex">
                                     <FormControl
-                                        type="text"
                                         placeholder="Search projects by keyword"
                                         value={searchTerm}
                                         onChange={handleSearch}
                                         style={{ paddingBottom: "0.5rem" }}
                                     />
-                                    <Button variant="outline-primary">Search</Button>
                                 </Form>
-
                                 <br />
                                 <h5>Filter</h5>
                                 <Form>
                                     <Row>
-                                        <Col>
-
+                                        <Col xs={6}>
                                             <h6>By topics</h6>
                                             <Form.Select
                                                 className="mb-2"
                                                 aria-label="Filter by topics"
                                                 value={topicFilters}
                                                 onChange={handleTopicFilter}
-                                                multiple
-                                            >
-                                                {Array.from({ length: 5 }).map((_, i) => {
-                                                    const topics = projects.map(project => project[`gh_topics_${i + 1}`]).filter(Boolean);
-                                                    const uniqueTopics = [...new Set(topics)];
-                                                    return uniqueTopics.map(topic => <option key={`topic${i + 1}-${topic}`} value={topic}>{topic}</option>);
-                                                })}
+                                                multiple> {/* continue deugging here */}
+                                                    {
+                                                        Array.from({ length: 5 }).map((_, i) => {
+                                                            const topics = projects.map(project => project[`gh_topics_${i + 1}`]).filter(Boolean);
+                                                            const uniqueTopics = [...new Set(topics)];
+                                                            return uniqueTopics.map(topic => <option key={`topic${i + 1}-${topic}`} value={topic}>{topic}</option>);
+                                                        })
+                                                    }
                                             </Form.Select>
                                         </Col>
-                                        <Col>
+                                        <Col xs={6}>
                                             <h6>By issues</h6>
                                             <Form.Select
                                                 className="mb-2"
