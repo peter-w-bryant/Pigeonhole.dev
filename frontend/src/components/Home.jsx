@@ -12,6 +12,9 @@ const Home = () => {
         setProjectData(json);
     }, []);
 
+
+
+{/*
     const getFilteredProjects = () => { // TODO: using filteredProjects, render all projects
         let newFilteredProjects = projects;
 
@@ -62,6 +65,8 @@ const Home = () => {
 
         return newFilteredProjects;
     };
+*/}
+
 
 
     return (
