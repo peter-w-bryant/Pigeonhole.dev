@@ -56,7 +56,7 @@ const SearchBox = (props) => {
         return filtered;
     }, [projects, search]);
 
-    useEffect(() => { // TODO: currently, filtering is done like an OR statement, change to AND
+    useEffect(() => { // NOTE: currently, filtering is done like so: search AND (topic or topic or topic) AND (issue or issue or issue)
         const filtered = filterSearch().filter(project => {
             let isFiltered = false;
             Array.from({ length: 5 }).map((_, i) => {
