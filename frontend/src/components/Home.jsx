@@ -12,7 +12,6 @@ const Home = () => {
 
     useEffect(() => {
         setProjectData(json);
-        setFilteredProjects(Object.values(json));
     }, []);
 
     return (

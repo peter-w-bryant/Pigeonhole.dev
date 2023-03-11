@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Container, Card, Form, FormControl, Button, Row, Col } from "react-bootstrap";
 import { AiOutlineCloseCircle } from 'react-icons/ai'
 
@@ -13,13 +13,46 @@ const SearchBox = (props) => {
     const [topicFilters, setTopicFilters] = useState([]);
     const [issueFilters, setIssueFilters] = useState([]);
 
+    const handleSearchFilter = useCallback(() => {
+        const filtered = projects.filter(project => {
+            const gh_repo_name = project.gh_repo_name?.toLowerCase();
+
+            const topics = Array.from({ length: 5 }).flatMap((_, i) => project[`gh_topics_${i + 1}`]).filter(Boolean);
+            const topicMatches = topics.some(topic => topic.toLowerCase().includes(search));
+
+            const issues = Array.from({ length: 7 }).flatMap((_, i) => project[`issue_label_${i + 1}`]).filter(Boolean);
+            const issueMatches = issues.some(issue => issue.toLowerCase().includes(search));
+
+            return gh_repo_name?.includes(search) || topicMatches || issueMatches;
+        });
+        setSearchFilters(filtered);
+    }, [projects, search]);
+
     useEffect(() => {
         const projectList = Object.values(props); 
         setProjects(projectList);
+        handleSearchFilter();
+    }, [props, handleSearchFilter]);
+
+    useEffect(() => {
+        Array.from({ length: 5 }).map((_, i) => { // NOTE: gh_topics starts at 0, is this intentional?
+            const topics = projects.map(project => project[`gh_topics_${i + 1}`]).filter(Boolean);
+            const uniqueTopics = [...new Set(topics)];
+            return setTopics(uniqueTopics);
+        });
+        Array.from({ length: 7 }).map((_, i) => {
+            const issues = projects.map(project => project[`issue_label_${i + 1}`]).filter(Boolean);
+            const uniqueIssues = [...new Set(issues)];
+            return setIssues(uniqueIssues);
+        })
+    }, [projects]); 
+
+    const handleUpdate = useCallback((filtered) => {
+        props.updateFilter(filtered); 
     }, [props]);
 
     useEffect(() => {
-        /* TODO: generate final filtered list (currently does not work, need to check functionality of filters)
+        /* TODO: this code takes in current filtered search list and applies topic and issue filtering to it, currently does not work as intended
         const filtered = searchFilters.filter(project => {
             let isFiltered = false;
             Array.from({ length: 5 }).map((_, i) => {
@@ -35,57 +68,19 @@ const SearchBox = (props) => {
             });
             return isFiltered;
         });
-        console.log(filtered)
         handleUpdate(filtered);
         */
-    }, [searchFilters, topicFilters, issueFilters]);
-
-    useEffect(() => {
-        Array.from({ length: 5 }).map((_, i) => { // NOTE: gh_topics starts at 0, is this intentional?
-            const topics = projects.map(project => project[`gh_topics_${i + 1}`]).filter(Boolean);
-            const uniqueTopics = [...new Set(topics)];
-            return setTopics(uniqueTopics);
-        });
-        Array.from({ length: 7 }).map((_, i) => {
-            const issues = projects.map(project => project[`issue_label_${i + 1}`]).filter(Boolean);
-            const uniqueIssues = [...new Set(issues)];
-            return setIssues(uniqueIssues);
-        })
-    }, [projects]); 
-
-    const handleUpdate = (filtered) => {
-        props.updateFilter(filtered); 
-    };
-
-    const handleClearFilter = () => {
-        setSearch('');
-        setSearchFilters([]);
-        setTopicFilters([]);
-        setIssueFilters([]);
-    };
+       handleUpdate(projects)
+    }, [searchFilters, topicFilters, issueFilters, handleUpdate, projects]);
 
     const handleSearch = (event) => {
         setSearch(event.target.value.toLowerCase());
         handleSearchFilter();
     }
 
-    const handleSearchFilter = () => {
-        const filtered = projects.filter(project => {
-            const gh_repo_name = project.gh_repo_name?.toLowerCase();
-
-            const topics = Array.from({ length: 5 }).flatMap((_, i) => project[`gh_topics_${i + 1}`]).filter(Boolean);
-            const topicMatches = topics.some(topic => topic.toLowerCase().includes(search));
-
-            const issues = Array.from({ length: 7 }).flatMap((_, i) => project[`issue_label_${i + 1}`]).filter(Boolean);
-            const issueMatches = issues.some(issue => issue.toLowerCase().includes(search));
-
-            return gh_repo_name?.includes(search) || topicMatches || issueMatches;
-        });
-        setSearchFilters(filtered);
-    };
-
     const handleTopicFilter = (event) => {
         const topic = event.target.value;
+        console.log(topic)
         setTopicFilters(oldFilters => {
             return !oldFilters.includes(topic) ? [...oldFilters, topic] : [...oldFilters]
         });
@@ -106,11 +101,16 @@ const SearchBox = (props) => {
         );
     };
 
+    const handleClearFilter = () => {
+        setSearch('');
+        setSearchFilters([]);
+        setTopicFilters([]);
+        setIssueFilters([]);
+    };
+
     const activeFilters = [...topicFilters, ...issueFilters].map(filter => (
         <Col key={filter} className="badge rounded-pill bg-secondary me-2">{filter}   <AiOutlineCloseCircle onClick={() => handleRemoveFilter(filter)} /></Col>
     ));
-
-
 
     return (
         <>
@@ -138,7 +138,7 @@ const SearchBox = (props) => {
                                                 aria-label="Filter by topics"
                                                 value={topicFilters}
                                                 onChange={handleTopicFilter} 
-                                                multiple> { topics.map(topic => <option key={`topic${topics.indexOf(topic)}-${topic}`}>{topic}</option>) } {/* TODO: create better keys */}
+                                                multiple> { topics.map(topic => <option key={`topic${topics.indexOf(topic)}-${topic}`}>{topic}</option>) }
                                             </Form.Select>
                                         </Col>
                                         <Col xs={6}>
@@ -150,7 +150,7 @@ const SearchBox = (props) => {
                                                 value={issueFilters}
                                                 onChange={handleIssueFilter}
                                                 multiple>
-                                                { issues.map(issue => <option key={`issue${issues.indexOf(issue)}-${issue}`}>{issue}</option>) } {/* TODO: create better keys */}
+                                                { issues.map(issue => <option key={`issue${issues.indexOf(issue)}-${issue}`}>{issue}</option>) }
                                             </Form.Select>
                                         </Col>  
                                     </Row>
