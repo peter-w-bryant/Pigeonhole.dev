@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-
 import { Container, Card, Form, FormControl, Button, Row, Col } from "react-bootstrap";
 
 const SearchBox = (props) => {

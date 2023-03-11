@@ -1,8 +1,10 @@
-import json from '../assets/sample_data/all-projects.json';
-import Project from './Project';
-import SearchBox from './SearchBox';
 import { useEffect, useState } from 'react';
 import { Container, Card, Form, Navbar, Nav, FormControl, Button, Row, Col } from "react-bootstrap";
+
+import Project from './Project';
+import SearchBox from './SearchBox';
+
+import json from '../assets/sample_data/all-projects.json';
 
 const Home = () => {
     const [projectData, setProjectData] = useState({});
