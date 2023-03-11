@@ -20,17 +20,24 @@ const SearchBox = (props) => {
     }, [props]);
 
     useEffect(() => {
+        const allTopics = [];
+        const allIssues = [];
+    
         Array.from({ length: 5 }).forEach((_, i) => { // NOTE: gh_topics starts at 0, is this intentional?
             const topics = projects.map(project => project[`gh_topics_${i + 1}`]).filter(Boolean);
             const uniqueTopics = [...new Set(topics)];
-            return setTopics(uniqueTopics);
+            allTopics.push(...uniqueTopics);
         });
+    
         Array.from({ length: 7 }).forEach((_, i) => {
             const issues = projects.map(project => project[`issue_label_${i + 1}`]).filter(Boolean);
             const uniqueIssues = [...new Set(issues)];
-            return setIssues(uniqueIssues);
-        })
-    }, [projects]); 
+            allIssues.push(...uniqueIssues);
+        });
+    
+        setTopics(Array.from(new Set(allTopics)));
+        setIssues(Array.from(new Set(allIssues)));
+    }, [projects]);
 
     const handleUpdate = useCallback((filtered) => {
         props.updateFilter(filtered); 
