@@ -7,34 +7,17 @@ import { AiOutlineCloseCircle } from 'react-icons/ai'
 const SearchBox = (props) => {
     const [projects, setProjects] = useState([]);
 
-    const [search, setSearch] = useState('');
     const [topics, setTopics] = useState([]);
     const [issues, setIssues] = useState([]);
 
-    const [searchFilters, setSearchFilters] = useState([]);
+    const [search, setSearch] = useState('');
     const [topicFilters, setTopicFilters] = useState([]);
     const [issueFilters, setIssueFilters] = useState([]);
-
-    const handleSearchFilter = useCallback(() => {
-        const filtered = projects.filter(project => {
-            const gh_repo_name = project.gh_repo_name?.toLowerCase();
-
-            const topics = Array.from({ length: 5 }).flatMap((_, i) => project[`gh_topics_${i + 1}`]).filter(Boolean);
-            const topicMatches = topics.some(topic => topic.toLowerCase().includes(search));
-
-            const issues = Array.from({ length: 7 }).flatMap((_, i) => project[`issue_label_${i + 1}`]).filter(Boolean);
-            const issueMatches = issues.some(issue => issue.toLowerCase().includes(search));
-
-            return gh_repo_name?.includes(search) || topicMatches || issueMatches;
-        });
-        setSearchFilters(filtered);
-    }, [projects, search, setSearchFilters]);
 
     useEffect(() => {
         const projectList = Object.values(props); 
         setProjects(projectList);
-        handleSearchFilter();
-    }, [props, handleSearchFilter]);
+    }, [props]);
 
     useEffect(() => {
         Array.from({ length: 5 }).forEach((_, i) => { // NOTE: gh_topics starts at 0, is this intentional?
@@ -53,8 +36,23 @@ const SearchBox = (props) => {
         props.updateFilter(filtered); 
     }, [props]);
 
+    const filterSearch = useCallback(() => {
+        const filtered = projects.filter(project => {
+            const gh_repo_name = project.gh_repo_name?.toLowerCase();
+
+            const topics = Array.from({ length: 5 }).flatMap((_, i) => project[`gh_topics_${i + 1}`]).filter(Boolean);
+            const topicMatches = topics.some(topic => topic.toLowerCase().includes(search));
+
+            const issues = Array.from({ length: 7 }).flatMap((_, i) => project[`issue_label_${i + 1}`]).filter(Boolean);
+            const issueMatches = issues.some(issue => issue.toLowerCase().includes(search));
+
+            return gh_repo_name?.includes(search) || topicMatches || issueMatches;
+        });
+        return filtered;
+    }, [projects, search]);
+
     useEffect(() => { // TODO: currently, filtering is done like an OR statement, change to AND
-        const filtered = searchFilters.filter(project => {
+        const filtered = filterSearch().filter(project => {
             let isFiltered = false;
             Array.from({ length: 5 }).map((_, i) => {
                 const topic = project[`gh_topics_${i + 1}`];
@@ -72,11 +70,10 @@ const SearchBox = (props) => {
             return isFiltered;
         });
         handleUpdate(filtered);
-    }, [searchFilters, topicFilters, issueFilters, handleUpdate]);
+    }, [topicFilters, issueFilters, filterSearch, handleUpdate]);
 
     const handleSearch = (event) => {
         setSearch(event.target.value.toLowerCase());
-        handleSearchFilter();
     }
 
     const handleTopicFilter = (event) => {
@@ -103,7 +100,6 @@ const SearchBox = (props) => {
 
     const handleClearFilter = () => {
         setSearch('');
-        setSearchFilters([]);
         setTopicFilters([]);
         setIssueFilters([]);
     };
