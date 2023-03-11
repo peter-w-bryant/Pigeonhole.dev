@@ -5,72 +5,57 @@ import { Container, Card, Form, Navbar, Nav, FormControl, Button, Row, Col } fro
 const SearchBox = (props) => {
     const [projects, setProjects] = useState([]);
 
+    const [search, setSearch] = useState('');
     const [topics, setTopics] = useState([]);
     const [issues, setIssues] = useState([]);
 
-
-
-
-    
-
-    const [searchTerm, setSearchTerm] = useState('');
-    const [filteredProjects, setFilteredProjects] = useState([]);
+    const [searchFilters, setSearchFilters] = useState([]);
     const [topicFilters, setTopicFilters] = useState([]);
     const [issueFilters, setIssueFilters] = useState([]);
+
+    const [filteredProjects, setFilteredProjects] = useState([]);
 
     useEffect(() => {
         const projectList = Object.values(props); 
         setProjects(projectList);
-        setFilteredProjects(projectList);
     }, []);
 
     useEffect(() => {
         Array.from({ length: 5 }).map((_, i) => {
             const topics = projects.map(project => project[`gh_topics_${i + 1}`]).filter(Boolean);
             const uniqueTopics = [...new Set(topics)];
-            uniqueTopics.map(topic => {
-                setTopics(oldTopics => [...oldTopics, topic])
-            });
+            setTopics(uniqueTopics);
         });
         Array.from({ length: 7 }).map((_, i) => {
             const issues = projects.map(project => project[`issue_label_${i + 1}`]).filter(Boolean);
             const uniqueIssues = [...new Set(issues)];
-            uniqueIssues.map(issue => {
-                setIssues(oldIssues => [...oldIssues, issue])
-            });
+            setIssues(uniqueIssues);
         })
     }, [projects]); 
 
-
-
-
-
     const handleSearch = (event) => {
-        const searchTerm = event.target.value.toLowerCase();
-        if (event.key === "Backspace" || event.keyCode === 8) {
-            // If backspace key is pressed, filter projects based on updated search substring
-            const newFilteredProjects = projects.filter(project => {
-                const gh_repo_name = project.gh_repo_name?.toLowerCase();
-                const topics = Array.from({ length: 5 }).flatMap((_, i) => project[`gh_topics_${i + 1}`]).filter(Boolean);
-                const matches = topics.some(topic => topic.toLowerCase().includes(searchTerm));
-                const issues = Array.from({ length: 7 }).flatMap((_, i) => project[`issue_label_${i + 1}`]).filter(Boolean);
-                const issueMatches = issues.some(issue => issue.toLowerCase().includes(searchTerm));
-                return gh_repo_name.includes(searchTerm) || matches || issueMatches;
-            });
-            setFilteredProjects(newFilteredProjects);
-        } else {
-            const newFilteredProjects = searchTerm ? projects.filter(project => {
-                const gh_repo_name = project.gh_repo_name?.toLowerCase();
-                const topics = Array.from({ length: 5 }).flatMap((_, i) => project[`gh_topics_${i + 1}`]).filter(Boolean);
-                const matches = topics.some(topic => topic.toLowerCase().includes(searchTerm));
-                const issues = Array.from({ length: 7 }).flatMap((_, i) => project[`issue_label_${i + 1}`]).filter(Boolean);
-                const issueMatches = issues.some(issue => issue.toLowerCase().includes(searchTerm));
-                return gh_repo_name.includes(searchTerm) || matches || issueMatches;
-            }) : projects;
-            setFilteredProjects(newFilteredProjects);
-        }
-        setSearchTerm(searchTerm);
+        setSearch(event.target.value.toLowerCase());
+        handleSearchFilter();
+    }
+
+    const handleSearchFilter = () => {
+        const filtered = projects.filter(project => {
+            const gh_repo_name = project.gh_repo_name.toLowerCase();
+
+            const topics = Array.from({ length: 5 }).flatMap((_, i) => project[`gh_topics_${i + 1}`]).filter(Boolean);
+            const topicMatches = topics.some(topic => topic.toLowerCase().includes(search));
+
+            const issues = Array.from({ length: 7 }).flatMap((_, i) => project[`issue_label_${i + 1}`]).filter(Boolean);
+            const issueMatches = issues.some(issue => issue.toLowerCase().includes(search));
+
+            return gh_repo_name.includes(search) || topicMatches || issueMatches;
+        });
+        setSearchFilters(filtered);
     };
+
+
+
+
 
 
     const handleTopicFilter = (event) => {
@@ -106,16 +91,16 @@ const SearchBox = (props) => {
 
         const activeFilters = [...new Set([...topicFilters, ...issueFilters])];
 
-        if (searchTerm) {
+        if (search) {
             newFilteredProjects = newFilteredProjects.filter((project) => {
                 const gh_repo_name = project.gh_repo_name?.toLowerCase();
                 const topics = Array.from({ length: 5 })
                     .flatMap((_, i) => project[`gh_topics_${i + 1}`])
                     .filter(Boolean);
                 const matches = topics.some((topic) =>
-                    topic.toLowerCase().includes(searchTerm)
+                    topic.toLowerCase().includes(search)
                 );
-                return gh_repo_name.includes(searchTerm) && matches;
+                return gh_repo_name.includes(search) && matches;
             });
         }
 
@@ -156,12 +141,17 @@ const SearchBox = (props) => {
         setTopicFilters([]);
         setIssueFilters([]);
         setFilteredProjects(projects);
-        setSearchTerm('');
+        setSearch('');
     };
 
     const activeFilters = [...topicFilters, ...issueFilters].map(filter => (
         <span key={filter} className="badge rounded-pill bg-secondary me-2">{filter} <i className="bi bi-x-circle" onClick={() => handleClearFilter(filter)}></i></span>
     ));
+
+
+
+
+
 
     return (
         <>
@@ -173,7 +163,7 @@ const SearchBox = (props) => {
                                 <Form className="d-flex">
                                     <FormControl
                                         placeholder="Search projects by keyword"
-                                        value={searchTerm}
+                                        value={search}
                                         onChange={handleSearch}
                                         style={{ paddingBottom: "0.5rem" }}
                                     />
@@ -189,7 +179,7 @@ const SearchBox = (props) => {
                                                 aria-label="Filter by topics"
                                                 value={topicFilters}
                                                 onChange={handleTopicFilter} 
-                                                multiple> { topics.map(topic => <option key={topic}>{topic}</option>) }
+                                                multiple> { topics.map(topic => <option key={`topic${topics.indexOf(topic)}-${topic}`}>{topic}</option>) } {/* TODO: create better keys */}
                                             </Form.Select>
                                         </Col>
                                         <Col xs={6}>
@@ -201,7 +191,7 @@ const SearchBox = (props) => {
                                                 value={issueFilters}
                                                 onChange={handleIssueFilter}
                                                 multiple>
-                                                { issues.map(issue => <option key={issue}>{issue}</option>) }
+                                                { issues.map(issue => <option key={`issue${issues.indexOf(issue)}-${issue}`}>{issue}</option>) } {/* TODO: create better keys */}
                                             </Form.Select>
                                         </Col>  
                                     </Row>
