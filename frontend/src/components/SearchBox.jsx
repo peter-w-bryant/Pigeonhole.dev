@@ -1,3 +1,5 @@
+// FIX: there's a state update somewhere that is causing maximum depth update and breaking filtering by topics and issues (if you click on filters with console open it fixes this issue for some reason)
+
 import { useCallback, useEffect, useState } from 'react';
 import { Container, Card, Form, FormControl, Button, Row, Col } from "react-bootstrap";
 import { AiOutlineCloseCircle } from 'react-icons/ai'
@@ -26,7 +28,7 @@ const SearchBox = (props) => {
             return gh_repo_name?.includes(search) || topicMatches || issueMatches;
         });
         setSearchFilters(filtered);
-    }, [projects, search]);
+    }, [projects, search, setSearchFilters]);
 
     useEffect(() => {
         const projectList = Object.values(props); 
@@ -35,12 +37,12 @@ const SearchBox = (props) => {
     }, [props, handleSearchFilter]);
 
     useEffect(() => {
-        Array.from({ length: 5 }).map((_, i) => { // NOTE: gh_topics starts at 0, is this intentional?
+        Array.from({ length: 5 }).forEach((_, i) => { // NOTE: gh_topics starts at 0, is this intentional?
             const topics = projects.map(project => project[`gh_topics_${i + 1}`]).filter(Boolean);
             const uniqueTopics = [...new Set(topics)];
             return setTopics(uniqueTopics);
         });
-        Array.from({ length: 7 }).map((_, i) => {
+        Array.from({ length: 7 }).forEach((_, i) => {
             const issues = projects.map(project => project[`issue_label_${i + 1}`]).filter(Boolean);
             const uniqueIssues = [...new Set(issues)];
             return setIssues(uniqueIssues);
@@ -51,27 +53,26 @@ const SearchBox = (props) => {
         props.updateFilter(filtered); 
     }, [props]);
 
-    useEffect(() => {
-        /* TODO: this code takes in current filtered search list and applies topic and issue filtering to it, currently does not work as intended
+    useEffect(() => { // TODO: currently, filtering is done like an OR statement, change to AND
         const filtered = searchFilters.filter(project => {
             let isFiltered = false;
             Array.from({ length: 5 }).map((_, i) => {
                 const topic = project[`gh_topics_${i + 1}`];
-                return topic !== "" && (isFiltered = true);
+                topicFilters.length === 0 ? (isFiltered = true) : (topic !== "" && topicFilters.includes(topic)) && (isFiltered = true);
+                return isFiltered;
             });
             return isFiltered;
         }).filter(project => { 
             let isFiltered = false;
             Array.from({ length: 7 }).map((_, i) => {
                 const issue = project[`issue_label_${i + 1}`];
-                return issue !== "" && (isFiltered = true);
+                issueFilters.length === 0 ? (isFiltered = true) : (issue !== "" && issueFilters.includes(issue)) && (isFiltered = true)
+                return isFiltered;
             });
             return isFiltered;
         });
         handleUpdate(filtered);
-        */
-       handleUpdate(projects)
-    }, [searchFilters, topicFilters, issueFilters, handleUpdate, projects]);
+    }, [searchFilters, topicFilters, issueFilters, handleUpdate]);
 
     const handleSearch = (event) => {
         setSearch(event.target.value.toLowerCase());
@@ -80,7 +81,6 @@ const SearchBox = (props) => {
 
     const handleTopicFilter = (event) => {
         const topic = event.target.value;
-        console.log(topic)
         setTopicFilters(oldFilters => {
             return !oldFilters.includes(topic) ? [...oldFilters, topic] : [...oldFilters]
         });
