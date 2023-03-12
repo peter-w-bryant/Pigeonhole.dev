@@ -107,7 +107,8 @@ const SearchBox = (props) => {
         setIssueFilters([]);
     };
 
-    const handleUpdate = () => {
+    const handleUpdate = (event) => {
+        event.preventDefault();
         props.updateFilter(final); 
     };
 
@@ -122,7 +123,7 @@ const SearchBox = (props) => {
                     <Col md={6}>
                         <Card>
                             <Card.Body>
-                                <Form className="d-flex">
+                                <Form className="d-flex" onSubmit={handleUpdate}>
                                     <FormControl
                                         placeholder="Search projects by keyword"
                                         value={search}
