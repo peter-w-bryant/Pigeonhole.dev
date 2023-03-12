@@ -1,13 +1,21 @@
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+
+import Layout from './components/Layout'
 import Home from './components/Home'
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import NotFound from './components/NotFound'
 
 function App() {
     return (
-        <Router>
-            <Routes>
-                <Route exact path='/' element={<Home />} />
-            </Routes>
-        </Router>
+        <>
+            <BrowserRouter>
+                <Routes>
+                    <Route path='/' element={<Layout />}>
+                        <Route index element={<Home />} />
+                        <Route path='*' element={<NotFound />} />
+                    </Route>
+                </Routes>
+            </BrowserRouter>
+        </>
     );
 }
 
