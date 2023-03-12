@@ -12,6 +12,7 @@ const Home = () => {
 
     useEffect(() => {
         setProjectData(json);
+        setFilteredProjects(Object.values(json));
     }, []);
 
     return (
@@ -19,6 +20,9 @@ const Home = () => {
             <Container className="mt-3">
                 {
                     JSON.stringify(projectData) !== "{}" && <SearchBox {...projectData} updateFilter={setFilteredProjects}/>
+                }
+                {
+                    console.log(filteredProjects)
                 }
                 <Row className="g-4">
                     {

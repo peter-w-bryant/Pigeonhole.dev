@@ -12,6 +12,8 @@ const SearchBox = (props) => {
     const [topicFilters, setTopicFilters] = useState([]);
     const [issueFilters, setIssueFilters] = useState([]);
 
+    const [final, setFinal] = useState([]);
+
     useEffect(() => {
         const projectList = Object.values(props); 
         setProjects(projectList);
@@ -36,10 +38,6 @@ const SearchBox = (props) => {
         setTopics(Array.from(new Set(allTopics)));
         setIssues(Array.from(new Set(allIssues)));
     }, [projects]);
-
-    const handleUpdate = useCallback((filtered) => {
-        props.updateFilter(filtered); 
-    }, [props]);
 
     const filterSearch = useCallback(() => {
         const filtered = projects.filter(project => {
@@ -74,8 +72,8 @@ const SearchBox = (props) => {
             });
             return isFiltered;
         });
-        handleUpdate(filtered);
-    }, [topicFilters, issueFilters, filterSearch, handleUpdate]); // TODO: filterSearch and handleUpdate causing maximum depth update reached
+        setFinal(filtered);
+    }, [topicFilters, issueFilters, filterSearch]); // TODO: filterSearch and handleUpdate causing maximum depth update reached
 
     const handleSearch = (event) => {
         setSearch(event.target.value.toLowerCase());
@@ -107,6 +105,10 @@ const SearchBox = (props) => {
         setSearch('');
         setTopicFilters([]);
         setIssueFilters([]);
+    };
+
+    const handleUpdate = () => {
+        props.updateFilter(final); 
     };
 
     const activeFilters = [...topicFilters, ...issueFilters].map(filter => (
@@ -154,6 +156,9 @@ const SearchBox = (props) => {
                                                 { issues.map(issue => <option key={`issue${issues.indexOf(issue)}-${issue}`}>{issue}</option>) }
                                             </Form.Select>
                                         </Col>  
+                                    </Row>
+                                    <Row>
+                                        <Button className="mb-2 mt-1" variant="outline-primary" onClick={handleUpdate}>Search</Button>
                                     </Row>
                                     <Card.Footer>
                                         {
