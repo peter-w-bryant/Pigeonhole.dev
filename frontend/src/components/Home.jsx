@@ -21,9 +21,6 @@ const Home = () => {
                 {
                     JSON.stringify(projectData) !== "{}" && <SearchBox {...projectData} updateFilter={setFilteredProjects}/>
                 }
-                {
-                    console.log(filteredProjects)
-                }
                 <Row className="g-4">
                     {
                         filteredProjects.length > 0 && filteredProjects.map(project => (
