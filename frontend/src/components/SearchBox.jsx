@@ -163,10 +163,16 @@ const SearchBox = (props) => {
                                     </Row>
                                     <Card.Footer>
                                         {
-                                            activeFilters.length > 0 && (
+                                            (search !== "" || activeFilters.length > 0) && (
                                                 <Row className="mb-2">
-                                                    <h6>Active Filters:</h6>
-                                                    {activeFilters}
+                                                    {
+                                                        activeFilters.length > 0 && (
+                                                            <>
+                                                                <h6>Active Filters:</h6>
+                                                                {activeFilters}
+                                                            </>
+                                                        )
+                                                    }
                                                     <Button className="mt-2" variant="secondary" size="sm" onClick={handleClearFilter}>
                                                         Clear Filters
                                                     </Button>
