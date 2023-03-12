@@ -1,7 +1,12 @@
+import { Container } from "react-bootstrap";
+
 const NotFound = () => {
     return (
         <>
-            <h1>page not found</h1>
+            <Container className="mt-3">
+                <h1>404.</h1>
+                <p>could not find resource</p>
+            </Container>
         </>
     );
 };
