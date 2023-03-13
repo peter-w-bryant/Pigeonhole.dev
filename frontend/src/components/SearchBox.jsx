@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Container, Card, Form, FormControl, Button, Row, Col } from "react-bootstrap";
+import { Container, Card, Form, FormControl, Button, Row, Col, Dropdown } from "react-bootstrap";
 import { AiOutlineCloseCircle } from 'react-icons/ai'
 
 const SearchBox = (props) => {
@@ -15,26 +15,26 @@ const SearchBox = (props) => {
     const [final, setFinal] = useState([]);
 
     useEffect(() => {
-        const projectList = Object.values(props); 
+        const projectList = Object.values(props);
         setProjects(projectList);
     }, [props]);
 
     useEffect(() => {
         const allTopics = [];
         const allIssues = [];
-    
+
         Array.from({ length: 5 }).forEach((_, i) => { // NOTE: gh_topics starts at 0, is this intentional?
             const topics = projects.map(project => project[`gh_topics_${i + 1}`]).filter(Boolean);
             const uniqueTopics = [...new Set(topics)];
             allTopics.push(...uniqueTopics);
         });
-    
+
         Array.from({ length: 7 }).forEach((_, i) => {
             const issues = projects.map(project => project[`issue_label_${i + 1}`]).filter(Boolean);
             const uniqueIssues = [...new Set(issues)];
             allIssues.push(...uniqueIssues);
         });
-    
+
         setTopics(Array.from(new Set(allTopics)));
         setIssues(Array.from(new Set(allIssues)));
     }, [projects]);
@@ -63,7 +63,7 @@ const SearchBox = (props) => {
                 return isFiltered;
             });
             return isFiltered;
-        }).filter(project => { 
+        }).filter(project => {
             let isFiltered = false;
             Array.from({ length: 7 }).map((_, i) => {
                 const issue = project[`issue_label_${i + 1}`];
@@ -109,84 +109,106 @@ const SearchBox = (props) => {
 
     const handleUpdate = (event) => {
         event.preventDefault();
-        props.updateFilter(final); 
+        props.updateFilter(final);
     };
 
-    const activeFilters = [...topicFilters, ...issueFilters].map(filter => (
-        <Col key={filter} className="badge rounded-pill bg-secondary me-2">{filter}   <AiOutlineCloseCircle onClick={() => handleRemoveFilter(filter)} /></Col>
-    ));
+    const activeFilters = [...topicFilters, ...issueFilters].map(filter => {
+        const truncatedFilter = filter.length > 5 ? `${filter.slice(0, 5)}...` : filter;
+        return (
+            <Col key={filter} className="badge rounded-pill bg-secondary me-2" title={filter}>
+                {truncatedFilter} <AiOutlineCloseCircle onClick={() => handleRemoveFilter(filter)} />
+            </Col>
+        );
+    });
 
     return (
         <>
             <Container className="mt-3">
-                <Row className="justify-content-center">
-                    <Col md={6}>
-                        <Card>
-                            <Card.Body>
-                                <Form className="d-flex" onSubmit={handleUpdate}>
-                                    <FormControl
-                                        placeholder="Search projects by keyword"
-                                        value={search}
-                                        onChange={handleSearch}
-                                        style={{ paddingBottom: "0.5rem" }}
-                                    />
-                                </Form>
-                                <br />
-                                <h5>Filter</h5>
-                                <Form>
-                                    <Row>
-                                        <Col xs={6}>
-                                            <h6>By topics</h6>
-                                            <Form.Select
-                                                className="mb-2"
-                                                aria-label="Filter by topics"
-                                                value={topicFilters}
-                                                onChange={handleTopicFilter} 
-                                                multiple> { topics.map(topic => <option key={`topic${topics.indexOf(topic)}-${topic}`}>{topic}</option>) }
-                                            </Form.Select>
-                                        </Col>
-                                        <Col xs={6}>
-                                            <h6>By issues</h6>
-                                            <Form.Select
-                                                className="mb-2"
-                                                aria-label="Filter by issues"
-                                                title='Filter by issues'
-                                                value={issueFilters}
+                <Row>
+                    <FormControl
+                        placeholder="Search projects by keyword 🔍"
+                        value={search}
+                        onChange={handleSearch}
+                        style={{ paddingBottom: "0.5rem" }}
+                    />
+                </Row>
+                <table>
+                    <tr>
+                        <td>
+                            <Dropdown>
+                                <Dropdown.Toggle variant={topicFilters.length > 0 ? "primary" : "outline-dark"} id="topic-dropdown">
+                                    {topicFilters.length > 0 ? (
+                                        <>
+                                            {topicFilters.slice(0, 1)}
+                                            {topicFilters.length > 1 && ` and ${topicFilters.length - 1} other`}
+                                        </>
+                                    ) : (
+                                        "Topics"
+                                    )}
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu style={{ maxHeight: "200px", overflowY: "auto" }}>
+                                    <Form.Group>
+                                        {topics.map((topic) => (
+                                            <Form.Check
+                                                key={`topic${topics.indexOf(topic)}-${topic}`}
+                                                type="checkbox"
+                                                label={topic}
+                                                value={topic}
+                                                checked={topicFilters.includes(topic)}
+                                                onChange={handleTopicFilter}
+                                            />
+                                        ))}
+                                    </Form.Group>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </td>
+                        <td>
+                            <Dropdown>
+                                <Dropdown.Toggle variant={issueFilters.length > 0 ? "primary" : "outline-dark"} id="issue-dropdown">
+                                    {issueFilters.length > 0 ? (
+                                        <>
+                                            {issueFilters.slice(0, 1)}
+                                            {issueFilters.length > 1 && ` and ${issueFilters.length - 1} other`}
+                                        </>
+                                    ) : (
+                                        "Issues"
+                                    )}
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu style={{ maxHeight: "200px", overflowY: "auto" }}>
+                                    <Form.Group>
+                                        {issues.map((issue) => (
+                                            <Form.Check
+                                                key={`issue${issues.indexOf(issue)}-${issue}`}
+                                                type="checkbox"
+                                                label={issue}
+                                                value={issue}
+                                                checked={issueFilters.includes(issue)}
                                                 onChange={handleIssueFilter}
-                                                multiple>
-                                                { issues.map(issue => <option key={`issue${issues.indexOf(issue)}-${issue}`}>{issue}</option>) }
-                                            </Form.Select>
-                                        </Col>  
-                                    </Row>
-                                    <Row>
-                                        <Button className="mb-2 mt-1" variant="outline-primary" onClick={handleUpdate}>Search</Button>
-                                    </Row>
-                                    <Card.Footer>
-                                        {
-                                            (search !== "" || activeFilters.length > 0) && (
-                                                <Row className="mb-2">
-                                                    {
-                                                        activeFilters.length > 0 && (
-                                                            <>
-                                                                <h6>Active Filters:</h6>
-                                                                {activeFilters}
-                                                            </>
-                                                        )
-                                                    }
-                                                    <Button className="mt-2" variant="secondary" size="sm" onClick={handleClearFilter}>
-                                                        Clear Filters
-                                                    </Button>
-                                                </Row>
-                                            )
-                                        }
-                                    </Card.Footer>
-                                </Form>
-                            </Card.Body>
-                        </Card>
+                                            />
+                                        ))}
+                                    </Form.Group>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </td>
+                    </tr>
+                </table>
+                <Row>
+                    <Col>
+                        <Button className="mb-2 mt-1" variant="outline-primary" onClick={handleUpdate}>
+                            Search
+                        </Button>
+                        {(search !== "" || activeFilters.length > 0) && (
+                            <Card.Footer>
+                                <Button className="mt-2" variant="secondary" size="sm" onClick={handleClearFilter}>
+                                    Clear Filters
+                                </Button>
+                            </Card.Footer>
+                        )}
                     </Col>
                 </Row>
             </Container>
         </>
+
     );
 };
 
