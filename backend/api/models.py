@@ -48,12 +48,20 @@ class Users(db.Model, UserMixin):
     username = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(80), nullable=False)
     email = db.Column(db.String(50), unique=True)
-    
+    saved_projects = db.Column(db.String(1000), nullable=True)
+
     def __str__(self):
         return f"User('{self.username}', '{self.password}', '{self.email}')"
     
     def get_id(self):
         return self.UID
     
-    def get_all_users(self):
-        return Users.query.all()
+    def print_all_users():
+        for user in Users.query.all():
+            print(user)
+
+class SavedProjects(db.Model):
+    __tablename__ = 'saved_projects'
+    spUID = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
+    UID = db.Column(db.Integer, db.ForeignKey('users.UID'), nullable=False)
+    pUID = db.Column(db.Integer, db.ForeignKey('projects.pUID'), nullable=False)
