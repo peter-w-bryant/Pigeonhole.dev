@@ -113,10 +113,9 @@ def pop_projects_from_json(source_json_path = False, testing: bool = False):
 
     if not source_json_path:
         parent_dir = os.path.dirname(os.getcwd())
-        # file_path = os.path.join(os.getcwd(), 'resources', 'repo_scrapers', 'static_repo_data.json')
-        file_path = os.path.join(parent_dir, 'resources', 'repo_scrapers', 'small_repo_data.json')
+        file_path = os.path.join(parent_dir, 'api', 'resources', 'repo_scrapers', 'small_repo_data.json')
     else: 
-        file_path = os.path.join(parent_dir, 'resources', 'repo_scrapers', source_json_path)
+        file_path = os.path.join(parent_dir, 'api', 'resources', 'repo_scrapers', source_json_path)
     
     repo_data = json.load(open(file_path, 'r')) 
     failed_repos = {}
@@ -135,7 +134,7 @@ def pop_projects_from_json(source_json_path = False, testing: bool = False):
     except Exception as e:
         print(e)
         # Write failed repos to a file
-        with open(os.path.join(os.getcwd(), 'resources', 'sample_data', 'failed_repos.json'), 'w') as f:
+        with open(os.path.join(os.getcwd(), 'api', 'resources', 'sample_data', 'failed_repos.json'), 'w') as f:
             json.dump(failed_repos, f, indent=4)
 
     if testing:
