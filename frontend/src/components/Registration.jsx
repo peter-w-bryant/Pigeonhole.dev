@@ -1,10 +1,34 @@
 import { useState, useContext } from 'react';
 import { Card, Form, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-
 import LoginContext from "../contexts/loginContext";
 
+// import github logo from fontawesome
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
+
 import "./Registration.css";
+
+const handleGitHubOAuth = () => {
+  // Request the redirect URL from the server
+  fetch('/github_oauth_url')
+    .then(response => response.json())
+    .then(data => {
+      const { url } = data;
+      // Redirect to the GitHub OAuth page
+      window.location.href = url;
+      // Make a request to the GitHub OAuth endpoint
+      fetch('/github_oauth')
+      //make sure response is 200
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+
+    })
+    .catch(err => console.log(err));
+  })
+  .catch(err => console.log(err));
+}
 
 function Registration() {
   const [username, setUsername] = useState("");
@@ -95,7 +119,7 @@ function Registration() {
 
   return (
     <div className='div-registration'>
-      
+
       <Card className='card-custom'>
         <Card.Header className='card-header-custom'>
           <h5><b>Login</b> or <b>register an account</b> below!</h5>
@@ -103,6 +127,9 @@ function Registration() {
 
         <Card.Body>
           <Form>
+            <Button className='submit' variant="dark" type="button" onClick={handleGitHubOAuth}>
+              Login with GitHub <FontAwesomeIcon icon={faGithub} />
+            </Button>
             <Form.Group className='form-group-custom'>
               <Form.Label>Username</Form.Label>
               <Form.Control placeholder="Enter Username" onChange={handleUsername} />
