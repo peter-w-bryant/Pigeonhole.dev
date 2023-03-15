@@ -14,7 +14,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) # A
 # Custom imports
 from utils import GitHubAPIWrapper
 from utils.db import db
-from models import Users, Projects
+from utils.models import Users, Projects
 from app import create_app
 
 app = create_app()

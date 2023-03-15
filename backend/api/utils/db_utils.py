@@ -11,7 +11,7 @@ import os
 # Custom imports
 from .github_wrapper_util import GitHubAPIWrapper
 from utils.db import db
-from models import Users, Projects
+from utils.models import Projects
 
 def fetch_all_projects():
     """Fetch all data from the projects table.
