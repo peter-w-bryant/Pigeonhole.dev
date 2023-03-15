@@ -27,7 +27,7 @@ const Project = (props) => {
                                 display: 'flex',
                                 flexWrap: 'wrap',
                                 listStyle: 'none',
-                                fontSize: '0.75rem',
+                                fontSize: '0.5rem',
                                 padding: '0',
                                 margin: '0',
                             }}>
@@ -58,7 +58,7 @@ const Project = (props) => {
                             display: 'flex',
                             flexWrap: 'wrap',
                             listStyle: 'none',
-                            fontSize: '0.75rem',
+                            fontSize: '0.5rem',
                             padding: '0',
                             margin: '0',
                         }}>
