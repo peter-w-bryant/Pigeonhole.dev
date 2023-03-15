@@ -75,14 +75,16 @@ def save_project():
     if request.method == 'POST':
         data = request.get_json()
         user = Users.query.filter_by(username=data['username']).first()
+        UID = user.UID
         if user != None:
-            project_exists = SavedProjects.query.filter_by(user['UID'], data['pUID']).first()
+            project_exists = SavedProjects.query.filter_by(UID=UID, pUID=data['pUID']).first()
             if project_exists != None:
                 return {"error": "Project already saved!"}, 403
             else:
-                new_project = SavedProjects(user['UID'], data['pUID'])
-                SavedProjects.add(new_project)
-                return {"success": "Project added successfully!"}, 200 
+                new_project = SavedProjects(UID=UID, pUID=data['pUID'])
+                db.session.add(new_project)
+                db.session.commit()
+                return {"success": "Project added successfully!"}, 200
 
 @auth.route('/github_callback')
 def github_callback():
