@@ -4,6 +4,8 @@ import Layout from './components/Layout'
 import Home from './components/Home'
 import NotFound from './components/NotFound'
 import Registration from './components/Registration';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
     return (
