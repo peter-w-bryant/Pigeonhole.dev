@@ -132,81 +132,82 @@ const SearchBox = (props) => {
                         style={{ paddingBottom: "0.5rem" }}
                     />
                 </Row>
-                <Row>
+                <Row style = {{paddingTop: "0.2rem", paddingBottom: "0.2rem"}}>
                     <table>
                         <tbody className="d-flex flex-row">
-                        <tr>
-                            <td>
-                                <Dropdown>
-                                    <Dropdown.Toggle variant={topicFilters.length > 0 ? "primary" : "outline-dark"} id="topic-dropdown">
-                                        {topicFilters.length > 0 ? (
-                                            <>
-                                                {topicFilters.slice(0, 1)}
-                                                {topicFilters.length > 1 && ` and ${topicFilters.length - 1} other`}
-                                            </>
-                                        ) : (
-                                            "Topics"
-                                        )}
-                                    </Dropdown.Toggle>
-                                    <Dropdown.Menu style={{ maxHeight: "200px", overflowY: "auto" }}>
-                                        <Form.Group>
-                                            {topics.map((topic) => (
-                                                <Form.Check
-                                                    key={`topic${topics.indexOf(topic)}-${topic}`}
-                                                    type="checkbox"
-                                                    label={topic}
-                                                    value={topic}
-                                                    checked={topicFilters.includes(topic)}
-                                                    onChange={handleTopicFilter}
-                                                />
-                                            ))}
-                                        </Form.Group>
-                                    </Dropdown.Menu>
-                                </Dropdown>
-                            </td>
-                            <td>
-                                <Dropdown>
-                                    <Dropdown.Toggle variant={issueFilters.length > 0 ? "primary" : "outline-dark"} id="issue-dropdown">
-                                        {issueFilters.length > 0 ? (
-                                            <>
-                                                {issueFilters.slice(0, 1)}
-                                                {issueFilters.length > 1 && ` and ${issueFilters.length - 1} other`}
-                                            </>
-                                        ) : (
-                                            "Issues"
-                                        )}
-                                    </Dropdown.Toggle>
-                                    <Dropdown.Menu style={{ maxHeight: "200px", overflowY: "auto" }}>
-                                        <Form.Group>
-                                            {issues.map((issue) => (
-                                                <Form.Check
-                                                    key={`issue${issues.indexOf(issue)}-${issue}`}
-                                                    type="checkbox"
-                                                    label={issue}
-                                                    value={issue}
-                                                    checked={issueFilters.includes(issue)}
-                                                    onChange={handleIssueFilter}
-                                                />
-                                            ))}
-                                        </Form.Group>
-                                    </Dropdown.Menu>
-                                </Dropdown>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td>
+                                    <Dropdown>
+                                        <Dropdown.Toggle variant={topicFilters.length > 0 ? "primary" : "outline-dark"} id="topic-dropdown">
+                                            {topicFilters.length > 0 ? (
+                                                <>
+                                                    {topicFilters.slice(0, 1)}
+                                                    {topicFilters.length > 1 && ` and ${topicFilters.length - 1} other`}
+                                                </>
+                                            ) : (
+                                                "Topics"
+                                            )}
+                                        </Dropdown.Toggle>
+                                        <Dropdown.Menu style={{ maxHeight: "200px", overflowY: "auto" }}>
+                                            <Form.Group>
+                                                {topics.map((topic) => (
+                                                    <Form.Check
+                                                        key={`topic${topics.indexOf(topic)}-${topic}`}
+                                                        type="checkbox"
+                                                        label={topic}
+                                                        value={topic}
+                                                        checked={topicFilters.includes(topic)}
+                                                        onChange={handleTopicFilter}
+                                                    />
+                                                ))}
+                                            </Form.Group>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                </td>
+                                <td>
+                                    <Dropdown>
+                                        <Dropdown.Toggle variant={issueFilters.length > 0 ? "primary" : "outline-dark"} id="issue-dropdown">
+                                            {issueFilters.length > 0 ? (
+                                                <>
+                                                    {issueFilters.slice(0, 1)}
+                                                    {issueFilters.length > 1 && ` and ${issueFilters.length - 1} other`}
+                                                </>
+                                            ) : (
+                                                "Issues"
+                                            )}
+                                        </Dropdown.Toggle>
+                                        <Dropdown.Menu style={{ maxHeight: "200px", overflowY: "auto" }}>
+                                            <Form.Group>
+                                                {issues.map((issue) => (
+                                                    <Form.Check
+                                                        key={`issue${issues.indexOf(issue)}-${issue}`}
+                                                        type="checkbox"
+                                                        label={issue}
+                                                        value={issue}
+                                                        checked={issueFilters.includes(issue)}
+                                                        onChange={handleIssueFilter}
+                                                    />
+                                                ))}
+                                            </Form.Group>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                </td>
+                                {(search !== "" || activeFilters.length > 0) && (
+                                    <td>
+                                        <Button variant="outline-danger" onClick={handleClearFilter}>
+                                            Clear Filters
+                                        </Button>
+                                    </td>
+
+                                )}
+                                <td>
+                                    <Button variant="outline-primary" onClick={handleUpdate}>
+                                        Search
+                                    </Button>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
-                        <Col className="p-0">
-                            <Button className="mb-2 mt-1" variant="outline-primary" onClick={handleUpdate}>
-                                Search
-                            </Button>
-                            {(search !== "" || activeFilters.length > 0) && (
-                                <Card.Footer>
-                                    <Button className="mt-2" variant="secondary" size="sm" onClick={handleClearFilter}>
-                                        Clear Filters
-                                    </Button>
-                                </Card.Footer>
-                            )}
-                        </Col>
                 </Row>
             </Container>
 
