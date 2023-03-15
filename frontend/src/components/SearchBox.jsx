@@ -2,6 +2,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { Container, Card, Form, FormControl, Button, Row, Col, Dropdown } from "react-bootstrap";
 import { AiOutlineCloseCircle } from 'react-icons/ai'
 
+// import Project from './Project';
+import Project from './Project';
+
 const SearchBox = (props) => {
     const [projects, setProjects] = useState([]);
 
@@ -214,25 +217,20 @@ const SearchBox = (props) => {
             </Container>
 
             <Container className="mt-3">
-                {final.length === 0 ? (
+                {final.length === 0 | (search === "" && topicFilters.length === 0 && issueFilters.length === 0) ? (
                     <Row>
                         <Col>No results found</Col>
                     </Row>
                 ) : (
-                    final.map((project) => (
-                        <Card key={project.id} className="mb-3">
-                            <Card.Body>
-                                <Card.Title>{project.gh_repo_name}</Card.Title>
-                                <Card.Subtitle className="mb-2 text-muted">{project.gh_repo_owner}</Card.Subtitle>
-                                <Card.Text>{project.gh_description}</Card.Text>
-                                <Card.Link href={project.gh_url} target="_blank" rel="noopener noreferrer">
-                                    View on GitHub
-                                </Card.Link>
-                            </Card.Body>
-                        </Card>
-                    ))
+                    <>
+                        {final.map((project) => (
+                            <Project {...project} />
+                        ))}
+                    </>
                 )}
             </Container>
+
+
 
             <Container className="mt-3">
                 <Row>
