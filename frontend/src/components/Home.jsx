@@ -22,8 +22,11 @@ const Home = () => {
                     JSON.stringify(projectData) !== "{}" && <SearchBox {...projectData} updateFilter={setFilteredProjects} />
                 }
                 <Row className="g-4">
-                    <div className="d-flex justify-content-center">
-                        <h4>All {filteredProjects.length} Projects</h4>
+
+                    <div className="d-flex justify-content-center pt-4">
+                        <hr style={{ width: "100%", color: "grey", backgroundColor: "grey", height: 1 }} />
+                        <h6 style={{ textAlign: "center", color: "grey", margin: "0 10px" }}>All {filteredProjects.length} Projects</h6>
+                        <hr style={{ width: "100%", color: "grey", backgroundColor: "grey", height: 1 }} />
                     </div>
 
                     {
