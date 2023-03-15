@@ -205,11 +205,6 @@ const SearchBox = (props) => {
                                     </td>
 
                                 )}
-                                <td>
-                                    <Button variant="outline-primary" onClick={handleUpdate}>
-                                        Search
-                                    </Button>
-                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -227,29 +222,19 @@ const SearchBox = (props) => {
                         </>
                     ) : (
                         <Row xs={1} sm={2} md={3}>
-                            {final.map((project) => (
-                                <Col style={{ display: "flex" }} key={`${project.pUID}-${project.title}`}>
+                            {final.map((project, index) => (
+                                <Col style={{ display: "flex", marginBottom: "16px"}} key={`${project.pUID}-${project.title}`}>
                                     <Project {...project} />
                                 </Col>
                             ))}
                         </Row>
+
+
                     )
                 )}
             </Container>
 
 
-            <Container className="mt-3">
-                <Row>
-                    {activeFilters.length > 0 && (
-                        <>
-                            <Col>
-                                <div>Active Filters:</div>
-                                <div className="d-flex flex-wrap">{activeFilters}</div>
-                            </Col>
-                        </>
-                    )}
-                </Row>
-            </Container>
         </>
     );
 
