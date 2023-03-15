@@ -226,14 +226,17 @@ const SearchBox = (props) => {
                         <>
                         </>
                     ) : (
-                        <>
+                        <Row xs={1} sm={2} md={3}>
                             {final.map((project) => (
-                                <Project {...project} />
+                                <Col style={{ display: "flex" }} key={`${project.pUID}-${project.title}`}>
+                                    <Project {...project} />
+                                </Col>
                             ))}
-                        </>
+                        </Row>
                     )
                 )}
             </Container>
+
 
             <Container className="mt-3">
                 <Row>
