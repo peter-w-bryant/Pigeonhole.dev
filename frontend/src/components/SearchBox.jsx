@@ -39,22 +39,22 @@ const SearchBox = (props) => {
         setIssues(Array.from(new Set(allIssues)));
     }, [projects]);
 
-    const filterSearch = useCallback(() => {
-        const filtered = projects.filter(project => {
-            const gh_repo_name = project.gh_repo_name?.toLowerCase();
+    useEffect(() => {
+        const filterSearch = () => {
+            const filtered = projects.filter(project => {
+                const gh_repo_name = project.gh_repo_name?.toLowerCase();
 
-            const topics = Array.from({ length: 5 }).flatMap((_, i) => project[`gh_topics_${i + 1}`]).filter(Boolean);
-            const topicMatches = topics.some(topic => topic.toLowerCase().includes(search));
+                const topics = Array.from({ length: 5 }).flatMap((_, i) => project[`gh_topics_${i + 1}`]).filter(Boolean);
+                const topicMatches = topics.some(topic => topic.toLowerCase().includes(search));
 
-            const issues = Array.from({ length: 7 }).flatMap((_, i) => project[`issue_label_${i + 1}`]).filter(Boolean);
-            const issueMatches = issues.some(issue => issue.toLowerCase().includes(search));
+                const issues = Array.from({ length: 7 }).flatMap((_, i) => project[`issue_label_${i + 1}`]).filter(Boolean);
+                const issueMatches = issues.some(issue => issue.toLowerCase().includes(search));
 
-            return gh_repo_name?.includes(search) || topicMatches || issueMatches;
-        });
-        return filtered;
-    }, [projects, search]);
+                return gh_repo_name?.includes(search) || topicMatches || issueMatches;
+            });
+            return filtered;
+        };
 
-    useEffect(() => { // NOTE: currently, filtering is done like so: search AND (topic or topic or topic) AND (issue or issue or issue)
         const filtered = filterSearch().filter(project => {
             let isFiltered = false;
             Array.from({ length: 5 }).map((_, i) => {
@@ -72,8 +72,9 @@ const SearchBox = (props) => {
             });
             return isFiltered;
         });
+
         setFinal(filtered);
-    }, [topicFilters, issueFilters, filterSearch]); // TODO: filterSearch and handleUpdate causing maximum depth update reached
+    }, [projects, search, topicFilters, issueFilters]);
 
     const handleSearch = (event) => {
         setSearch(event.target.value.toLowerCase());
@@ -132,7 +133,7 @@ const SearchBox = (props) => {
                         style={{ paddingBottom: "0.5rem" }}
                     />
                 </Row>
-                <Row style = {{paddingTop: "0.2rem", paddingBottom: "0.2rem"}}>
+                <Row style={{ paddingTop: "0.2rem", paddingBottom: "0.2rem" }}>
                     <table>
                         <tbody className="d-flex flex-row">
                             <tr>
@@ -182,6 +183,7 @@ const SearchBox = (props) => {
                                                     <Form.Check
                                                         key={`issue${issues.indexOf(issue)}-${issue}`}
                                                         type="checkbox"
+
                                                         label={issue}
                                                         value={issue}
                                                         checked={issueFilters.includes(issue)}
@@ -211,9 +213,42 @@ const SearchBox = (props) => {
                 </Row>
             </Container>
 
-        </>
+            <Container className="mt-3">
+                {final.length === 0 ? (
+                    <Row>
+                        <Col>No results found</Col>
+                    </Row>
+                ) : (
+                    final.map((project) => (
+                        <Card key={project.id} className="mb-3">
+                            <Card.Body>
+                                <Card.Title>{project.gh_repo_name}</Card.Title>
+                                <Card.Subtitle className="mb-2 text-muted">{project.gh_repo_owner}</Card.Subtitle>
+                                <Card.Text>{project.gh_description}</Card.Text>
+                                <Card.Link href={project.gh_url} target="_blank" rel="noopener noreferrer">
+                                    View on GitHub
+                                </Card.Link>
+                            </Card.Body>
+                        </Card>
+                    ))
+                )}
+            </Container>
 
+            <Container className="mt-3">
+                <Row>
+                    {activeFilters.length > 0 && (
+                        <>
+                            <Col>
+                                <div>Active Filters:</div>
+                                <div className="d-flex flex-wrap">{activeFilters}</div>
+                            </Col>
+                        </>
+                    )}
+                </Row>
+            </Container>
+        </>
     );
-};
+
+}
 
 export default SearchBox;
