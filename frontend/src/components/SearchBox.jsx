@@ -217,20 +217,23 @@ const SearchBox = (props) => {
             </Container>
 
             <Container className="mt-3">
-                {final.length === 0 | (search === "" && topicFilters.length === 0 && issueFilters.length === 0) ? (
+                {final.length === 0 ? (
                     <Row>
                         <Col>No results found</Col>
                     </Row>
                 ) : (
-                    <>
-                        {final.map((project) => (
-                            <Project {...project} />
-                        ))}
-                    </>
+                    (search === "" && topicFilters.length === 0 && issueFilters.length === 0) ? (
+                        <>
+                        </>
+                    ) : (
+                        <>
+                            {final.map((project) => (
+                                <Project {...project} />
+                            ))}
+                        </>
+                    )
                 )}
             </Container>
-
-
 
             <Container className="mt-3">
                 <Row>

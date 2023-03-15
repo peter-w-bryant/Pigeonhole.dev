@@ -19,9 +19,13 @@ const Home = () => {
         <>
             <Container className="mt-3">
                 {
-                    JSON.stringify(projectData) !== "{}" && <SearchBox {...projectData} updateFilter={setFilteredProjects}/>
+                    JSON.stringify(projectData) !== "{}" && <SearchBox {...projectData} updateFilter={setFilteredProjects} />
                 }
                 <Row className="g-4">
+                    <div className="d-flex justify-content-center">
+                        <h4>All {filteredProjects.length} Projects</h4>
+                    </div>
+
                     {
                         filteredProjects.length > 0 && filteredProjects.map(project => (
                             <Col style={{ display: "flex" }} xs={12} sm={6} md={4} key={`${project.pUID}-${project.title}`}>
