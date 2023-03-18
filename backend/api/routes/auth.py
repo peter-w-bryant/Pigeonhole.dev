@@ -9,7 +9,7 @@ from flask_dance.contrib.github import make_github_blueprint, github
 
 from utils import GitHubAPIWrapper, fetch_all_projects
 from utils.db import db
-from utils.models import Users, SavedProjects
+from utils.models import Users, SavedProjects, Projects
 from utils.auth import bcrypt, login_manager
 
 import requests
@@ -67,22 +67,6 @@ def login():
 def logout():
     logout_user()
     return 'Logged out successfully!', 200
-
-@auth.route('/save-project', methods = ['GET', 'POST'])
-@login_required
-def save_project():
-    """Saves a project to the user's saved projects list"""
-    if request.method == 'POST':
-        data = request.get_json()
-        user = Users.query.filter_by(username=data['username']).first()
-        if user != None:
-            project_exists = SavedProjects.query.filter_by(user['UID'], data['pUID']).first()
-            if project_exists != None:
-                return {"error": "Project already saved!"}, 403
-            else:
-                new_project = SavedProjects(user['UID'], data['pUID'])
-                SavedProjects.add(new_project)
-                return {"success": "Project added successfully!"}, 200 
 
 @auth.route('/github_callback')
 def github_callback():

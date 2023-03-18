@@ -4,6 +4,8 @@ import Layout from './components/Layout'
 import Home from './components/Home'
 import NotFound from './components/NotFound'
 import Registration from './components/Registration';
+import Profile from './components/Profile';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
     return (
@@ -12,6 +14,7 @@ function App() {
                 <Routes>
                     <Route path='/' element={<Layout />}>
                         <Route index element={<Home />} />
+                        <Route path='profile' element={<Profile />} />
                         <Route path='registration' element={<Registration />} />
                         <Route path='*' element={<NotFound />} />
                     </Route>

@@ -6,7 +6,7 @@ import LoginContext from "../contexts/loginContext";
 
 const Layout = () => {
     const [loggedIn, setLoggedIn] = useState('');
-
+    
     const handleLogout = () => {
         setLoggedIn('');
         fetch('/logout', {
