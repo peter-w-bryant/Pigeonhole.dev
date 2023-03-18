@@ -241,7 +241,7 @@ class GitHubAPIWrapper:
             max_score = 58
         except Exception as e:
             print("Error in generate_contrib_score:" ,e)
-        return (score/max_score) * 100
+        return round((score/max_score) * 100, 2)
 
 if __name__ == '__main__':
     # repo_url = 'https://github.com/up-for-grabs/up-for-grabs.net'

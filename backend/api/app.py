@@ -1,19 +1,19 @@
-from config import config
-from routes.auth import auth
-from routes.projects import projects
-import os
-
 # Flask/SQLAlchemy imports
 from flask import Flask, session, Blueprint, render_template, request, redirect, url_for, flash, session
-# for handling user sessions
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_bcrypt import Bcrypt  # for hashing passwords
 from flask_sqlalchemy import SQLAlchemy
 from flask_dance.contrib.github import make_github_blueprint, github  # for github oauth
 from flask_sslify import SSLify
+from flask_oauthlib.client import OAuth # for github oauth
+import os
 
-# Import OAuth
-from flask_oauthlib.client import OAuth
+from config import config # Import config
+
+# Import routes
+from routes.auth import auth
+from routes.projects import projects
+from routes.profile import profile
 
 # Import SQLAlchemy instance
 from utils.models import Users, Projects, SavedProjects
@@ -62,8 +62,8 @@ def create_app(config_class='development'):
     with app.app_context():
         app.register_blueprint(projects)
         app.register_blueprint(auth)
+        app.register_blueprint(profile)
         app.register_blueprint(github_blueprint, url_prefix="/github_login")
-
     return app
 
 
