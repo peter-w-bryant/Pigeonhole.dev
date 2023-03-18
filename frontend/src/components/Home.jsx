@@ -11,9 +11,28 @@ const Home = () => {
     const [filteredProjects, setFilteredProjects] = useState([]);
 
     useEffect(() => {
-        setProjectData(json);
-        setFilteredProjects(Object.values(json));
-    }, []);
+        const fetchProjects = async () => {
+          try {
+            const res = await fetch('/all-projects');
+            if (!res.ok) {
+              throw new Error('Network response was not ok');
+            }
+            const data = await res.json();
+            setProjectData(data);
+            setFilteredProjects(Object.values(data));
+          } catch (error) {
+            console.log('Error:', error);
+          }
+        };
+      
+        fetchProjects();
+      }, []);
+
+    // From JSON
+    // useEffect(() => {
+        // setProjectData(json);
+        // setFilteredProjects(Object.values(json));
+    // }, []);
 
     return (
         <>
