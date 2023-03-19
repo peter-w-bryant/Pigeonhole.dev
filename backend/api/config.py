@@ -18,6 +18,7 @@ class DevelopmentConfig(Config):
     DEBUG = True
     FLASK_DEBUG = 1
     DEVELOPMENT = True
+    JWT_SECRET_KEY = "secret_for_test_environment"
     SECRET_KEY = "secret_for_test_environment"
 
 class ProductionConfig(Config):
