@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Card, Form, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import LoginContext from "../contexts/loginContext";
@@ -6,12 +6,10 @@ import LoginContext from "../contexts/loginContext";
 // import github logo from fontawesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import GithubLogin from 'react-github-login';
+
 import axios from 'axios';
 
 import "./Registration.css";
-
-const API_URL = 'http://localhost:5000';  // or your Flask API endpoint URL
 
 function Registration() {
   const [username, setUsername] = useState("");
@@ -23,6 +21,24 @@ function Registration() {
   const [switchText, setSwitchText] = useState("Don't have an account? Register here.");
 
   const [loggedIn, setLoggedIn] = useContext(LoginContext);
+
+  useEffect(() => {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const code = urlParams.get("code");
+    if (code) {
+        axios.get(`http://localhost:5000/github_login?code=${code}`)
+            .then(response => {
+              console.log(response.data.username)
+                setLoggedIn(response.data.username); // login the user
+                navigate('/'); // redirect to home page
+
+            })
+            .catch(error => {
+                // handle the error
+            });
+    }
+}, []);
 
   const navigate = useNavigate();
 
@@ -74,31 +90,9 @@ function Registration() {
   }
 
   const handleGitHubOAuth = async () => {
-    const callbackUrl = `${window.location.origin}/github_callback`;
-  
-    // Send the user to the Github authorization page
-    window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&redirect_uri=${callbackUrl}&scope=user:email`;
-    // Wait for the user to complete the Github OAuth flow
-    window.addEventListener('message', async (event) => {
-      if (event.origin !== window.location.origin) {
-        return;
-      }
-      const { data: { code } } = event;
-
-      try {
-        // Send the authorization code to the Flask API
-        await axios.get(`/github_oauth?code=${code}`);
-
-        console.log('github oauth success');
-  
-        // Redirect to the main page of your application
-        navigate('/');
-      } catch (error) {
-        console.error(error);  // log the error for debugging
-      }
-    }, false);
-  };
-  
+    console.log("hello");
+    window.location.assign(`https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}`);
+  }
 
   const submit = () => {
     wantToRegister ? handleRegister() : handleLogin();
@@ -133,18 +127,30 @@ function Registration() {
         <Card.Header className='card-header-custom'>
           <h5><b>Login</b> or <b>register an account</b> below!</h5>
         </Card.Header>
-
         <Card.Body>
           <Form>
-            <GithubLogin
-              clientId={process.env.REACT_APP_GITHUB_CLIENT_ID}
-              onSuccess={handleGitHubOAuth}
-              onFailure={console.error}
-              redirectUri="http://127.0.0.1:3000/"
-              scope="user:email"
-              buttonText={<span>Login with GitHub <FontAwesomeIcon icon={faGithub} /></span>}
-              className='submit'
-            />
+            <Button
+              onClick={handleGitHubOAuth}
+              style={{
+                backgroundColor: "#f5f5f5",
+                color: "#333",
+                borderRadius: "5px",
+                padding: "10px 20px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                border: "1px solid #333",
+                width: "100%",
+                maxWidth: "400px",
+                margin: "0 auto",
+                fontSize: "16px",
+                fontWeight: "bold"
+              }}
+            >
+              Login with GitHub <FontAwesomeIcon icon={faGithub} style={{ marginLeft: "10px" }} />
+            </Button>
+
 
             <Form.Group className='form-group-custom'>
               <Form.Label>Username</Form.Label>

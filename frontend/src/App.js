@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import './index.css'
 
 import Layout from './components/Layout'
 import Home from './components/Home'
@@ -7,9 +8,12 @@ import Registration from './components/Registration';
 import Profile from './components/Profile';
 import 'react-toastify/dist/ReactToastify.css';
 
+
 function App() {
     return (
         <>
+        
+
             <BrowserRouter>
                 <Routes>
                     <Route path='/' element={<Layout />}>

@@ -4,6 +4,7 @@ from flask import Blueprint, jsonify, current_app, render_template, redirect, ur
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy  # for database
 from sqlalchemy.exc import IntegrityError  # for handling duplicate entries
+from flask_jwt_extended import create_access_token
 
 from flask_dance.contrib.github import make_github_blueprint, github
 
@@ -17,6 +18,7 @@ import os
 import secrets
 
 auth = Blueprint('auth', __name__)  # blueprint for auth routes
+
 
 @auth.route('/register', methods=['POST'])
 def register():
@@ -47,6 +49,7 @@ def register():
             print(e)
             return str(e), 500
 
+
 @auth.route('/login', methods=['POST'])
 def login():
     """Logs in a user"""
@@ -60,38 +63,81 @@ def login():
 
             return 'Incorrect password!', 401
         else:
-            return 'Username not found!', 401 
-        
+            return 'Username not found!', 401
+
+
 @auth.route('/logout', methods=['GET', 'POST'])
 @login_required
 def logout():
     logout_user()
     return 'Logged out successfully!', 200
 
-@auth.route('/github_callback')
-def github_callback():
-    """Handle the response from Github after authorization."""
-    code = request.args.get('code')
 
-    # Send the authorization code to the Github API to retrieve an access token
-    response = requests.post(
-        'https://github.com/login/oauth/access_token',
-        data={
-            'client_id': current_app.config['GITHUB_CLIENT_ID'],
-            'client_secret': current_app.config['GITHUB_CLIENT_SECRET'],
-            'code': code
-        },
-        headers={
-            'Accept': 'application/json'
-        }
-    )
+@auth.route('/github_login', methods=['GET', 'POST'])
+def github_login():
+    if request.method == 'GET':
+        req_args = request.args
+        if 'code' in req_args:
+            code = req_args['code']
+            # Define the parameters for the access token request
+            token_params = {
+                'client_id': current_app.config['GITHUB_CLIENT_ID'],
+                'client_secret': current_app.config['GITHUB_CLIENT_SECRET'],
+                'code': code
+            }
+            # Exchange the authorization code for an access token
+            token_response = requests.post('https://github.com/login/oauth/access_token',
+                                        params=token_params, headers={'Accept': 'application/json'})
 
-    # Parse the Github API response to retrieve the access token
-    data = response.json()
-    access_token = data['access_token']
+            # Check for errors in the response
+            token_response.raise_for_status()
 
-    # Save the access token to the user's session or database
-    session['access_token'] = access_token
+            # Extract the access token from the response
+            access_token = token_response.json().get('access_token')
 
-    # Redirect the user back to the React app
-    return redirect('http://localhost:3000/')
+            # Convert to bearer token
+            bearer_token = "Bearer " + access_token
+
+            # Use the access token to fetch the user's GitHub profile information
+            profile_response = requests.get('https://api.github.com/user', headers={
+                                            'Authorization': bearer_token, 'Accept': 'application/json'})
+            
+            print(profile_response.json())
+
+            # Extract the user's name from the GitHub profile information
+            username = profile_response.json().get('login')
+
+            # Create a JSON Web Token (JWT) for the user
+            auth_token = create_access_token(identity=username)
+
+            # Save the JWT to the user's session
+            session['jwt_token'] = auth_token
+
+            # If the username is already in the database, log the user in
+            user = Users.query.filter_by(username=username).first()
+            if user != None:
+                login_user(user)
+                return {'username': username, 'auth_token': auth_token}, 200
+
+            else:
+                # If the username is not in the database, create a new user
+                email = profile_response.json().get('email')
+
+                # Generate a random password for the user
+                password = secrets.token_urlsafe(16)
+
+                # Hash the password
+                hashed_password = bcrypt.generate_password_hash(password)
+
+                new_user = Users(username=username, password=hashed_password,  # create new user
+                                    email=email)
+
+                db.session.add(new_user)  # add new user to database
+
+                db.session.commit()      # commit changes to database
+
+                login_user(new_user)    # log in the new user
+
+            return {'username': username, 'auth_token': auth_token}, 200
+
+    return 'Something went wrong!', 200

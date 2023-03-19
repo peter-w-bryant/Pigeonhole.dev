@@ -5,7 +5,8 @@ from flask_bcrypt import Bcrypt  # for hashing passwords
 from flask_sqlalchemy import SQLAlchemy
 from flask_dance.contrib.github import make_github_blueprint, github  # for github oauth
 from flask_sslify import SSLify
-from flask_oauthlib.client import OAuth # for github oauth
+from flask_cors import CORS
+from flask_jwt_extended import JWTManager
 import os
 
 from config import config # Import config
@@ -14,6 +15,7 @@ from config import config # Import config
 from routes.auth import auth
 from routes.projects import projects
 from routes.profile import profile
+from routes.accounts import accounts
 
 # Import SQLAlchemy instance
 from utils.models import Users, Projects, SavedProjects
@@ -26,6 +28,8 @@ github_blueprint = make_github_blueprint(client_id=os.getenv(
 
 def create_app(config_class='development'):
     app = Flask(__name__)
+    CORS(app)
+    jwt = JWTManager(app)
     sslify = SSLify(app)
 
     # if configuration class specified as param, init app with provided config
@@ -41,19 +45,6 @@ def create_app(config_class='development'):
         # initialize environment variables from config
         app.config.from_object(config[config_class])
 
-    oauth = OAuth(app)
-    github = oauth.remote_app(
-        'github',
-        consumer_key=app.config['GITHUB_CLIENT_ID'],
-        consumer_secret=app.config['GITHUB_CLIENT_SECRET'],
-        request_token_params={'scope': 'user:email'},
-        base_url='https://api.github.com/',
-        request_token_url=None,
-        access_token_method='POST',
-        access_token_url='https://github.com/login/oauth/access_token',
-        authorize_url='https://github.com/login/oauth/authorize'
-    )
-
     db.init_app(app)
     login_manager.init_app(app)
     login_manager.login_view = 'login'
@@ -63,7 +54,7 @@ def create_app(config_class='development'):
         app.register_blueprint(projects)
         app.register_blueprint(auth)
         app.register_blueprint(profile)
-        app.register_blueprint(github_blueprint, url_prefix="/github_login")
+        app.register_blueprint(accounts)
     return app
 
 
