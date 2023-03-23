@@ -47,7 +47,7 @@ def create_app(config_class='development'):
 
     db.init_app(app)
     login_manager.init_app(app)
-    login_manager.login_view = 'login'
+    login_manager.login_view = 'auth.login'
 
     # Register blueprints
     with app.app_context():
