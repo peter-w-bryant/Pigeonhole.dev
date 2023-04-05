@@ -6,8 +6,6 @@ import Home from './components/Home'
 import NotFound from './components/NotFound'
 import Registration from './components/Registration';
 import Profile from './components/Profile';
-import 'react-toastify/dist/ReactToastify.css';
-
 
 function App() {
     return (

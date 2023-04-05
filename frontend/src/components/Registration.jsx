@@ -1,15 +1,14 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Card, Form, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import LoginContext from "../contexts/loginContext";
 
-// import github logo from fontawesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
-
 import axios from 'axios';
 
 import "./Registration.css";
+
+import LoginContext from "../contexts/loginContext";
 
 function Registration() {
   const [username, setUsername] = useState("");

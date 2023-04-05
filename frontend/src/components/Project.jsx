@@ -1,21 +1,41 @@
 /* eslint-disable jsx-a11y/anchor-has-content */
 
+import { useContext, useState } from 'react';
 import { Card, ListGroup } from 'react-bootstrap';
+
 import { AiOutlineStar, AiOutlineFork, AiOutlineEye, AiOutlineCopyright, AiOutlineGithub, AiFillStar, AiOutlineCloseCircle } from 'react-icons/ai'
-import { useState } from 'react';
-import LoginContext from "../contexts/loginContext";
 import { ToastContainer, toast } from 'react-toastify';
+
+import LoginContext from "../contexts/loginContext";
+
 import 'react-toastify/dist/ReactToastify.css';
 
-import "./Project.css";
-
+// TODO: isStarred state does not get set upon loading state (will always default to false)
+// TODO: Unsaving projects does not actually do anything in the backend
 const Project = (props) => {
     const [isStarred, setIsStarred] = useState(false);
-    const [loggedIn, setLoggedIn] = useState('');
+    const [loggedIn, setLoggedIn] = useContext(LoginContext);
 
-    const handleStarClick = async (loggedIn, projectID) => {
-        if (loggedIn === '') {
-            toast.error('Please log in to save a project.', {
+    const handleStarClick = (projectID) => {
+        console.log(loggedIn)
+        loggedIn === '' ? toast.error('Please log in to save a project.', {
+            position: 'top-right',
+            style: { fontSize: '0.8rem' },
+            autoClose: 1000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            icon: <AiOutlineCloseCircle className="toast-error-icon" />
+        }) : (
+            handler(projectID)
+        );
+    };
+
+    const handler = (projectID) => {
+        if (isStarred) {
+            setIsStarred(!isStarred);
+            toast.success('Project unsaved!', {
                 position: 'top-right',
                 style: { fontSize: '0.8rem' },
                 autoClose: 1000,
@@ -23,37 +43,21 @@ const Project = (props) => {
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
-                icon: <AiOutlineCloseCircle className="toast-error-icon" />
+                icon: <AiOutlineCloseCircle />
             });
         } else {
-            if (isStarred) {
-                setIsStarred(!isStarred);
-                toast.success('Project unsaved!', {
-                    position: 'top-right',
-                    style: { fontSize: '0.8rem' },
-                    autoClose: 1000,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    icon: <AiOutlineCloseCircle />
-                });
-            } else {
-                setIsStarred(!isStarred);
-                console.log(loggedIn, projectID)
-                const res = await fetch('/save-project', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        username: loggedIn,
-                        pUID: projectID
-                    })
-                });
-                if (!res.ok) {
-                    throw new Error('Network response was not ok');
-                } else if (res.status === 403) {
+            setIsStarred(!isStarred);
+            fetch('/save-project', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username: loggedIn,
+                    pUID: projectID
+                })
+            }).then(res => {
+                if (res.status === 403) {
                     toast.success('Project already saved!', {
                         position: 'top-right',
                         style: { fontSize: '0.8rem' },
@@ -64,7 +68,8 @@ const Project = (props) => {
                         draggable: true,
                         icon: <AiOutlineCloseCircle />
                     });
-                } else if (res.status === 200) {
+                }
+                else if (res.status === 200) {
                     toast.success('Project saved!', {
                         position: 'top-right',
                         style: { fontSize: '0.8rem' },
@@ -74,7 +79,8 @@ const Project = (props) => {
                         pauseOnHover: true,
                         draggable: true,
                     });
-                } else {
+                }
+                else {
                     toast.error('Error occurred while saving project!', {
                         position: 'top-right',
                         style: { fontSize: '0.8rem' },
@@ -86,7 +92,7 @@ const Project = (props) => {
                         icon: <AiOutlineCloseCircle className="toast-error-icon" />
                     });
                 }
-            }
+            });
         }
     };
 
@@ -94,8 +100,6 @@ const Project = (props) => {
     return (
         <>
             <ToastContainer toastClassName="toast-no-shadow" />
-            <LoginContext.Consumer>
-                {([loggedIn, setLoggedIn]) => (
                     <Card bg='light' style={{ width: '100%' }}>
                         <Card.Body>
                             <div style={{ paddingBottom: '20px' }}>
@@ -107,7 +111,7 @@ const Project = (props) => {
                                     <div className='float-end'>
                                         <div style={{ cursor: 'pointer', marginRight: '5px' }}>
                                             <AiFillStar
-                                                onClick={() => handleStarClick(loggedIn, props.pUID)}
+                                                onClick={() => handleStarClick(props.pUID)}
                                                 style={{
                                                     color: isStarred ? 'gold' : 'grey',
                                                     fontSize: '1.5rem'
@@ -224,9 +228,6 @@ const Project = (props) => {
                             </div>
                         </Card.Footer>
                     </Card>
-                )}
-            </LoginContext.Consumer>
-
         </>
     );
 }
