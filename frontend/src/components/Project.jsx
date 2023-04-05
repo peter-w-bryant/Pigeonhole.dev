@@ -40,6 +40,7 @@ const Project = (props) => {
                 });
             } else {
                 setIsStarred(!isStarred);
+                console.log(loggedIn, projectID)
                 const res = await fetch('/save-project', {
                     method: 'POST',
                     headers: {

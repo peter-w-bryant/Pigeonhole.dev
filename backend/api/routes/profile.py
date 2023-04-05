@@ -1,6 +1,5 @@
 # Path: backend\api\routes\auth.py
-from flask import Flask, render_template, session, request, redirect, jsonify, url_for, flash
-from flask import Blueprint, jsonify, current_app, render_template, redirect, url_for, request, flash
+from flask import session, request, redirect, jsonify, url_for, flash, Blueprint, current_app
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy  # for database
 from sqlalchemy.exc import IntegrityError  # for handling duplicate entries
@@ -22,9 +21,9 @@ profile = Blueprint('profile', __name__)  # blueprint for auth routes
 @login_required
 def save_project():
     """Saves a project to the user's saved projects list"""
+    print("save_project")
     if request.method == 'POST':
         data = request.get_json()
-        print(data)
         user = Users.query.filter_by(username=data['username']).first()
         UID = user.UID
         if user != None:

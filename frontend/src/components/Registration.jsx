@@ -29,7 +29,6 @@ function Registration() {
     if (code) {
         axios.get(`http://localhost:5000/github_login?code=${code}`)
             .then(response => {
-              console.log(response.data.username)
                 setLoggedIn(response.data.username); // login the user
                 navigate('/'); // redirect to home page
 
@@ -90,7 +89,6 @@ function Registration() {
   }
 
   const handleGitHubOAuth = async () => {
-    console.log("hello");
     window.location.assign(`https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}`);
   }
 

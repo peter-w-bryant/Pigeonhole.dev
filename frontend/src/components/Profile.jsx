@@ -79,7 +79,6 @@ const Profile = () => {
     useEffect(() => {
         const fetchSavedProjects = async () => {
           try {
-            console.log(loggedIn)
             const res = await fetch('/saved-projects', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
