@@ -30,11 +30,11 @@ python3
 ```
 now from interactive mode,
 ```python
-> from app import create_app
-> from utils.db import db
-> app = create_app()
-> with app.app_context():
->    db.create_all()
+from app import create_app
+from utils.db import db
+app = create_app()
+with app.app_context():
+  db.create_all()
 ```
 this will create a SQLite DB instance named ```database.db``` in the ```/backend/api/instance```. Check that your DB was created correctly by checking that executing the following commands from your terminal,
 ```bash
@@ -42,7 +42,7 @@ cd instance
 sqlite3 database.db
 sqlite> .tables
 ```
-you should then see ```projects  users``` indicating that both the projects and users tables were created successfully. To populate the projects table, you need to run the ```backend/api/scripts/database.py``` script. You should go to the main method located in this script and make sure it contains,
+you should then see ```projects  users``` indicating that both the projects and users tables were created successfully. To populate the projects table, you need to run the ```scripts/database.py``` script while in the ```backend/api```. You should go to the main method located in this script and make sure it contains,
 ```python
 with app.app_context():
   pop_projects_from_json()
