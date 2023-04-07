@@ -11,8 +11,8 @@ import "./Registration.css";
 import LoginContext from "../contexts/loginContext";
 
 function Registration() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
 
   const [wantToRegister, setWantToRegister] = useState(false);
@@ -20,6 +20,8 @@ function Registration() {
   const [switchText, setSwitchText] = useState("Don't have an account? Register here.");
 
   const [loggedIn, setLoggedIn] = useContext(LoginContext);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const queryString = window.location.search;
@@ -38,8 +40,6 @@ function Registration() {
     }
 }, []);
 
-  const navigate = useNavigate();
-
   const handleUsername = (event) => {
     setUsername(event.target.value);
   }
@@ -52,15 +52,8 @@ function Registration() {
     setEmail(event.target.value);
   }
 
-  const handleSwitch = () => {
-    wantToRegister ? setWantToRegister(false) : setWantToRegister(true);
-    if (wantToRegister) {
-      setButtonText("Login");
-      setSwitchText("Don't have an account? Register here.")
-    } else {
-      setButtonText("Register");
-      setSwitchText("Already have an account? Login here.");
-    }
+  const handleGitHubOAuth = async () => {
+    window.location.assign(`https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}`);
   }
 
   const handleLogin = () => {
@@ -87,14 +80,6 @@ function Registration() {
     navigate('/');
   }
 
-  const handleGitHubOAuth = async () => {
-    window.location.assign(`https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}`);
-  }
-
-  const submit = () => {
-    wantToRegister ? handleRegister() : handleLogin();
-  }
-
   const handleRegister = () => {
     fetch('/register', {
       method: 'POST',
@@ -116,6 +101,21 @@ function Registration() {
         throw new Error();
       }
     }).catch(err => console.log('register:' + err));
+  }
+
+  const submit = () => {
+    wantToRegister ? handleRegister() : handleLogin();
+  }
+
+  const handleSwitch = () => {
+    wantToRegister ? setWantToRegister(false) : setWantToRegister(true);
+    if (wantToRegister) {
+      setButtonText("Login");
+      setSwitchText("Don't have an account? Register here.")
+    } else {
+      setButtonText("Register");
+      setSwitchText("Already have an account? Login here.");
+    }
   }
 
   return (
