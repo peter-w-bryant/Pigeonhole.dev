@@ -100,134 +100,128 @@ const Project = (props) => {
     return (
         <>
             <ToastContainer toastClassName="toast-no-shadow" />
-                    <Card bg='light' style={{ width: '100%' }}>
-                        <Card.Body>
-                            <div style={{ paddingBottom: '20px' }}>
-                                <Card.Title>
-                                    <a href={props.gh_rep_url} style={{ color: '#212529', textDecoration: 'none' }}>
-                                        {props.gh_repo_name}&nbsp;<AiOutlineGithub />
-                                    </a>
-
-                                    <div className='float-end'>
-                                        <div style={{ cursor: 'pointer', marginRight: '5px' }}>
-                                            <AiFillStar
-                                                onClick={() => handleStarClick(props.pUID)}
-                                                style={{
-                                                    color: isStarred ? 'gold' : 'grey',
-                                                    fontSize: '1.5rem'
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                </Card.Title>
-                                <Card.Subtitle className='mb-1 small' style={{ color: '#007BFF' }}>
-                                    {props.gh_username}
-                                    &nbsp;{props.gh_contributing_url !== '' && (
-                                        <a href={props.gh_contributing_url}
-                                            style={{ fontSize: '0.1rem', position: 'relative', color: 'grey' }}>
-                                            w/ CONTRIBUTING.md
-                                        </a>
-                                    )}
-                                </Card.Subtitle>
-                                <Card.Subtitle className='mb-2 text-muted small'>
-                                    <AiOutlineEye /> {props.num_watchers}&nbsp;
-                                    <AiOutlineFork /> {props.num_forks}&nbsp;
-                                    <AiOutlineStar /> {props.num_stars}
-                                </Card.Subtitle>
-
-                                <Card.Text className='small'>{props.gh_description}</Card.Text>
-                            </div>
-
-                            {[1, 2, 3, 4, 5].some(index => props[`gh_topics_${index}`] !== "") && (
-                                <div style={{ paddingBottom: '10px' }}>
-                                    <Card.Subtitle className='mb-1 text-muted small'>Topics:</Card.Subtitle>
-                                    <ListGroup horizontal
+            <Card bg='light' style={{ width: '100%' }}>
+                <Card.Body>
+                    <div style={{ paddingBottom: '20px' }}>
+                        <Card.Title>
+                            <a href={props.gh_rep_url} style={{ color: '#212529', textDecoration: 'none' }}>
+                                {props.gh_repo_name}&nbsp;<AiOutlineGithub />
+                            </a>
+                            <div className='float-end'>
+                                <div style={{ cursor: 'pointer', marginRight: '5px' }}>
+                                    <AiFillStar
+                                        onClick={() => handleStarClick(props.pUID)}
                                         style={{
-                                            display: 'flex',
-                                            flexWrap: 'wrap',
-                                            listStyle: 'none',
-                                            fontSize: '0.5rem',
-                                            padding: '0',
-                                            margin: '0',
-                                        }}>
-                                        {[1, 2, 3, 4, 5].map(index => (
-                                            props[`gh_topics_${index}`] !== "" && (
-                                                <ListGroup.Item
-                                                    key={index}
-                                                    action
-                                                    style={{
-                                                        height: 'fit-content',
-                                                        width: 'fit-content',
-                                                        borderRadius: '50px',
-                                                        backgroundColor: '#007BFF',
-                                                        fontWeight: 'bold',
-                                                        color: '#ffffff',
-                                                        padding: '5px 10px',
-                                                        margin: '5px',
-                                                    }}>
-                                                    {props[`gh_topics_${index}`]}
-                                                </ListGroup.Item>
-                                            )
-                                        ))}
-                                    </ListGroup>
+                                            color: isStarred ? 'gold' : 'grey',
+                                            fontSize: '1.5rem'
+                                        }}
+                                    />
                                 </div>
-                            )}
-
-                            {[1, 2, 3, 4, 5, 6, 7].some(index => props[`issue_label_${index}`] !== "") && (
-                                <div style={{ paddingBottom: '10px' }}>
-                                    <Card.Subtitle className='mb-1 text-muted small' style={{ background: 'transparent', border: 'none' }}>Issue Labels:</Card.Subtitle>
-                                    <ListGroup horizontal
-                                        style={{
-                                            display: 'flex',
-                                            flexWrap: 'wrap',
-                                            listStyle: 'none',
-                                            fontSize: '0.5rem',
-                                            padding: '0',
-                                            margin: '0',
-                                        }}>
-                                        {[1, 2, 3, 4, 5, 6, 7].map(index => (
-                                            props[`issue_label_${index}`] !== "" && (
-                                                <ListGroup.Item
-                                                    key={index}
-                                                    action
-                                                    style={{
-                                                        height: 'fit-content',
-                                                        width: 'fit-content',
-                                                        borderRadius: '50px',
-                                                        color: '#ffffff',
-                                                        fontWeight: 'bold',
-                                                        padding: '5px 10px',
-                                                        margin: '5px',
-                                                        backgroundColor: '#555555'
-                                                    }}>
-                                                    {props[`issue_label_${index}`]}
-                                                </ListGroup.Item>
-                                            )
-                                        ))}
-                                    </ListGroup>
-                                </div>
-                            )}
-
-                        </Card.Body>
-                        <Card.Footer>
-                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <small className='text-muted' style={{ fontSize: '0.4rem', padding: '0' }}>Last commit: {props.date_last_commit}</small>
-                                <small className='text-muted' style={{ fontSize: '0.4rem', padding: '0' }}>Last merged PR: {props.date_last_merged_PR}</small>
                             </div>
-
-                            <div>
-                                <Card.Text className="small" style={{ fontSize: '0.6rem', fontWeight: 'bold' }}>
-                                    Pigeonhole New Contributor Score&nbsp;
-                                    <AiOutlineCopyright />
-                                    :&nbsp;
-                                    <span style={{ color: props.new_contrib_score > 75 ? '#99C140' : props.new_contrib_score > 45 ? '#E8B100' : '#CC3232', fontSize: '1rem', textShadow: '0.2px 0.2px 0.2px #000000' }}>
-                                        {props.new_contrib_score}
-                                    </span>
-                                    /100
-                                </Card.Text>
-                            </div>
-                        </Card.Footer>
-                    </Card>
+                        </Card.Title>
+                        <Card.Subtitle className='mb-1 small' style={{ color: '#007BFF' }}>
+                            {props.gh_username}
+                            &nbsp;{props.gh_contributing_url !== '' && (
+                                <a href={props.gh_contributing_url}
+                                    style={{ fontSize: '0.8rem', position: 'relative', color: 'grey' }}>
+                                    w/ CONTRIBUTING.md
+                                </a>
+                            )}
+                        </Card.Subtitle>
+                        <Card.Subtitle className='mb-2 text-muted small'>
+                            <AiOutlineEye /> {props.num_watchers}&nbsp;
+                            <AiOutlineFork /> {props.num_forks}&nbsp;
+                            <AiOutlineStar /> {props.num_stars}
+                        </Card.Subtitle>
+                        <Card.Text className='small'>{props.gh_description}</Card.Text>
+                    </div>
+                    {[1, 2, 3, 4, 5].some(index => props[`gh_topics_${index}`] !== "") && (
+                        <div style={{ paddingBottom: '10px' }}>
+                            <Card.Subtitle className='mb-1 text-muted small'>Topics:</Card.Subtitle>
+                            <ListGroup horizontal
+                                style={{
+                                    display: 'flex',
+                                    flexWrap: 'wrap',
+                                    listStyle: 'none',
+                                    fontSize: '0.5rem',
+                                    padding: '0',
+                                    margin: '0',
+                                }}>
+                                {[1, 2, 3, 4, 5].map(index => (
+                                    props[`gh_topics_${index}`] !== "" && (
+                                        <ListGroup.Item
+                                            key={index}
+                                            action
+                                            style={{
+                                                height: 'fit-content',
+                                                width: 'fit-content',
+                                                borderRadius: '50px',
+                                                backgroundColor: '#007BFF',
+                                                fontWeight: 'bold',
+                                                color: '#ffffff',
+                                                padding: '5px 10px',
+                                                margin: '5px',
+                                            }}>
+                                            {props[`gh_topics_${index}`]}
+                                        </ListGroup.Item>
+                                    )
+                                ))}
+                            </ListGroup>
+                        </div>
+                    )}
+                    {[1, 2, 3, 4, 5, 6, 7].some(index => props[`issue_label_${index}`] !== "") && (
+                        <div style={{ paddingBottom: '10px' }}>
+                            <Card.Subtitle className='mb-1 text-muted small' style={{ background: 'transparent', border: 'none' }}>Issue Labels:</Card.Subtitle>
+                            <ListGroup horizontal
+                                style={{
+                                    display: 'flex',
+                                    flexWrap: 'wrap',
+                                    listStyle: 'none',
+                                    fontSize: '0.5rem',
+                                    padding: '0',
+                                    margin: '0',
+                                }}>
+                                {[1, 2, 3, 4, 5, 6, 7].map(index => (
+                                    props[`issue_label_${index}`] !== "" && (
+                                        <ListGroup.Item
+                                            key={index}
+                                            action
+                                            style={{
+                                                height: 'fit-content',
+                                                width: 'fit-content',
+                                                borderRadius: '50px',
+                                                color: '#ffffff',
+                                                fontWeight: 'bold',
+                                                padding: '5px 10px',
+                                                margin: '5px',
+                                                backgroundColor: '#555555'
+                                            }}>
+                                            {props[`issue_label_${index}`]}
+                                        </ListGroup.Item>
+                                    )
+                                ))}
+                            </ListGroup>
+                        </div>
+                    )}
+                </Card.Body>
+                <Card.Footer>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <small className='text-muted' style={{ fontSize: '0.4rem', padding: '0' }}>Last commit: {props.date_last_commit}</small>
+                        <small className='text-muted' style={{ fontSize: '0.4rem', padding: '0' }}>Last merged PR: {props.date_last_merged_PR}</small>
+                    </div>
+                    <div>
+                        <Card.Text className="small" style={{ fontSize: '0.6rem', fontWeight: 'bold' }}>
+                            Pigeonhole New Contributor Score&nbsp;
+                            <AiOutlineCopyright />
+                            :&nbsp;
+                            <span style={{ color: props.new_contrib_score > 75 ? '#99C140' : props.new_contrib_score > 45 ? '#E8B100' : '#CC3232', fontSize: '1rem', textShadow: '0.2px 0.2px 0.2px #000000' }}>
+                                {props.new_contrib_score}
+                            </span>
+                            /100
+                        </Card.Text>
+                    </div>
+                </Card.Footer>
+            </Card>
         </>
     );
 }
