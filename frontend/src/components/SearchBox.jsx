@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
-import { Container, Card, Form, FormControl, Button, Row, Col, Dropdown } from "react-bootstrap";
+import { useEffect, useState } from 'react';
+import { Container, Form, FormControl, Button, Row, Col, Dropdown } from "react-bootstrap";
 import { AiOutlineCloseCircle } from 'react-icons/ai'
 
 import Project from './Project';
@@ -108,11 +108,6 @@ const SearchBox = (props) => {
         setSearch('');
         setTopicFilters([]);
         setIssueFilters([]);
-    };
-
-    const handleUpdate = (event) => {
-        event.preventDefault();
-        props.updateFilter(final);
     };
 
     const activeFilters = [...topicFilters, ...issueFilters].map(filter => {

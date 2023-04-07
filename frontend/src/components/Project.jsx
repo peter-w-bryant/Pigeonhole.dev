@@ -17,7 +17,6 @@ const Project = (props) => {
     const [loggedIn, setLoggedIn] = useContext(LoginContext);
 
     const handleStarClick = (projectID) => {
-        console.log(loggedIn)
         loggedIn === '' ? toast.error('Please log in to save a project.', {
             position: 'top-right',
             style: { fontSize: '0.8rem' },
