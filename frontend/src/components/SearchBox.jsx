@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { Container, Card, Form, FormControl, Button, Row, Col, Dropdown } from "react-bootstrap";
 import { AiOutlineCloseCircle } from 'react-icons/ai'
 
-// import Project from './Project';
 import Project from './Project';
 
 const SearchBox = (props) => {
