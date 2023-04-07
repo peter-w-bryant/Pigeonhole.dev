@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-has-content */
 
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Card, ListGroup } from 'react-bootstrap';
 
 import { AiOutlineStar, AiOutlineFork, AiOutlineEye, AiOutlineCopyright, AiOutlineGithub, AiFillStar, AiOutlineCloseCircle } from 'react-icons/ai'
@@ -10,11 +10,13 @@ import LoginContext from "../contexts/loginContext";
 
 import 'react-toastify/dist/ReactToastify.css';
 
-// TODO: isStarred state does not get set upon loading state, see Profile.jsx (will always default to false)
-// TODO: Unsaving projects does not actually do anything in the backend
 const Project = (props) => {
     const [isStarred, setIsStarred] = useState(false);
     const [loggedIn, setLoggedIn, savedProjects, setSavedProjects] = useContext(LoginContext);
+
+    useEffect(() => {
+        savedProjects.find(proj => JSON.stringify(proj) === JSON.stringify(props)) !== undefined && setIsStarred(true);
+    }, [props, savedProjects, setIsStarred])
 
     const handleStarClick = (projectID) => {
         loggedIn === '' ? toast.error('Please log in to save a project.', {
@@ -33,6 +35,10 @@ const Project = (props) => {
 
     const handler = (projectID) => {
         if (isStarred) {
+            // This code will allow users to delete saved projects. However, since deleting projects does not actually send a POST, we do not get our desired updates in the backend.
+            // This means that after removing a project from a user's saved list, it becomes impossible to add it back.
+            // const updatedProjects = savedProjects.filter(proj => JSON.stringify(proj) !== JSON.stringify(props))
+            // setSavedProjects(updatedProjects)
             setIsStarred(!isStarred);
             toast.success('Project unsaved!', {
                 position: 'top-right',
