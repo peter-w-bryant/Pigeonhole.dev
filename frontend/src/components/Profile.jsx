@@ -2,17 +2,6 @@ import { useState, useEffect, useContext } from 'react';
 import { Container, Button, Row, Col } from "react-bootstrap";
 
 import { FaHtml5, FaCss3Alt, FaJs, FaPython, FaJava, FaPhp, FaSwift, FaAngular, FaReact, FaVuejs, FaNodeJs, FaBootstrap, FaSass, FaLess, } from 'react-icons/fa'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {  
-    faCodeBranch, 
-    faRProject, 
-    faDart,
-    faCaretSquareRight,
-    faJquery,
-    faTypescript,
-    faCSharp,
-    faRuby
-} from '@fortawesome/free-brands-svg-icons';
 
 import Project from './Project';
 
@@ -22,7 +11,6 @@ const Profile = () => {
 
     const [loggedIn, setLoggedIn] = useContext(LoginContext);
     const [savedProjects, setSavedProjects] = useState([]);
-    const [allProjects, setAllProjects] = useState([]);
 
     useEffect(() => {
         loggedIn !== '' ? (
@@ -60,7 +48,7 @@ const Profile = () => {
                 <br />
                 
                 { /* Skills */ }
-                <Container>
+                <Row>
                     <h3 style={{textAlign: "center"}}>Skills</h3>
                     <div style={{display: "flex", justifyContent: "center"}}>
                         <h4 style={{marginRight: "10px"}}>Languages</h4>
@@ -127,10 +115,10 @@ const Profile = () => {
                             &nbsp; Less
                         </Button>
                     </div>
-                </Container>
+                </Row>
 
                 { /* Saved Projects */ }
-                <Container>
+                <Row><Container>
                     <h3>Saved Projects ({savedProjects.length})</h3>
                     <Button variant="outline-danger" onClick={handleUnsaveAllClick} style={{ float: "right" }}>
                         Unsave All
@@ -148,7 +136,7 @@ const Profile = () => {
                             </Row>
                         )
                     }
-                </Container>
+                </Container></Row>
             </Container>
         </>
     );
