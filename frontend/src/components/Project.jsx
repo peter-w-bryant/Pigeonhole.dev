@@ -14,7 +14,7 @@ import 'react-toastify/dist/ReactToastify.css';
 // TODO: Unsaving projects does not actually do anything in the backend
 const Project = (props) => {
     const [isStarred, setIsStarred] = useState(false);
-    const [loggedIn, setLoggedIn] = useContext(LoginContext);
+    const [loggedIn, setLoggedIn, savedProjects, setSavedProjects] = useContext(LoginContext);
 
     const handleStarClick = (projectID) => {
         loggedIn === '' ? toast.error('Please log in to save a project.', {
@@ -69,6 +69,7 @@ const Project = (props) => {
                     });
                 }
                 else if (res.status === 200) {
+                    setSavedProjects(prev => [...prev, props])
                     toast.success('Project saved!', {
                         position: 'top-right',
                         style: { fontSize: '0.8rem' },

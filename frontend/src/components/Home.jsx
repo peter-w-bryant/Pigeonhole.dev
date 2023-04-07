@@ -9,7 +9,7 @@ import LoginContext from "../contexts/loginContext";
 const Home = () => {
     const [projectData, setProjectData] = useState({});
     const [projectValues, setProjectValues] = useState([]);
-    const [loggedIn, setLoggedIn] = useContext(LoginContext);
+    const [loggedIn, setLoggedIn, savedProjects, setSavedProjects] = useContext(LoginContext);
 
     useEffect(() => {
         fetch('/all-projects').then(res => res.json()).then(json => {

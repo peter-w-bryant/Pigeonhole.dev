@@ -15,7 +15,7 @@ function Registration() {
   const [buttonText, setButtonText] = useState("Login");
   const [switchText, setSwitchText] = useState("Don't have an account? Register here.");
 
-  const [loggedIn, setLoggedIn] = useContext(LoginContext);
+  const [loggedIn, setLoggedIn, savedProjects, setSavedProjects] = useContext(LoginContext);
 
   const navigate = useNavigate();
 
@@ -24,7 +24,7 @@ function Registration() {
     if (urlSearchParams.has('code')) {
       const code = urlSearchParams.get('code');
       fetch(`/github_login?code=${code}`).then(res => res.json()).then(json => {
-        setLoggedIn(json.username);
+        login(json.username);
         navigate('/');
       });
 
@@ -62,6 +62,17 @@ function Registration() {
     window.location.assign(url);
   }
 
+  const login = (id) => {
+    fetch('/saved-projects', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ "username": id })
+    }).then(res => res.json()).then(json => {
+        setSavedProjects(Object.values(json['projects']));
+    })
+    setLoggedIn(id);
+  }
+
   const handleLogin = () => {
     fetch('/login', {
       method: 'POST',
@@ -75,7 +86,7 @@ function Registration() {
       credentials: 'include'
     }).then(res => {
       if (res.status === 200) {
-        setLoggedIn(username);
+        login(username);
       } else if (res.status === 401) {
         alert("username or password wrong");
       } else {

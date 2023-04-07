@@ -9,22 +9,8 @@ import LoginContext from '../contexts/loginContext';
 
 const Profile = () => {
 
-    const [loggedIn, setLoggedIn] = useContext(LoginContext);
-    const [savedProjects, setSavedProjects] = useState([]); // TODO: instead of setting this when hitting profile, set this when logging in
-
-    useEffect(() => {
-        loggedIn !== '' ? (
-            fetch('/saved-projects', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ "username": loggedIn })
-            }).then(res => res.json()).then(json => {
-                setSavedProjects(Object.values(json['projects']));
-            })
-        ) : setSavedProjects([]);
-      
-    }, [loggedIn]);
-      
+    const [loggedIn, setLoggedIn, savedProjects, setSavedProjects] = useContext(LoginContext);
+    
     const handleUnsaveAllClick = () => {
         fetch('/delete-all-projects', {
             method: 'POST',

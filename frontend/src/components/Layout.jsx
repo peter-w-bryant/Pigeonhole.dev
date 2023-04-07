@@ -6,6 +6,7 @@ import LoginContext from "../contexts/loginContext";
 
 const Layout = () => {
     const [loggedIn, setLoggedIn] = useState('');
+    const [savedProjects, setSavedProjects] = useState([]);
     
     const handleLogout = () => {
         setLoggedIn('');
@@ -17,7 +18,7 @@ const Layout = () => {
 
     return (
         <>
-            <LoginContext.Provider value={[loggedIn, setLoggedIn]}>
+            <LoginContext.Provider value={[loggedIn, setLoggedIn, savedProjects, setSavedProjects]}>
                 <Container fluid>
                     { /* Header */ }
                     <Navbar bg="light" variant="light">
