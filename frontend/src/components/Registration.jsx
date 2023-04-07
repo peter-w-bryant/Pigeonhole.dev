@@ -4,8 +4,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { FaGithub } from 'react-icons/fa'
 
-import axios from 'axios';
-
 import LoginContext from "../contexts/loginContext";
 
 function Registration() {
@@ -22,19 +20,16 @@ function Registration() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const code = urlParams.get("code");
-    if (code) {
-        axios.get(`http://localhost:5000/github_login?code=${code}`)
-            .then(response => {
-                setLoggedIn(response.data.username); // login the user
-                navigate('/'); // redirect to home page
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    if (urlSearchParams.has('code')) {
+      const code = urlSearchParams.get('code');
+      fetch(`/github_login?code=${code}`).then(res => res.json()).then(json => {
+        setLoggedIn(json.username);
+        navigate('/');
+      });
 
-            })
-            .catch(error => {
-                // handle the error
-            });
+      const newUrl = `${window.location.origin}${window.location.pathname}`;
+      window.history.replaceState(null, '', newUrl);
     }
   }, []);
 
@@ -60,8 +55,11 @@ function Registration() {
     setEmail(event.target.value);
   }
 
-  const handleGitHubOAuth = async () => {
-    window.location.assign(`https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}`);
+  const handleGitHubOAuth = () => {
+    const clientId = process.env.REACT_APP_GITHUB_CLIENT_ID;
+    const url = `https://github.com/login/oauth/authorize?client_id=${clientId}`;
+
+    window.location.assign(url);
   }
 
   const handleLogin = () => {
