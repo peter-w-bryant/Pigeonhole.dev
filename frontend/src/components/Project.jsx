@@ -10,7 +10,7 @@ import LoginContext from "../contexts/loginContext";
 
 import 'react-toastify/dist/ReactToastify.css';
 
-// TODO: isStarred state does not get set upon loading state (will always default to false)
+// TODO: isStarred state does not get set upon loading state, see Profile.jsx (will always default to false)
 // TODO: Unsaving projects does not actually do anything in the backend
 const Project = (props) => {
     const [isStarred, setIsStarred] = useState(false);

@@ -10,7 +10,7 @@ import LoginContext from '../contexts/loginContext';
 const Profile = () => {
 
     const [loggedIn, setLoggedIn] = useContext(LoginContext);
-    const [savedProjects, setSavedProjects] = useState([]);
+    const [savedProjects, setSavedProjects] = useState([]); // TODO: instead of setting this when hitting profile, set this when logging in
 
     useEffect(() => {
         loggedIn !== '' ? (
