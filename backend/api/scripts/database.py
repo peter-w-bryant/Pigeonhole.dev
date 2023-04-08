@@ -113,6 +113,7 @@ def pop_projects_from_json(source_json_path = False, testing: bool = False):
 
     if not source_json_path:
         parent_dir = os.path.dirname(os.getcwd())
+        print(parent_dir)
         file_path = os.path.join(parent_dir, 'api', 'resources', 'repo_scrapers', 'small_repo_data.json')
     else: 
         file_path = os.path.join(parent_dir, 'api', 'resources', 'repo_scrapers', source_json_path)
