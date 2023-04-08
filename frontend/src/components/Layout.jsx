@@ -10,10 +10,12 @@ const Layout = () => {
     
     const handleLogout = () => {
         setLoggedIn('');
+        setSavedProjects([]);
         fetch('/logout', {
             method: 'POST',
             credentials: 'include'
         }).catch(err => console.log('logout: ' + err));
+        window.location.reload();
     }
 
     return (

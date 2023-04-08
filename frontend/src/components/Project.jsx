@@ -10,14 +10,12 @@ import LoginContext from "../contexts/loginContext";
 
 import 'react-toastify/dist/ReactToastify.css';
 
-// TODO: set isStarred to false when logging out
-// TODO: isStarred not being set properly when logging in using existing savedProjects
 const Project = (props) => {
     const [isStarred, setIsStarred] = useState(false);
     const [loggedIn, setLoggedIn, savedProjects, setSavedProjects] = useContext(LoginContext);
 
     useEffect(() => {
-        savedProjects.find(proj => JSON.stringify(proj) === JSON.stringify(props)) !== undefined && setIsStarred(true);
+        savedProjects.find(proj => proj.gh_rep_url === props.gh_rep_url) !== undefined && setIsStarred(true);
     }, [props, savedProjects, setIsStarred])
 
     const handleStarClick = (projectID) => {
@@ -103,7 +101,6 @@ const Project = (props) => {
             });
         }
     };
-
 
     return (
         <>
