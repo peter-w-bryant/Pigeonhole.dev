@@ -21,7 +21,6 @@ profile = Blueprint('profile', __name__)  # blueprint for auth routes
 @login_required
 def save_project():
     """Saves a project to the user's saved projects list"""
-    print("save_project")
     if request.method == 'POST':
         data = request.get_json()
         user = Users.query.filter_by(username=data['username']).first()
@@ -42,9 +41,7 @@ def saved_projects():
   """Returns a list of saved projects for a user"""
   if request.method == 'POST':
     data = request.get_json()
-    print(data)
     username = data['username']
-    print(username)
     user = Users.query.filter_by(username=username).first()
     UID = user.UID
     if user is not None:

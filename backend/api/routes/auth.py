@@ -103,8 +103,6 @@ def github_login():
             profile_response = requests.get('https://api.github.com/user', headers={
                                             'Authorization': bearer_token, 'Accept': 'application/json'})
             
-            print(profile_response.json())
-
             # Extract the user's name from the GitHub profile information
             username = profile_response.json().get('login')
 

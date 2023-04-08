@@ -52,7 +52,6 @@ def create_app(config_class='development'):
         :param UID: User ID
         :return: User object or None
         """
-        print(f"Loading user with ID: {UID}")
         return Users.query.get(int(UID)) 
 
     # Register blueprints
