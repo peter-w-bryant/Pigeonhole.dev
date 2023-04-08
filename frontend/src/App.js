@@ -10,8 +10,6 @@ import Profile from './components/Profile';
 function App() {
     return (
         <>
-        
-
             <BrowserRouter>
                 <Routes>
                     <Route path='/' element={<Layout />}>
