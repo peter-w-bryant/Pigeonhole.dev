@@ -35,21 +35,32 @@ const Project = (props) => {
 
     const handler = (projectID) => {
         if (isStarred) {
-            // This code will allow users to delete saved projects. However, since deleting projects does not actually send a POST, we do not get our desired updates in the backend.
-            // This means that after removing a project from a user's saved list, it becomes impossible to add it back.
             const updatedProjects = savedProjects.filter(proj => JSON.stringify(proj) !== JSON.stringify(props))
             setSavedProjects(updatedProjects)
             setIsStarred(!isStarred);
-            toast.success('Project unsaved!', {
-                position: 'top-right',
-                style: { fontSize: '0.8rem' },
-                autoClose: 1000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                icon: <AiOutlineCloseCircle />
-            });
+            fetch('/remove-saved-project', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username: loggedIn,
+                    pUID: projectID
+                })
+            }).then(res => {
+                if (res.status === 200) {
+                    toast.success('Project unsaved!', {
+                        position: 'top-right',
+                        style: { fontSize: '0.8rem' },
+                        autoClose: 1000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        icon: <AiOutlineCloseCircle />
+                    });
+                }
+            })
         } else {
             setIsStarred(!isStarred);
             fetch('/save-project', {
