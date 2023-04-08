@@ -19,6 +19,18 @@ function Registration() {
 
   const navigate = useNavigate();
 
+  const login = (id) => {
+    fetch('/saved-projects', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ "username": id })
+    }).then(res => res.json()).then(json => {
+        setSavedProjects(Object.values(json['projects']));
+    })
+    setLoggedIn(id);
+  }
+
+  // This will definitely need to be changed: causes a lot of random issues
   useEffect(() => {
     const urlSearchParams = new URLSearchParams(window.location.search);
     if (urlSearchParams.has('code')) {
@@ -60,17 +72,6 @@ function Registration() {
     const url = `https://github.com/login/oauth/authorize?client_id=${clientId}`;
 
     window.location.assign(url);
-  }
-
-  const login = (id) => {
-    fetch('/saved-projects', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ "username": id })
-    }).then(res => res.json()).then(json => {
-        setSavedProjects(Object.values(json['projects']));
-    })
-    setLoggedIn(id);
   }
 
   const handleLogin = () => {
@@ -198,7 +199,6 @@ function Registration() {
               <Button style={{
                 marginTop: '20px',
                 width: '100%',
-                marginTop: '20px',
                 padding: '10px 20px'
               }} variant="primary" type="submit" onClick={submit}>
                 {buttonText}
@@ -206,7 +206,6 @@ function Registration() {
               <Button style={{
                 marginTop: '20px',
                 width: '100%',
-                marginTop: '20px',
                 padding: '10px 20px'
               }} onClick={handleSwitch}>
                 {switchText}
