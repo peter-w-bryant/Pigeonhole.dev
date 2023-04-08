@@ -34,7 +34,24 @@ def save_project():
                 db.session.add(new_project)
                 db.session.commit()
                 return {"success": "Project added successfully!"}, 200
-            
+
+@profile.route('/remove-saved-project', methods = ['GET', 'POST'])
+@login_required
+def remove_saved_project():
+    """Removes a project from the user's saved projects list"""
+    if request.method == 'POST':
+        data = request.get_json()
+        user = Users.query.filter_by(username=data['username']).first()
+        UID = user.UID
+        if user != None:
+            project_exists = SavedProjects.query.filter_by(UID=UID, pUID=data['pUID']).first()
+            if project_exists == None:
+                return {"error": "Project not found!"}, 404
+            else:
+                db.session.delete(project_exists)
+                db.session.commit()
+                return {"success": "Project removed successfully!"}, 200
+
 @profile.route('/saved-projects', methods=['POST'])
 @login_required
 def saved_projects():
