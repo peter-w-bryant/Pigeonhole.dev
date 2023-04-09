@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useContext } from 'react';
 import { Container, Button, Row, Col } from "react-bootstrap";
 
 import { FaHtml5, FaCss3Alt, FaJs, FaPython, FaJava, FaPhp, FaSwift, FaAngular, FaReact, FaVuejs, FaNodeJs, FaBootstrap, FaSass, FaLess, } from 'react-icons/fa'
@@ -9,7 +9,7 @@ import LoginContext from '../contexts/loginContext';
 
 const Profile = () => {
 
-    const [loggedIn, setLoggedIn, savedProjects, setSavedProjects] = useContext(LoginContext);
+    const {loggedIn, savedProjects, setSavedProjects} = useContext(LoginContext);
     
     const handleUnsaveAllClick = () => {
         fetch('/delete-all-projects', {
