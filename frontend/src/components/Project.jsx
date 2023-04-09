@@ -12,7 +12,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const Project = (props) => {
     const [isStarred, setIsStarred] = useState(false);
-    const {loggedIn, savedProjects, setSavedProjects} = useContext(LoginContext);
+    const [loggedIn, setLoggedIn, savedProjects, setSavedProjects] = useContext(LoginContext);
 
     useEffect(() => {
         savedProjects.find(proj => proj.gh_rep_url === props.gh_rep_url) !== undefined && setIsStarred(true);

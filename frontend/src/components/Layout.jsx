@@ -1,14 +1,12 @@
 import { useState } from 'react';
 import { Container, Nav, Navbar } from "react-bootstrap";
-import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 
 import LoginContext from "../contexts/loginContext";
 
 const Layout = () => {
     const [loggedIn, setLoggedIn] = useState('');
     const [savedProjects, setSavedProjects] = useState([]);
-
-    const navigate = useNavigate();
     
     const handleLogout = () => {
         setLoggedIn('');
@@ -17,7 +15,7 @@ const Layout = () => {
             method: 'POST',
             credentials: 'include'
         }).catch(err => console.log('logout: ' + err));
-        navigate('/registration');
+        window.location.reload();
     }
 
     return (

@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Col, Container, Row } from "react-bootstrap";
 
 import Project from './Project';
 import SearchBox from './SearchBox';
 
+import LoginContext from "../contexts/loginContext";
+
 const Home = () => {
     const [projectData, setProjectData] = useState({});
     const [projectValues, setProjectValues] = useState([]);
+    const [loggedIn, setLoggedIn, savedProjects, setSavedProjects] = useContext(LoginContext);
 
     useEffect(() => {
         fetch('/all-projects').then(res => res.json()).then(json => {
