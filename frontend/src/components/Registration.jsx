@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useCallback, useState, useContext, useEffect } from 'react';
 import { Card, Container, Form, Button, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
@@ -12,48 +12,35 @@ function Registration() {
   const [email, setEmail] = useState('');
 
   const [wantToRegister, setWantToRegister] = useState(false);
-  const [buttonText, setButtonText] = useState("Login");
-  const [switchText, setSwitchText] = useState("Don't have an account? Register here.");
 
   const [loggedIn, setLoggedIn, savedProjects, setSavedProjects] = useContext(LoginContext);
 
   const navigate = useNavigate();
 
-  const login = (id) => {
+  const login = useCallback((id) => {
     fetch('/saved-projects', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ "username": id })
     }).then(res => res.json()).then(json => {
-        setSavedProjects(Object.values(json['projects']));
+      setSavedProjects(Object.values(json['projects']));
     })
     setLoggedIn(id);
-  }
+  }, [setSavedProjects, setLoggedIn]);
 
-  // This will definitely need to be changed: causes a lot of random issues
+  useEffect(() => {
+    loggedIn !== '' && navigate('/');
+  }, [loggedIn, navigate]);
+
   useEffect(() => {
     const urlSearchParams = new URLSearchParams(window.location.search);
     if (urlSearchParams.has('code')) {
       const code = urlSearchParams.get('code');
       fetch(`/github_login?code=${code}`).then(res => res.json()).then(json => {
         login(json.username);
-        navigate('/');
       });
-
-      const newUrl = `${window.location.origin}${window.location.pathname}`;
-      window.history.replaceState(null, '', newUrl);
     }
-  }, []);
-
-  useEffect(() => {
-    if (wantToRegister) {
-      setButtonText("Register");
-      setSwitchText("Already have an account? Login here.");
-    } else {
-      setButtonText("Login");
-      setSwitchText("Don't have an account? Register here.")
-    }
-  }, [wantToRegister])
+  }, [login, navigate]);
 
   const handleUsername = (event) => {
     setUsername(event.target.value);
@@ -93,9 +80,10 @@ function Registration() {
       } else {
         throw new Error();
       }
-    }).catch(err => console.log('login: ' + err));
+    }).catch(err => alert('login: ' + err));
 
-    navigate('/');
+    // TODO: this navigate should not be necessary but is
+    navigate('/')
   }
 
   const handleRegister = () => {
@@ -201,14 +189,14 @@ function Registration() {
                 width: '100%',
                 padding: '10px 20px'
               }} variant="primary" type="submit" onClick={submit}>
-                {buttonText}
+                {wantToRegister ? 'Register' : 'Login'}
               </Button>
               <Button style={{
                 marginTop: '20px',
                 width: '100%',
                 padding: '10px 20px'
               }} onClick={handleSwitch}>
-                {switchText}
+                {wantToRegister ? 'Already have an account? Login here.' : "Don't have an account? Register here."}
               </Button>
               
             </Form>

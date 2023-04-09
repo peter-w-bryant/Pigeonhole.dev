@@ -10,12 +10,13 @@ import LoginContext from "../contexts/loginContext";
 
 import 'react-toastify/dist/ReactToastify.css';
 
+// TODO: unsaving projects is broken on Home occasionally
 const Project = (props) => {
     const [isStarred, setIsStarred] = useState(false);
     const [loggedIn, setLoggedIn, savedProjects, setSavedProjects] = useContext(LoginContext);
 
     useEffect(() => {
-        savedProjects.find(proj => proj.gh_rep_url === props.gh_rep_url) !== undefined && setIsStarred(true);
+        savedProjects !== undefined && savedProjects.find(proj => proj.gh_rep_url === props.gh_rep_url) !== undefined && setIsStarred(true);
     }, [props, savedProjects, setIsStarred])
 
     const handleStarClick = (projectID) => {
