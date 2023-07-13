@@ -12,7 +12,7 @@ from dotenv import dotenv_values
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) # Add the parent directory to the path
 
 # Custom imports
-from utils import GitHubAPIWrapper
+from utils.github_wrapper_util import GitHubAPIWrapper
 from utils.db import db
 from utils.models import Users, Projects
 from app import create_app
@@ -113,10 +113,10 @@ def pop_projects_from_json(source_json_path = False, testing: bool = False):
 
     if not source_json_path:
         parent_dir = os.path.dirname(os.getcwd())
-        print(parent_dir)
-        file_path = os.path.join(parent_dir, 'api', 'resources', 'repo_scrapers', 'small_repo_data.json')
+
+        file_path = os.path.join(parent_dir, 'backend', 'api', 'resources', 'repo_scrapers', 'small_repo_data.json')
     else: 
-        file_path = os.path.join(parent_dir, 'api', 'resources', 'repo_scrapers', source_json_path)
+        file_path = os.path.join(parent_dir, 'backend', 'api', 'resources', 'repo_scrapers', source_json_path)
     
     repo_data = json.load(open(file_path, 'r')) 
     failed_repos = {}
