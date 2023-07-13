@@ -2,13 +2,11 @@
 from flask import Flask, render_template, session, request, redirect, jsonify, url_for, flash
 from flask import Blueprint, jsonify, current_app, render_template, redirect, url_for, request, flash
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
-from flask_sqlalchemy import SQLAlchemy  # for database
-from sqlalchemy.exc import IntegrityError  # for handling duplicate entries
 from flask_jwt_extended import create_access_token
 
-from flask_dance.contrib.github import make_github_blueprint, github
+from flask_sqlalchemy import SQLAlchemy  
+from sqlalchemy.exc import IntegrityError  
 
-from utils import GitHubAPIWrapper, fetch_all_projects
 from utils.db import db
 from utils.models import Users, SavedProjects, Projects
 from utils.auth import bcrypt, login_manager
@@ -19,7 +17,6 @@ import secrets
 
 auth = Blueprint('auth', __name__)  # blueprint for auth routes
 
-
 @auth.route('/register', methods=['POST'])
 def register():
     """Registers a new user"""
@@ -28,18 +25,17 @@ def register():
         try:
             # check if username already exists
             user = Users.query.filter_by(username=data['username']).first()
-
             if user != None:
                 return 'Username already exists!', 409  # return error message
-
             hashed_password = bcrypt.generate_password_hash(
                 data['password'])  # hash password
-
+            
             new_user = Users(username=data['username'], password=hashed_password,  # create new user
                              email=data['email'])
 
             db.session.add(new_user)  # add new user to database
             db.session.commit()      # commit changes to database
+
             return 'User created successfully!', 201  # return success message
 
         except IntegrityError:
@@ -48,7 +44,6 @@ def register():
         except Exception as e:
             print(e)
             return str(e), 500
-
 
 @auth.route('/login', methods=['POST'])
 def login():
@@ -65,8 +60,6 @@ def login():
         else:
             return 'Username not found!', 401
         
-
-
 @auth.route('/logout', methods=['GET', 'POST'])
 @login_required
 def logout():
