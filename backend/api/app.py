@@ -60,9 +60,8 @@ def create_app(config_class='development'):
         app.register_blueprint(auth)
         app.register_blueprint(profile)
         app.register_blueprint(accounts)
-    
     return app
 
 if __name__ == '__main__':
     app = create_app()
-    app.run(debug=True)
+    app.run(debug=True,host='0.0.0.0')

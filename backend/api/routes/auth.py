@@ -17,34 +17,6 @@ import secrets
 
 auth = Blueprint('auth', __name__)  # blueprint for auth routes
 
-@auth.route('/register', methods=['POST'])
-def register():
-    """Registers a new user"""
-    if request.method == 'POST':
-        data = request.get_json()
-        try:
-            # check if username already exists
-            user = Users.query.filter_by(username=data['username']).first()
-            if user != None:
-                return 'Username already exists!', 409  # return error message
-            hashed_password = bcrypt.generate_password_hash(
-                data['password'])  # hash password
-            
-            new_user = Users(username=data['username'], password=hashed_password,  # create new user
-                             email=data['email'])
-
-            db.session.add(new_user)  # add new user to database
-            db.session.commit()      # commit changes to database
-
-            return 'User created successfully!', 201  # return success message
-
-        except IntegrityError:
-            return 'Username already exists!', 409   # return error message
-
-        except Exception as e:
-            print(e)
-            return str(e), 500
-
 @auth.route('/login', methods=['POST'])
 def login():
     """Logs in a user"""
