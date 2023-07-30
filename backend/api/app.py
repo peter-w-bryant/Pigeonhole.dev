@@ -26,22 +26,10 @@ def create_app(config_class='development'):
     CORS(app)             # Initialize CORS for all routes
     jwt = JWTManager(app) # Initialize JWT for access tokens 
     sslify = SSLify(app)  # Initialize SSLify for HTTPS
-
-    # if configuration class specified as param, init app with provided config
-    if config_class != None:
-        app.config.from_object(config[config_class]) # initialize environment variables from config class
-    # if configuration class not specified, init app from config from .env
-    else:
-        config_class = os.getenv('FLASK_CONFIG')     # get config class from environment variable
-        app.config.from_object(config[config_class]) # initialize environment variables from config
-
-    # Initialize extensions
+    app.config.from_object(config[config_class])
     db.init_app(app)                                                 # initialize database
     login_manager.init_app(app)                                      # initialize login manager for flask-login
-    # app.config['SESSION_COOKIE_SECURE'] = True                       # set session cookie to secure
-    # app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30) # set session lifetime to 30 minutes
     
-    # Register blueprints
     with app.app_context():
         app.register_blueprint(projects)
         app.register_blueprint(auth)
