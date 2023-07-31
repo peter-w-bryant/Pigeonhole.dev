@@ -65,18 +65,16 @@ def github_login():
                 'code': code
             }
 
-            # Exchange the authorization code for an access token
-            token_response = requests.post('https://github.com/login/oauth/access_token',
-                                        params=token_params, headers={'Accept': 'application/json'})
-
-            # Check for errors in the response
-            token_response.raise_for_status()
-
-            print("token_response: ", token_response.json())
-            # Extract the access token from the response
-            access_token = token_response.json().get('access_token')
-
-            print("access_token: ", access_token)
+            testing_access_token = request.args.get('testing_access_token')
+            if testing_access_token is None:
+                # Exchange the authorization code for an access token
+                token_response = requests.post('https://github.com/login/oauth/access_token',
+                                            params=token_params, headers={'Accept': 'application/json'})    
+                
+                token_response.raise_for_status() # Check for errors in the response
+                access_token = token_response.json().get('access_token') # Extract the access token from the response
+            else:
+                access_token = os.environ.get('GITHUB_TOKEN') # Use the testing access token
 
             # Define the headers for the profile request
             profile_headers = {'Authorization': f'Bearer {access_token}', 'Accept': 'application/json'}
@@ -102,7 +100,7 @@ def github_login():
                 user = new_user
 
             login_user(user)
-            auth_token = create_access_token(identity=username)
-            return {'username': username, 'auth_token': auth_token}, 200
+            access_token = create_access_token(identity=username)
+            return {'username': username, 'access_token': access_token}, 200
         
     return 'Something went wrong!', 400
