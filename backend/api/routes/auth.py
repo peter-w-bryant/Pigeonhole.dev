@@ -87,34 +87,22 @@ def github_login():
             # Create a JSON Web Token (JWT) for the user
             auth_token = create_access_token(identity=username)
 
-            # Save the JWT to the user's session
-            session['jwt_token'] = auth_token
-
             # If the username is already in the database, log the user in
             user = Users.query.filter_by(username=username).first()
-            if user != None:
-                login_user(user)
-                return {'username': username, 'auth_token': auth_token}, 200
 
-            else:
-                # If the username is not in the database, create a new user
-                email = profile_response.json().get('email')
-
-                # Generate a random password for the user
-                password = secrets.token_urlsafe(16)
-
-                # Hash the password
-                hashed_password = bcrypt.generate_password_hash(password)
-
-                new_user = Users(username=username, password=hashed_password,  # create new user
+            if user is None:
+                # if the username is not in the database, create a new user
+                email = profile_response.json().get('email') 
+                password = secrets.token_urlsafe(16) # generate a random password for the user
+                hashed_password = bcrypt.generate_password_hash(password)     # hash the password
+                new_user = Users(username=username, password=hashed_password, # create new user
                                     email=email)
+                db.session.add(new_user)  
+                db.session.commit()     
+                user = new_user
 
-                db.session.add(new_user)  # add new user to database
-
-                db.session.commit()      # commit changes to database
-
-                login_user(new_user)    # log in the new user
-
+            login_user(user)
+            auth_token = create_access_token(identity=username)
             return {'username': username, 'auth_token': auth_token}, 200
-
-    return 'Something went wrong!', 200
+        
+    return 'Something went wrong!', 400
