@@ -18,17 +18,13 @@ def AddNewProject():
     """
     if request.method == 'GET': # will be POST in production
         gh_url = request.args.get('gh_url')
-        if not gh_url.startswith("https://github.com"):
-             return {"error": "Invalid GitHub URL"}, 400
-
         gh = GitHubAPIWrapper(gh_url)
         project = Projects.query.filter_by(gh_repo_url=gh_url).first()
     
-        print("Project: ", project)
         if project is not None:
             return {"error": "Project already exists in database"}, 409
         
-        elif gh.verify_repo_url() == False:
+        elif gh.is_valid == False:
             return {"error": "Invalid GitHub URL"}, 400
     
         is_valid, inserted = db.pop_project(gh)

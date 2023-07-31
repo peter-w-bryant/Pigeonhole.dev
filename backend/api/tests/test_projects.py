@@ -32,6 +32,14 @@ class ProjectsTestCase(unittest.TestCase):
         app = create_app()
         with app.test_client() as client:
 
+            # Test invalid project url
+            invalid_url = 'bad_url'
+            response = client.get(f'/add-project?gh_url={invalid_url}')
+            response_json = response.json
+            self.assertEqual(response.status_code, 400)
+            self.assertIn('error', response_json.keys())
+            self.assertEqual(response_json['error'], 'Invalid GitHub URL')
+
             # Test project that is already in the database
             valid_url = 'https://github.com/JuliaLang/julia'
             response = client.get(f'/add-project?gh_url={valid_url}')
@@ -40,13 +48,12 @@ class ProjectsTestCase(unittest.TestCase):
             self.assertIn('error', response_json.keys())
             self.assertEqual(response_json['error'], 'Project already exists in database')
 
-            # Test invalid project url
-            invalid_url = 'bad_url'
-            response = client.get(f'/add-project?gh_url={invalid_url}')
+            # Test valid project url, not in database
+            valid_url = 'https://github.com/pallets/flask'
+            response = client.get(f'/add-project?gh_url={valid_url}')
             response_json = response.json
-            self.assertEqual(response.status_code, 400)
-            self.assertIn('error', response_json.keys())
-            self.assertEqual(response_json['error'], 'Invalid GitHub URL')
+            self.assertEqual(response.status_code, 200)
+            self.assertIn('success', response_json.keys())
 
 
 if __name__ == '__main__':
