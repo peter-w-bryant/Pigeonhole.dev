@@ -55,15 +55,16 @@ def logout():
 @auth.route('/github_login', methods=['GET', 'POST'])
 def github_login():
     if request.method == 'GET':
-        req_args = request.args
-        if 'code' in req_args:
-            code = req_args['code']
+        data = request.get_json()
+        code = data['code']
+        if code != None:
             # Define the parameters for the access token request
             token_params = {
                 'client_id': current_app.config['GITHUB_CLIENT_ID'],
                 'client_secret': current_app.config['GITHUB_CLIENT_SECRET'],
                 'code': code
             }
+
             # Exchange the authorization code for an access token
             token_response = requests.post('https://github.com/login/oauth/access_token',
                                         params=token_params, headers={'Accept': 'application/json'})
@@ -71,21 +72,20 @@ def github_login():
             # Check for errors in the response
             token_response.raise_for_status()
 
+            print("token_response: ", token_response.json())
             # Extract the access token from the response
             access_token = token_response.json().get('access_token')
 
-            # Convert to bearer token
-            bearer_token = "Bearer " + access_token
+            print("access_token: ", access_token)
+
+            # Define the headers for the profile request
+            profile_headers = {'Authorization': f'Bearer {access_token}', 'Accept': 'application/json'}
 
             # Use the access token to fetch the user's GitHub profile information
-            profile_response = requests.get('https://api.github.com/user', headers={
-                                            'Authorization': bearer_token, 'Accept': 'application/json'})
+            profile_response = requests.get('https://api.github.com/user', headers=profile_headers)
             
             # Extract the user's name from the GitHub profile information
             username = profile_response.json().get('login')
-
-            # Create a JSON Web Token (JWT) for the user
-            auth_token = create_access_token(identity=username)
 
             # If the username is already in the database, log the user in
             user = Users.query.filter_by(username=username).first()

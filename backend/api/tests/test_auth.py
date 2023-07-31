@@ -104,8 +104,10 @@ class AuthTestCase(unittest.TestCase):
         # test login with GitHub
         app = create_app()
         with app.test_client() as client:
+            print("Testing route!")
             login_params = {'code': code}
-            response = client.get('/logout', json=login_params)
+            response = client.get('/github_login', json=login_params)
+            print(response.json)
             self.assertEqual(response.status_code, 200)
             self.assertIn('access_token', response.json)
 
