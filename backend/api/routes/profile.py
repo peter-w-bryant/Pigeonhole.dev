@@ -1,12 +1,10 @@
-# Path: backend\api\routes\auth.py
 from flask import session, request, redirect, jsonify, url_for, flash, Blueprint, current_app
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
-from flask_sqlalchemy import SQLAlchemy  # for database
-from sqlalchemy.exc import IntegrityError  # for handling duplicate entries
+from flask_sqlalchemy import SQLAlchemy  
+from sqlalchemy.exc import IntegrityError  
 
 from flask_dance.contrib.github import make_github_blueprint, github
 from flask_jwt_extended import JWTManager, get_jwt_identity, jwt_required
-
 
 from utils import GitHubAPIWrapper, fetch_all_projects
 from utils.db import db

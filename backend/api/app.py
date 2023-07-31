@@ -4,7 +4,7 @@ from datetime import timedelta
 from flask import Flask
 from flask_sslify import SSLify
 from flask_cors import CORS
-from flask_jwt_extended import JWTManager, get_jwt_identity, jwt_required
+from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 
 from routes.auth import auth
 from routes.projects import projects
@@ -31,12 +31,20 @@ def create_app(config_class='development'):
     login_manager.init_app(app)                  # initialize login manager for flask-login
 
     @login_manager.user_loader
+    @jwt_required()
     def load_user(UID):
-        """Reloads the user object from the user ID stored in the session.
+        """Reloads the user object from the user ID stored in the JWT token.
         :param UID: User ID
         :return: User object or None
         """
-        return Users.query.get(int(UID)) 
+        current_user_id = get_jwt_identity()
+        if current_user_id and current_user_id == int(UID):
+            print("FLAG!!! current_user_id: ", current_user_id)
+            # Here you can load the user object using the current_user_id
+            # For example, if you have a User model with a get_by_id method:
+            user = Users.get_by_id(current_user_id)
+            return user
+        return None
     
     with app.app_context():
         app.register_blueprint(projects)
@@ -44,23 +52,6 @@ def create_app(config_class='development'):
         app.register_blueprint(profile)
         app.register_blueprint(accounts)
     return app
-
-# @login_manager.user_loader
-# @jwt_required()
-# def load_user(UID):
-#     """Reloads the user object from the user ID stored in the JWT token.
-#     :param UID: User ID
-#     :return: User object or None
-#     """
-#     current_user_id = get_jwt_identity()
-#     if current_user_id and current_user_id == int(UID):
-#         # Here you can load the user object using the current_user_id
-#         # For example, if you have a User model with a get_by_id method:
-#         user = Users.get_by_id(current_user_id)
-#         return user
-#     return None
-
-
 
 if __name__ == '__main__':
     app = create_app()

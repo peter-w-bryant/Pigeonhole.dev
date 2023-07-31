@@ -1,5 +1,6 @@
 from flask_login import UserMixin
 from utils.db import db
+from utils.auth import bcrypt
 
 class Projects(db.Model):
     __tablename__ = 'projects'
@@ -54,6 +55,12 @@ class Users(db.Model, UserMixin):
     
     def get_id(self):
         return self.UID
+    
+    def check_password(self, password):
+        if bcrypt.check_password_hash(self.password, password):
+            return True
+        return False
+
     
     def print_all_users():
         for user in Users.query.all():

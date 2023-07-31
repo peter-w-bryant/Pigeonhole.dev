@@ -2,7 +2,7 @@
 from flask import Flask, render_template, session, request, redirect, jsonify, url_for, flash
 from flask import Blueprint, jsonify, current_app, render_template, redirect, url_for, request, flash
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
 from flask_sqlalchemy import SQLAlchemy  
 from sqlalchemy.exc import IntegrityError  
@@ -17,26 +17,40 @@ import secrets
 
 auth = Blueprint('auth', __name__)  # blueprint for auth routes
 
+def authenticate(username, password):
+    # Get user object from database
+    user = Users.query.filter_by(username=username).first()
+
+    # Check if user exists and password is correct
+    if user is not None and user.check_password(password):
+        return user
+
+    # Return None if authentication fails
+    return None
+
 @auth.route('/login', methods=['POST'])
 def login():
-    """Logs in a user"""
+    """Logs in a user
+    :return: JSON Web Token (JWT) to be used for protected routes
+    """
     if request.method == 'POST':
         data = request.get_json()
-        user = Users.query.filter_by(username=data['username']).first()
-        if user != None:
-            if bcrypt.check_password_hash(user.password, data['password']):
-                login_user(user)
-                return 'Logged in successfully!', 200
-
-            return 'Incorrect password!', 401
-        else:
-            return 'Username not found!', 401
+        user = authenticate(data['username'], data['password'])
+        if user is None:
+            return jsonify({'error': 'Invalid username or password'}), 401
+        
+        # Create access token
+        access_token = create_access_token(identity=user.UID)
+        return jsonify({'access_token': access_token}), 200
         
 @auth.route('/logout', methods=['GET', 'POST'])
-@login_required
+@jwt_required()
 def logout():
+    """Logs out a user
+    return: Message indicating user has been logged out (status code 422 with invalid JWT, or status code 401 if no JWT)
+    """
     logout_user()
-    return 'Logged out successfully!', 200
+    return jsonify({'message': 'User logged out'}), 200
 
 @auth.route('/github_login', methods=['GET', 'POST'])
 def github_login():
