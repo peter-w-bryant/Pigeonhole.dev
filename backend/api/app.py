@@ -4,7 +4,7 @@ from datetime import timedelta
 from flask import Flask
 from flask_sslify import SSLify
 from flask_cors import CORS
-from flask_jwt_extended import JWTManager, get_jwt_identity
+from flask_jwt_extended import JWTManager, get_jwt_identity, jwt_required
 
 from routes.auth import auth
 from routes.projects import projects
@@ -26,9 +26,17 @@ def create_app(config_class='development'):
     CORS(app)             # Initialize CORS for all routes
     jwt = JWTManager(app) # Initialize JWT for access tokens 
     sslify = SSLify(app)  # Initialize SSLify for HTTPS
-    app.config.from_object(config[config_class])
-    db.init_app(app)                                                 # initialize database
-    login_manager.init_app(app)                                      # initialize login manager for flask-login
+    app.config.from_object(config[config_class]) # load config from config.py
+    db.init_app(app)                             # initialize database
+    login_manager.init_app(app)                  # initialize login manager for flask-login
+
+    @login_manager.user_loader
+    def load_user(UID):
+        """Reloads the user object from the user ID stored in the session.
+        :param UID: User ID
+        :return: User object or None
+        """
+        return Users.query.get(int(UID)) 
     
     with app.app_context():
         app.register_blueprint(projects)
@@ -37,19 +45,22 @@ def create_app(config_class='development'):
         app.register_blueprint(accounts)
     return app
 
-@login_manager.user_loader
-def load_user(UID):
-    """Reloads the user object from the user ID stored in the JWT token.
-    :param UID: User ID
-    :return: User object or None
-    """
-    current_user_id = get_jwt_identity()
-    if current_user_id and current_user_id == int(UID):
-        # Here you can load the user object using the current_user_id
-        # For example, if you have a User model with a get_by_id method:
-        user = Users.get_by_id(current_user_id)
-        return user
-    return None
+# @login_manager.user_loader
+# @jwt_required()
+# def load_user(UID):
+#     """Reloads the user object from the user ID stored in the JWT token.
+#     :param UID: User ID
+#     :return: User object or None
+#     """
+#     current_user_id = get_jwt_identity()
+#     if current_user_id and current_user_id == int(UID):
+#         # Here you can load the user object using the current_user_id
+#         # For example, if you have a User model with a get_by_id method:
+#         user = Users.get_by_id(current_user_id)
+#         return user
+#     return None
+
+
 
 if __name__ == '__main__':
     app = create_app()

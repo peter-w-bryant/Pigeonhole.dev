@@ -1,3 +1,2 @@
 FLASK_APP=api/app
 FLASK_DEBUG=1
-FLASK_CONFIG=development

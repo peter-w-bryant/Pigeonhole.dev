@@ -38,7 +38,6 @@ def logout():
     logout_user()
     return 'Logged out successfully!', 200
 
-
 @auth.route('/github_login', methods=['GET', 'POST'])
 def github_login():
     if request.method == 'GET':

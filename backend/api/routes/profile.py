@@ -5,6 +5,8 @@ from flask_sqlalchemy import SQLAlchemy  # for database
 from sqlalchemy.exc import IntegrityError  # for handling duplicate entries
 
 from flask_dance.contrib.github import make_github_blueprint, github
+from flask_jwt_extended import JWTManager, get_jwt_identity, jwt_required
+
 
 from utils import GitHubAPIWrapper, fetch_all_projects
 from utils.db import db
@@ -25,6 +27,7 @@ def save_project():
         data = request.get_json()
         user = Users.query.filter_by(username=data['username']).first()
         UID = user.UID
+        print(UID)
         if user != None:
             project_exists = SavedProjects.query.filter_by(UID=UID, pUID=data['pUID']).first()
             if project_exists != None:
