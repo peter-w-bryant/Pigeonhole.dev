@@ -15,9 +15,9 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) # A
 from utils.github_wrapper_util import GitHubAPIWrapper
 from utils.db import db
 from utils.models import Users, Projects
-from app import create_app
 
-app = create_app()
+# from app import create_app
+# app = create_app()
 
 def pop_project(gh_repo_url: str):
     """Populate the project table with data for a single project.
@@ -25,7 +25,7 @@ def pop_project(gh_repo_url: str):
     Args:
         gh_repo_url (str): The GitHub repo URL for the project to be added to the database.
     Returns:
-        insert_result (dict): A dictionary containing the result of the insert operation (success or error)
+        bool: True if the project was added to the database, False if not.
     """
  
     # Check if the repo is already in the database
@@ -153,10 +153,10 @@ def delete_projects():
     except Exception as e:
         print(e)
 
-if __name__ == "__main__":
-    gh_repo_url  = 'https://github.com/rocketchat/rocket.chat'  
-    print("Populating Projects table...")
-    with app.app_context():
-        # pop_project(gh_repo_url) # solo project pop
-        pop_projects_from_json(testing= True)  # JSON project pops
-        # delete_projects() # delete all projects
+# if __name__ == "__main__":
+    # gh_repo_url  = 'https://github.com/rocketchat/rocket.chat'  
+    # print("Populating Projects table...")
+    # with app.app_context():
+    #     # pop_project(gh_repo_url) # solo project pop
+    #     pop_projects_from_json(testing= True)  # JSON project pops
+    #     # delete_projects() # delete all projects

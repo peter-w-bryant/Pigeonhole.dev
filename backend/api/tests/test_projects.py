@@ -28,5 +28,26 @@ class ProjectsTestCase(unittest.TestCase):
                 self.assertIn(key, response_json['Cardinal'].keys())
         pass
 
+    def test_add_new_project(self):
+        app = create_app()
+        with app.test_client() as client:
+
+            # Test project that is already in the database
+            valid_url = 'https://github.com/JuliaLang/julia'
+            response = client.get(f'/add-project?gh_url={valid_url}')
+            response_json = response.json
+            self.assertEqual(response.status_code, 409)
+            self.assertIn('error', response_json.keys())
+            self.assertEqual(response_json['error'], 'Project already exists in database')
+
+            # Test invalid project url
+            invalid_url = 'bad_url'
+            response = client.get(f'/add-project?gh_url={invalid_url}')
+            response_json = response.json
+            self.assertEqual(response.status_code, 400)
+            self.assertIn('error', response_json.keys())
+            self.assertEqual(response_json['error'], 'Invalid GitHub URL')
+
+
 if __name__ == '__main__':
     unittest.main()
