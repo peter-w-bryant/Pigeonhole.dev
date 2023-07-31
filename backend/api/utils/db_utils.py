@@ -15,9 +15,7 @@ from utils.models import Projects
 
 def fetch_all_projects():
     """Fetch all data from the projects table.
-
-     Returns:
-        all_projects_dict (dict): A dictionary of dictionaries containing all the data from the projects table.
+    :return: A dictionary of dictionaries containing all the data from the projects table.
     """
     all_projects = Projects.query.all()
     all_projects_dict = {}
