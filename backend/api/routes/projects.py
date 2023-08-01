@@ -1,13 +1,12 @@
-from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
-from flask import Blueprint, jsonify, current_app, render_template, redirect, url_for, request, flash
+from flask import Flask, render_template, request, redirect, jsonify, url_for, flash, Blueprint, current_app
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user # for handling user sessions
 from flask_bcrypt import Bcrypt 
 from flask_sqlalchemy import SQLAlchemy 
 from sqlalchemy.exc import IntegrityError 
-from utils import GitHubAPIWrapper, fetch_all_projects
+
+from scripts import GitHubAPIWrapper, fetch_all_projects, pop_project
 from utils.db import db
 from utils.models import Users, SavedProjects, Projects
-from scripts.database import pop_project
 
 projects = Blueprint('projects', __name__) # blueprint for auth routes
 

@@ -1,8 +1,8 @@
-from flask_login import LoginManager # for handling user sessions
-from flask_bcrypt import Bcrypt # for hashing passwords
+from flask_login import LoginManager
+from flask_bcrypt import Bcrypt
 
 # initialize bcrypt and login_manager
-bcrypt = Bcrypt() # Bcrypt for hashing passwords
+bcrypt = Bcrypt()
 login_manager = LoginManager()
 
 

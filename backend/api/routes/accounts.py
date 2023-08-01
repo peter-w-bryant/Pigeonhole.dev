@@ -7,7 +7,7 @@ from flask_jwt_extended import create_access_token
 from flask_sqlalchemy import SQLAlchemy 
 from sqlalchemy.exc import IntegrityError  
 
-from utils import GitHubAPIWrapper, fetch_all_projects
+from scripts import GitHubAPIWrapper, fetch_all_projects
 from utils.db import db
 from utils.models import Users, SavedProjects, Projects
 from utils.auth import bcrypt, login_manager

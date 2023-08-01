@@ -39,7 +39,6 @@ def create_app(config_class='development'):
         """
         current_user_id = get_jwt_identity()
         if current_user_id and current_user_id == int(UID):
-            print("FLAG!!! current_user_id: ", current_user_id)
             # Here you can load the user object using the current_user_id
             # For example, if you have a User model with a get_by_id method:
             user = Users.get_by_id(current_user_id)

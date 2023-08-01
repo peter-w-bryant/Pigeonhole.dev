@@ -6,7 +6,7 @@ from flask import Flask
 from dotenv import load_dotenv
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) # set path to backend\api
-from utils import GitHubAPIWrapper
+from scripts import GitHubAPIWrapper
 
 class GitHubAPIWrapperTestCase(unittest.TestCase):
 
