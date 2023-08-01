@@ -40,22 +40,21 @@ class GitHubAPIWrapper:
                     # Issues / labels
                     self.gh_issues_dict = self.get_issues()
                     self.gh_issues = list(self.gh_issues_dict.keys())
+
                     # Stars, forks, watchers count
                     self.gh_stargazers_count = self.get_stargazers_count()
                     self.gh_forks_count = self.get_forks_count()
                     self.gh_watchers_count = self.get_watchers_count()
-                    # Date of last commit
-                    self.gh_date_of_last_commit = self.get_date_of_last_commit()
-                    # Data of last MERGED pull request
-                    self.gh_date_of_last_merged_pull_request = self.get_date_of_last_merged_pull_request()
-                    # Get CONTRIBUTING.md URL
-                    self.gh_contributing_url = self.get_contribute_url()
-                    # Generate New Contributor Score
-                    self.gh_new_contributor_score = self.generate_new_contributor_score()
+
+                    # Dates (last commit, last merged pull request)
+                    self.gh_date_of_last_commit = self.get_date_of_last_commit()                           # Date of last commit
+                    self.gh_date_of_last_merged_pull_request = self.get_date_of_last_merged_pull_request() # Data of last MERGED pull request
+
+                    self.gh_contributing_url = self.get_contribute_url() # sGet CONTRIBUTING.md URL
+                    self.gh_new_contributor_score = self.generate_new_contributor_score() # Generate New Contributor Score
 
         except Exception as e:
             print("Error in GitHubAPI INIT:", e)
-            print("f3")
 
     def __str__(self):
         return f"{self.repo_url} - {self.gh_description}"
@@ -114,8 +113,6 @@ class GitHubAPIWrapper:
         except Exception as e:
             template = "get_date_of_last_merged_pull_request(): An exception of type {0} occurred. Arguments:\n{1!r}" # !r is used to get the raw representation of the argument
             message = template.format(type(e).__name__, e.args) # type(e).__name__ gets the name of the exception type and e.args gets the arguments passed to the exception
-            print(message)
-        
         return date_of_last_merged_pull_request
 
     def get_issues(self):
@@ -252,15 +249,3 @@ class GitHubAPIWrapper:
         except Exception as e:
             print("Error in generate_contrib_score:" ,e)
         return round((score/max_score) * 100, 2)
-
-if __name__ == '__main__':
-    # repo_url = 'https://github.com/up-for-grabs/up-for-grabs.net'
-    repo_url = 'https://github.com/Bhupesh-V/defe'
-    gh = GitHubAPIWrapper(repo_url)
-    # print(gh.get_contribute_url())
-   
-    
-
-    
-
-    
