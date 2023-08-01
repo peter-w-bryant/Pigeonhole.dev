@@ -11,29 +11,29 @@ class Projects(db.Model):
     num_stars = db.Column(db.Integer, nullable=False)
     num_forks = db.Column(db.Integer, nullable=False)
     num_watchers = db.Column(db.Integer, nullable=False)
-    issue_label_1 = db.Column(db.String(45), nullable=False)
-    issue_label_2 = db.Column(db.String(45), nullable=False)
-    issue_label_3 = db.Column(db.String(45), nullable=False)
-    issue_label_4 = db.Column(db.String(45), nullable=False)
-    issue_label_5 = db.Column(db.String(45), nullable=False)
-    issue_label_6 = db.Column(db.String(45), nullable=False)
-    issue_label_7 = db.Column(db.String(45), nullable=False)
-    issue_label_1_count = db.Column(db.Integer, nullable=False)
-    issue_label_2_count = db.Column(db.Integer, nullable=False)
-    issue_label_3_count = db.Column(db.Integer, nullable=False)
-    issue_label_4_count = db.Column(db.Integer, nullable=False)
-    issue_label_5_count = db.Column(db.Integer, nullable=False)
-    issue_label_6_count = db.Column(db.Integer, nullable=False)
-    issue_label_7_count = db.Column(db.Integer, nullable=False)
+    # issue_label_1 = db.Column(db.String(45), nullable=True)
+    # issue_label_2 = db.Column(db.String(45), nullable=True)
+    # issue_label_3 = db.Column(db.String(45), nullable=True)
+    # issue_label_4 = db.Column(db.String(45), nullable=True)
+    # issue_label_5 = db.Column(db.String(45), nullable=True)
+    # issue_label_6 = db.Column(db.String(45), nullable=True)
+    # issue_label_7 = db.Column(db.String(45), nullable=True)
+    # issue_label_1_count = db.Column(db.Integer, nullable=True)
+    # issue_label_2_count = db.Column(db.Integer, nullable=True)
+    # issue_label_3_count = db.Column(db.Integer, nullable=True)
+    # issue_label_4_count = db.Column(db.Integer, nullable=True)
+    # issue_label_5_count = db.Column(db.Integer, nullable=True)
+    # issue_label_6_count = db.Column(db.Integer, nullable=True)
+    # issue_label_7_count = db.Column(db.Integer, nullable=True)
     gh_username = db.Column(db.String(100), nullable=False)
     date_last_merged_PR = db.Column(db.String(45), nullable=False)
     date_last_commit = db.Column(db.String(45), nullable=False)
-    gh_topics0 = db.Column(db.String(30), nullable=False)
-    gh_topics1 = db.Column(db.String(30), nullable=False)
-    gh_topics2 = db.Column(db.String(30), nullable=False)
-    gh_topics3 = db.Column(db.String(30), nullable=False)
-    gh_topics4 = db.Column(db.String(30), nullable=False)
-    gh_topics5 = db.Column(db.String(30), nullable=False)
+    # gh_topics0 = db.Column(db.String(30), nullable=True)
+    # gh_topics1 = db.Column(db.String(30), nullable=True)
+    # gh_topics2 = db.Column(db.String(30), nullable=True)
+    # gh_topics3 = db.Column(db.String(30), nullable=True)
+    # gh_topics4 = db.Column(db.String(30), nullable=True)
+    # gh_topics5 = db.Column(db.String(30), nullable=True)
     contrib_url = db.Column(db.String(150), nullable=False)
     new_contrib_score = db.Column(db.Float, nullable=False)
 
@@ -42,6 +42,21 @@ class Projects(db.Model):
     
     def get_all_projects(self):
         return Projects.query.all()
+    
+class ProjectIssues(db.Model):
+    # project id from projects table
+    __tablename__ = 'project_issues'
+    piUID = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
+    pUID = db.Column(db.Integer, db.ForeignKey('projects.pUID'), nullable=False)
+    issue_label = db.Column(db.String(45), nullable=False)
+    issue_label_count = db.Column(db.Integer, nullable=False)
+
+class ProjectTopics(db.Model):
+    # project id from projects table
+    __tablename__ = 'project_topics'
+    ptUID = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
+    pUID = db.Column(db.Integer, db.ForeignKey('projects.pUID'), nullable=False)
+    topic = db.Column(db.String(30), nullable=False)
 
 class Users(db.Model, UserMixin):
     __tablename__ = 'users'

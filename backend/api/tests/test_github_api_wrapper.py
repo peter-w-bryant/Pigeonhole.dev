@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) # set path to backend\api
 from scripts import GitHubAPIWrapper
 
-class GitHubAPIWrapperTestCase(unittest.TestCase):
+class GitHubAPIWrapperTestCases(unittest.TestCase):
 
     def test_valid_github_url(self):
         valid_url = 'https://github.com/pallets/flask'
@@ -78,7 +78,6 @@ class GitHubAPIWrapperTestCase(unittest.TestCase):
         invalid_url = 'https://github.com/pigeonhole.dev' # missing username
         gh = GitHubAPIWrapper(invalid_url)
         self.assertEqual(gh.is_valid, False)
-
 
 if __name__ == '__main__':
     unittest.main()

@@ -4,7 +4,7 @@ from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy 
 from sqlalchemy.exc import IntegrityError 
 
-from scripts import GitHubAPIWrapper, fetch_all_projects, pop_project
+from scripts import GitHubAPIWrapper, fetch_all_projects, add_project_to_db
 from utils.db import db
 from utils.models import Users, SavedProjects, Projects
 
@@ -24,7 +24,7 @@ def AddNewProject():
             if project is not None:
                 return {"error": "Project already exists in database"}, 409
             print("f1")
-            is_valid, inserted = pop_project(gh.repo_url)
+            is_valid, inserted = add_project_to_db(gh.repo_url)
         else:
             return {"error": "Invalid GitHub URL"}, 400
         

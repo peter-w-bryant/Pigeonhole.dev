@@ -36,7 +36,10 @@ class GitHubAPIWrapper:
 
                     # Issues / labels
                     self.gh_issues_dict = self.get_issues()
-                    self.gh_issues = list(self.gh_issues_dict.keys())
+                    if self.gh_issues_dict == {}:
+                        self.gh_issues = [''] * 7
+                    else:
+                        self.gh_issues = list(self.gh_issues_dict.keys())
 
                     # Stars, forks, watchers count
                     self.gh_stargazers_count = self.get_stargazers_count()
@@ -51,11 +54,11 @@ class GitHubAPIWrapper:
                     self.gh_new_contributor_score = self.generate_new_contributor_score() # Generate New Contributor Score
 
         except IndexError as ie:
-            print("IndexError in GitHubAPIWrapper INIT:", ie)
+            # print("IndexError in GitHubAPIWrapper INIT:", ie)
             self.is_valid = False
         
         except Exception as e:
-            print("Error in GitHubAPIWrapper INIT:", e)
+            # print("Error in GitHubAPIWrapper INIT:", e)
             self.is_valid = False
 
     def __str__(self):
@@ -123,22 +126,27 @@ class GitHubAPIWrapper:
         Returns:
         issue_label_counts(dict): a dictionary with keys corresponding to unique issue labels whose values are the count
         of open issues that have that label tag.
-        
         """
-        issues_json = requests.get(self.base_url + "/issues", headers=self.auth_headers).json()
         issue_label_counts = {}
-        for issue in issues_json:
-            try:
-                if issue['labels']:
-                    for i in range(len(issue['labels'])):
-                        if issue['labels'][i]['name'] not in issue_label_counts.keys():
-                            issue_label_counts[issue['labels'][i]['name']] = 1
-                        else:
-                            issue_label_counts[issue['labels'][i]['name']] += 1
-            except Exception as e:
-                print(e)
-                pass
-        
+        page = 0
+        while True:
+            page += 1
+            issues_json = requests.get(self.base_url + f"/issues?state=open&per_page=100&page={page}", headers=self.auth_headers).json()
+            if issues_json == []:
+                break
+            for issue in issues_json:
+                try:
+                    if issue['labels'] != []:
+                        for i in range(len(issue['labels'])):
+                            if issue['labels'][i]['name'] not in issue_label_counts.keys():
+                                issue_label_counts[issue['labels'][i]['name']] = 1
+                            else:
+                                issue_label_counts[issue['labels'][i]['name']] += 1
+
+                except Exception as e:
+                    print(e)
+                    pass
+                            
         return self.get_issues_reorder_keys(issue_label_counts)
     
     def get_issues_reorder_keys(self, issue_dict):
