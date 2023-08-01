@@ -10,9 +10,8 @@ class GitHubAPIWrapper:
         load_dotenv()
         try:
 
-            if not repo_url.startswith("https://github.com"):
+            if not repo_url.startswith("https://github.com") or repo_url == "https://github.com":
                 self.is_valid = False
-                print("f1")
             else:
                 self.repo_url = repo_url
                 self.username = repo_url.split('/')[3]
@@ -26,8 +25,6 @@ class GitHubAPIWrapper:
   
                 if not self.verify_repo_url():
                     self.is_valid = False
-                    print("f2")
-
                 else:
 
                     self.is_valid = True
@@ -53,8 +50,13 @@ class GitHubAPIWrapper:
                     self.gh_contributing_url = self.get_contribute_url() # sGet CONTRIBUTING.md URL
                     self.gh_new_contributor_score = self.generate_new_contributor_score() # Generate New Contributor Score
 
+        except IndexError as ie:
+            print("IndexError in GitHubAPIWrapper INIT:", ie)
+            self.is_valid = False
+        
         except Exception as e:
-            print("Error in GitHubAPI INIT:", e)
+            print("Error in GitHubAPIWrapper INIT:", e)
+            self.is_valid = False
 
     def __str__(self):
         return f"{self.repo_url} - {self.gh_description}"

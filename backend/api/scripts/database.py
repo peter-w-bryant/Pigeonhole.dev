@@ -30,7 +30,11 @@ def pop_project(gh_repo_url: str):
  
     # Check if the repo is already in the database
     # db.cursor.execute(f"SELECT gh_repo_url FROM projects WHERE gh_repo_url = '{gh_repo_url}'")
+
+    print('f2')
     exists = Projects.query.filter_by(gh_repo_url=gh_repo_url).first()
+    print('f3')
+    print("exists: ", exists)
     
     if exists is not None:
         return False, False

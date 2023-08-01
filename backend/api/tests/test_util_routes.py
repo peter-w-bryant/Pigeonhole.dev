@@ -65,5 +65,20 @@ class GitHubAPIWrapperTestCase(unittest.TestCase):
         self.assertEqual(gh.gh_contributing_url == "https://github.com/tensorflow/tensorflow/blob/master/CONTRIBUTING.md", True) # Test CONTRIBUTING.md
         self.assertEqual(gh.gh_new_contributor_score > 0, True) # Test new contributor score
 
+    def test_invalid_github_url(self):
+        invalid_url = 'bad_url'
+        gh = GitHubAPIWrapper(invalid_url)
+        self.assertEqual(gh.is_valid, False)
+        invalid_url = 'https://github.com'
+        gh = GitHubAPIWrapper(invalid_url)
+        self.assertEqual(gh.is_valid, False)
+        invalid_url = 'https://github.com/not_a_user/not_a_repo'
+        gh = GitHubAPIWrapper(invalid_url)
+        self.assertEqual(gh.is_valid, False)
+        invalid_url = 'https://github.com/pigeonhole.dev' # missing username
+        gh = GitHubAPIWrapper(invalid_url)
+        self.assertEqual(gh.is_valid, False)
+
+
 if __name__ == '__main__':
     unittest.main()
