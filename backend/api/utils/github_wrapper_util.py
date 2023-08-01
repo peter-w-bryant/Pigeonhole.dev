@@ -7,9 +7,12 @@ import os
 class GitHubAPIWrapper:
     """GitHub API wrapper class"""
     def __init__(self, repo_url):
+        load_dotenv()
         try:
+
             if not repo_url.startswith("https://github.com"):
                 self.is_valid = False
+                print("f1")
             else:
                 self.repo_url = repo_url
                 self.username = repo_url.split('/')[3]
@@ -17,17 +20,23 @@ class GitHubAPIWrapper:
                 self.base_url = f"https://api.github.com/repos/{self.username}/{self.repo_name}"
                 self.search_url = f"https://api.github.com/search/issues?q=repo:{self.username}/{self.repo_name}"
                 self.auth_headers = {'Authorization': 'token ' + os.environ.get('GITHUB_TOKEN')}
-                self.repo_data = requests.get(self.base_url, headers=self.auth_headers).json()
-            
+                self.response = requests.get(self.base_url, headers=self.auth_headers)
+                self.status_code = self.response.status_code
+                self.repo_data = self.response.json()
+  
                 if not self.verify_repo_url():
                     self.is_valid = False
+                    print("f2")
+
                 else:
+
                     self.is_valid = True
-                    # Get the data from GitHub API
-                    self.gh_description = self.get_repo_description()
+                    self.gh_description = self.get_repo_description() # Get the data from GitHub API
+
                     # Topics / tech stack
                     self.gh_topics = [''] * 6 # empty list of 6 strings to store the topics
                     self.gh_topics[:len(self.get_topics())] = self.get_topics() # get the topics
+
                     # Issues / labels
                     self.gh_issues_dict = self.get_issues()
                     self.gh_issues = list(self.gh_issues_dict.keys())
@@ -46,7 +55,7 @@ class GitHubAPIWrapper:
 
         except Exception as e:
             print("Error in GitHubAPI INIT:", e)
-            self.is_valid = False
+            print("f3")
 
     def __str__(self):
         return f"{self.repo_url} - {self.gh_description}"
