@@ -10,7 +10,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) # A
 
 from scripts.github_api_wrapper import GitHubAPIWrapper
 from utils.db import db
-from utils.models import Users, Projects
+from utils.models import Users, Projects, ProjectIssues, ProjectTopics
 
 
 def add_project_to_db(gh_repo_url: str):
@@ -19,107 +19,50 @@ def add_project_to_db(gh_repo_url: str):
     :return: True if successful, False otherwise
     """
 
-    print("gh_repo_url: ", gh_repo_url)
-
     exists = Projects.query.filter_by(gh_repo_url=gh_repo_url).first() # Check if the repo is already in the database
 
-    print("exists: ", exists)
-    
     if exists is not None:
         return {"status": "error", "message": "Project already exists in the database."}
     
-    gh = GitHubAPIWrapper(gh_repo_url) # GitHub API wrapper
+    gh = GitHubAPIWrapper(gh_repo_url) 
 
-    if gh.is_valid is False:
+    if not gh.is_valid:
         return {"status": "error", "message": "Invalid GitHub repository URL."}
     
     # Insert the data into the database
     try:
-        # DB Topics Column Names
-        topics_cols = "gh_topics0, gh_topics1, gh_topics2, gh_topics3, gh_topics4, gh_topics5" 
-        # DB Issues Column Names
-        issues_cols = "issue_label_1, issue_label_2, issue_label_3, issue_label_4, issue_label_5, \
-                       issue_label_6, issue_label_7" 
-        
-        # DB Issues Counts Column Names
-        issues_counts_cols = "issue_label_1_count, issue_label_2_count, issue_label_3_count, \
-                              issue_label_4_count, issue_label_5_count, issue_label_6_count, issue_label_7_count"
-        
-        # All DB Column Names
-        cols = f"(gh_repo_name, gh_repo_url, gh_description, gh_username, num_stars, num_forks, num_watchers, \
-                 {topics_cols}, {issues_cols}, {issues_counts_cols}, \
-                 date_last_commit, date_last_merged_PR, contrib_url, new_contrib_score)" 
-        
-        print(len(gh.gh_topics), len(gh.gh_issues))
-        print(gh.gh_topics)
-        print(gh.gh_issues)
-
-        # DB Topics Column Values
-        # topics_vals = f"N'{gh.gh_topics[0]}', N'{gh.gh_topics[1]}', N'{gh.gh_topics[2]}', N'{gh.gh_topics[3]}', \
-        #                 N'{gh.gh_topics[4]}', N'{gh.gh_topics[5]}'"
-
-        topics_vals = ""
-        for topic in gh.gh_topics:
-            topics_vals += f"N'{topic}', "
-        topics_vals = topics_vals[:-2]  # remove the last comma and space
-
-        # DB Issues Column Values
-        # issues_vals = f"N'{gh.gh_issues[0]}', N'{gh.gh_issues[1]}', N'{gh.gh_issues[2]}', N'{gh.gh_issues[3]}', \
-        #                 N'{gh.gh_issues[4]}', N'{gh.gh_issues[5]}', N'{gh.gh_issues[6]}'"
-
-        issues_vals = ""
-        for issue in gh.gh_issues:
-            issues_vals += f"N'{issue}', "
-        issues_vals = issues_vals[:-2]  # remove the last comma and space
-
-
-        # DB Issues Counts Column Values
-        # issue_counts = f"N'{gh.gh_issues_dict[gh.gh_issues[0]]}', N'{gh.gh_issues_dict[gh.gh_issues[1]]}', \
-        #                  N'{gh.gh_issues_dict[gh.gh_issues[2]]}', N'{gh.gh_issues_dict[gh.gh_issues[3]]}', \
-        #                  N'{gh.gh_issues_dict[gh.gh_issues[4]]}', N'{gh.gh_issues_dict[gh.gh_issues[5]]}', \
-        #                  N'{gh.gh_issues_dict[gh.gh_issues[6]]}'"
-        
-        issue_counts = ""
-        if gh.gh_issues_dict == {}:
-            for issue in gh.gh_issues:
-                issue_counts += f"N'0', "
-        else:
-            for issue in gh.gh_issues:
-                issue_counts += f"N'{gh.gh_issues_dict[issue]}', "
-        issue_counts = issue_counts[:-2]  
-
-        # All DB Column Values  
-        values = f"(N'{gh.repo_name}', N'{gh_repo_url}', N'{gh.gh_description}', N'{gh.username}', \
-                   {gh.gh_stargazers_count}, {gh.gh_forks_count}, {gh.gh_watchers_count}, \
-                   {topics_vals}, {issues_vals}, {issue_counts}, N'{gh.gh_date_of_last_commit}', \
-                   N'{gh.gh_date_of_last_merged_pull_request}', N'{gh.gh_contributing_url}', N'{gh.gh_new_contributor_score}')" 
-            
-        q = f"INSERT INTO projects {cols} VALUES {values}"
-        
-        print("f1")
-        # Initialize Projects object
-        project = Projects(gh_repo_name=gh.repo_name, gh_repo_url=gh_repo_url, gh_description=gh.gh_description, gh_username=gh.username, 
-                           num_stars=gh.gh_stargazers_count, num_forks=gh.gh_forks_count, num_watchers=gh.gh_watchers_count, 
-                            gh_topics0=gh.gh_topics[0], gh_topics1=gh.gh_topics[1], gh_topics2=gh.gh_topics[2], gh_topics3=gh.gh_topics[3], 
-                            gh_topics4=gh.gh_topics[4], gh_topics5=gh.gh_topics[5], issue_label_1=gh.gh_issues[0], issue_label_2=gh.gh_issues[1], 
-                            issue_label_3=gh.gh_issues[2], issue_label_4=gh.gh_issues[3], issue_label_5=gh.gh_issues[4],
-                            issue_label_6=gh.gh_issues[5], issue_label_7=gh.gh_issues[6], issue_label_1_count=gh.gh_issues_dict[gh.gh_issues[0]],
-                            issue_label_2_count=gh.gh_issues_dict[gh.gh_issues[1]], issue_label_3_count=gh.gh_issues_dict[gh.gh_issues[2]],
-                            issue_label_4_count=gh.gh_issues_dict[gh.gh_issues[3]], issue_label_5_count=gh.gh_issues_dict[gh.gh_issues[4]],
-                            issue_label_6_count=gh.gh_issues_dict[gh.gh_issues[5]], issue_label_7_count=gh.gh_issues_dict[gh.gh_issues[6]],
-                            date_last_commit=gh.gh_date_of_last_commit, date_last_merged_PR=gh.gh_date_of_last_merged_pull_request,
-                            contrib_url=gh.gh_contributing_url, new_contrib_score=gh.gh_new_contributor_score)
-        
-        print("f2")
-        # Add project to the database
+        # __projects__ table        
+        project = Projects(gh_repo_url=gh.repo_url, gh_repo_name=gh.repo_name, gh_username=gh.username, gh_description=gh.gh_description, \
+                           num_stars=gh.gh_stargazers_count, num_forks=gh.gh_forks_count, num_watchers=gh.gh_watchers_count, \
+                           date_last_merged_PR=gh.gh_date_of_last_merged_pull_request, date_last_commit=gh.gh_date_of_last_commit, \
+                           contrib_url=gh.gh_contributing_url, new_contrib_score=gh.gh_new_contributor_score)
         db.session.add(project)
+        db.session.flush() 
+        pUID = project.pUID
+
+        # ___project_topics___ table
+        for issue in gh.gh_issues_dict:
+            project_issue = ProjectIssues(pUID=pUID, issue_label=issue, issue_label_count=gh.gh_issues_dict[issue])
+            db.session.add(project_issue)
+
+        # __project_issues__ table
+        for topic in gh.gh_topics:
+            project_topic = ProjectTopics(pUID=pUID, topic=topic)
+            db.session.add(project_topic)
+
         db.session.commit()
 
     except IndexError as ie:
+        db.session.rollback()
         return {'status': 'error', 'message': 'IndexError: ' + str(ie)}
+    
+    except Exception as e:
+        db.session.rollback()
+        return {'status': 'error', 'message': 'Error: ' + str(e)}
 
     # Close the connection
-    return {'status': 'success', 'message': 'Project added successfully'}
+    db.session.close()
+    return {'status': 'success', 'message': 'Project added successfully.'}
 
 def add_projects_to_db_from_json(source_json_path = False, testing: bool = False):
     """Populate the project table with projects links from a json file.
@@ -166,12 +109,36 @@ def add_projects_to_db_from_json(source_json_path = False, testing: bool = False
 
     return success_count
 
-def delete_projects():
+def delete_project_from_db(gh_repo_url: str):
+    """Delete a project from the database.
+    :param gh_repo_url: GitHub repository URL
+    :return: True if successful, False otherwise
+    """
+    try:
+        project = Projects.query.filter_by(gh_repo_url=gh_repo_url).first()
+        if project is None:
+            return {"status": "error", "message": "Project does not exist in the database."}
+        pUID = project.pUID
+        # delete related records from other tables
+        ProjectIssues.query.filter_by(pUID=pUID).delete()
+        ProjectTopics.query.filter_by(pUID=pUID).delete()
+        # delete project from Projects table
+        db.session.delete(project)
+        db.session.commit()
+        return {"status": "success", "message": "Project deleted successfully."}
+    except Exception as e:
+        return {"status": "error", "message": "Error: " + str(e)}
+
+def delete_all_projects_from_db():
     """Delete all projects from the database"""
     try:
-        num_rows_deleted = db.session.query(Projects).delete()
+        projects_num_rows_deleted = db.session.query(Projects).delete()
+        projects_issues_num_rows_deleted = db.session.query(ProjectIssues).delete()
+        projects_topics_num_rows_deleted = db.session.query(ProjectTopics).delete()
         db.session.commit()
-        print(f"{num_rows_deleted} projects deleted.")
+        print(f"Deleted {projects_num_rows_deleted} rows from the projects table.")
+        print(f"Deleted {projects_issues_num_rows_deleted} rows from the project_issues table.")
+        print(f"Deleted {projects_topics_num_rows_deleted} rows from the project_topics table.")
     except Exception as e:
         print(e)
 

@@ -1,2 +1,2 @@
-from .db_crud import fetch_all_projects, add_project_to_db
+from .db_crud import fetch_all_projects, add_project_to_db, delete_project_from_db, delete_all_projects_from_db
 from .github_api_wrapper import GitHubAPIWrapper 

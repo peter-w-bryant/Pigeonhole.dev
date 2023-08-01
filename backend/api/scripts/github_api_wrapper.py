@@ -36,10 +36,6 @@ class GitHubAPIWrapper:
 
                     # Issues / labels
                     self.gh_issues_dict = self.get_issues()
-                    if self.gh_issues_dict == {}:
-                        self.gh_issues = [''] * 7
-                    else:
-                        self.gh_issues = list(self.gh_issues_dict.keys())
 
                     # Stars, forks, watchers count
                     self.gh_stargazers_count = self.get_stargazers_count()
@@ -146,7 +142,7 @@ class GitHubAPIWrapper:
                 except Exception as e:
                     print(e)
                     pass
-                            
+
         return self.get_issues_reorder_keys(issue_label_counts)
     
     def get_issues_reorder_keys(self, issue_dict):
@@ -226,21 +222,21 @@ class GitHubAPIWrapper:
                 score += 5
 
             # Issue Labels
-            label_score = 0
-            for label in self.gh_issues:
-                if label in ["good first issue", "up-for-grabs", "easy to fix", "easy", "help wanted"] or "beginner" in label :
-                    label_count = self.gh_issues_dict[label]
-                    if 0 <= label_count <= 5:
-                        label_score += self.gh_issues_dict[label] * 0.25
-                    elif 5 < label_count <= 10:
-                        label_score += self.gh_issues_dict[label] * 0.1
-                    elif 10 < label_count <= 20:
-                        label_score += self.gh_issues_dict[label] * 0.05
+            # label_score = 0
+            # for label in self.gh_issues:
+            #     if label in ["good first issue", "up-for-grabs", "easy to fix", "easy", "help wanted"] or "beginner" in label :
+            #         label_count = self.gh_issues_dict[label]
+            #         if 0 <= label_count <= 5:
+            #             label_score += self.gh_issues_dict[label] * 0.25
+            #         elif 5 < label_count <= 10:
+            #             label_score += self.gh_issues_dict[label] * 0.1
+            #         elif 10 < label_count <= 20:
+            #             label_score += self.gh_issues_dict[label] * 0.05
             
-            if 10 < label_score:
-                score += 10
-            else:
-                score += label_score
+            # if 10 < label_score:
+            #     score += 10
+            # else:
+            #     score += label_score
             
             # Date of last merged PR
             if self.gh_date_of_last_merged_pull_request != "":
