@@ -26,9 +26,8 @@ class GitHubAPIWrapperTestCases(unittest.TestCase):
         self.assertEqual(gh.gh_topics, ['flask', 'jinja', 'pallets', 'python', 'web-framework', 'werkzeug', 'wsgi'])
 
         # Test the issues attribute
-        self.assertEqual(len(gh.gh_issues), 0)
-        self.assertEqual(type(gh.gh_issues), list)
-        self.assertEqual(gh.gh_issues, [])
+        self.assertEqual(len(gh.gh_issues_dict), 0)
+        self.assertEqual(type(gh.gh_issues_dict), dict)
 
         # Test repo counts
         self.assertEqual(gh.gh_stargazers_count > 0, True)
@@ -54,8 +53,8 @@ class GitHubAPIWrapperTestCases(unittest.TestCase):
         self.assertEqual(gh.gh_topics, ['deep-learning', 'deep-neural-networks', 'distributed', 'machine-learning', 'ml', 'neural-network', 'python', 'tensorflow'])
 
         # Test the issues attribute
-        self.assertEqual(len(gh.gh_issues) > 0, True)
-        self.assertEqual(type(gh.gh_issues), list)
+        self.assertEqual(len(gh.gh_issues_dict) > 0, True)
+        self.assertEqual(type(gh.gh_issues_dict), dict)
 
         # Test repo counts
         self.assertEqual(gh.gh_stargazers_count > 0, True)

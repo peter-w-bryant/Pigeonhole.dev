@@ -16,23 +16,21 @@ def AddNewProject():
     :return: JSON object with the result of the insert
     """
     if request.method == 'GET': # will be POST in production
-        gh_url = request.args.get('gh_url')
+        gh_url = request.get_json()['gh_url']
         gh = GitHubAPIWrapper(gh_url)
-
-        if gh.is_valid:
-            project = Projects.query.filter_by(gh_repo_url=gh.repo_url).first()    
-            if project is not None:
-                return {"error": "Project already exists in database"}, 409
-            print("f1")
-            is_valid, inserted = add_project_to_db(gh.repo_url)
-        else:
-            return {"error": "Invalid GitHub URL"}, 400
+        if not gh.is_valid:
+            return jsonify({'status': 'error', 'message': 'Invalid GitHub URL!'}), 400
         
-        if inserted == False:
-            return {"error": "Unable to add project to the database"}, 409
+        project = Projects.query.filter_by(gh_repo_url=gh.repo_url).first()    
+        if project is not None:
+            return jsonify({'status': 'error', 'message': 'Project already exists in database!'}), 409
+        
+        response = add_project_to_db(gh.repo_url)
+        if response['status'] == 'success':
+            return jsonify({'status': 'success', 'message': 'Project added to database!'}), 200
         else:
-            return {"message": "Project added to the database"}, 200
-            
+            return jsonify({'status': 'error', 'message': 'Error adding project to database!'}), 500
+
 @projects.route('/all-projects', methods=['GET'])
 def AllProjectData():
     """Get all project data from the database

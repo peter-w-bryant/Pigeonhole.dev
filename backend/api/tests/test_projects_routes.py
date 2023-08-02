@@ -7,52 +7,47 @@ from dotenv import load_dotenv
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) # set path to backend\api
 from app import create_app
-
-key_list = ['date_last_commit', 'date_last_merged_PR', 'gh_contributing_url', 'gh_description', 'gh_rep_url',
-            'gh_repo_name', 'gh_topics_0', 'gh_topics_1', 'gh_topics_2', 'gh_topics_3', 
-            'gh_topics_4', 'gh_topics_5', 'gh_username', 'issue_label_1', 'issue_label_1_count',
-            'issue_label_2', 'issue_label_2_count', 'issue_label_3', 'issue_label_3_count', 'issue_label_4', 
-            'issue_label_4_count', 'issue_label_5', 'issue_label_5_count', 'issue_label_6', 'issue_label_6_count', 
-            'issue_label_7', 'issue_label_7_count', 'new_contrib_score', 'num_forks', 'num_stars', 
-            'num_watchers', 'pUID']
+from scripts import read_all_project_data_json, add_project_to_db, add_projects_to_db_from_json, delete_project_from_db, delete_all_projects_from_db
 
 class ProjectsTestCase(unittest.TestCase):
 
-    # def test_all_projects(self):
-    #     app = create_app()
-    #     with app.test_client() as client:
-    #         response = client.get('/all-projects')
-    #         response_json = response.json
-    #         self.assertEqual(response.status_code, 200)
-    #         for key in key_list:
-    #             self.assertIn(key, response_json['Cardinal'].keys())
+    def test_all_projects(self):
+        app = create_app()
+        with app.test_client() as client:
+            response = client.get('/all-projects')
+            # response_json = response.json
+            self.assertEqual(response.status_code, 200)
 
     def test_add_new_project(self):
         app = create_app()
-        with app.test_client() as client:
-
-            # Test invalid project url
-            # invalid_url = 'bad_url'
-            # response = client.get(f'/add-project?gh_url={invalid_url}')
-            # response_json = response.json
-            # self.assertEqual(response.status_code, 400)
-            # self.assertIn('error', response_json.keys())
-            # self.assertEqual(response_json['error'], 'Invalid GitHub URL')
-
-            # Test project that is already in the database
-            # valid_url = 'https://github.com/JuliaLang/julia'
-            # response = client.get(f'/add-project?gh_url={valid_url}')
-            # response_json = response.json
-            # self.assertEqual(response.status_code, 409)
-            # self.assertIn('error', response_json.keys())
-            # self.assertEqual(response_json['error'], 'Project already exists in database')
-
-            # Test valid project url, not in database
+        with app.app_context() as db_client:
+            # ensure the project is not in the database
             valid_url = 'https://github.com/pallets/flask'
-            response = client.get(f'/add-project?gh_url={valid_url}')
-            response_json = response.json
-            self.assertEqual(response.status_code, 200)
-            self.assertIn('success', response_json.keys())
+            response = delete_project_from_db(valid_url)
+            invalid_url = 'bad_url'
+
+            with app.test_client() as client:
+                # Test valid project url
+                response = client.get(f'/add-project', json={'gh_url': valid_url})
+                response_json = response.json
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response_json['status'], 'success')
+                self.assertEqual(response_json['message'], 'Project added to database!')
+
+                # Test project that is already in the database
+                response = client.get(f'/add-project', json={'gh_url': valid_url})
+                response_json = response.json
+                self.assertEqual(response.status_code, 409)
+                self.assertEqual(response_json['status'], 'error')
+                self.assertEqual(response_json['message'], 'Project already exists in database!')
+                delete_project_from_db(valid_url)
+
+                # Test invalid project url
+                response = client.get(f'/add-project', json={'gh_url': invalid_url})
+                response_json = response.json
+                self.assertEqual(response.status_code, 400)
+                self.assertEqual(response_json['status'], 'error')
+                self.assertEqual(response_json['message'], 'Invalid GitHub URL!')
 
 if __name__ == '__main__':
     unittest.main()

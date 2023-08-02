@@ -14,6 +14,10 @@ class AuthTestCase(unittest.TestCase):
         app = create_app()
         with app.test_client() as client:
 
+            # Register account if it does not already exist
+            valid_account = {'username': 'p', 'password': 'p', 'email': 'peter.bryant@gatech.edu'}
+            response = client.post('/register', json=valid_account) # ensure the account is registered before logging in
+
             # Test with valid credentials
             response = client.post('/login', json={'username': 'p', 'password': 'p'})
             self.assertEqual(response.status_code, 200)

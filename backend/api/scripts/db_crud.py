@@ -130,16 +130,18 @@ def delete_project_from_db(gh_repo_url: str):
     except Exception as e:
         return {"status": "error", "message": "Error: " + str(e)}
 
-def delete_all_projects_from_db():
+def delete_all_projects_from_db(testing=False):
     """Delete all projects from the database"""
     try:
         projects_num_rows_deleted = db.session.query(Projects).delete()
         projects_issues_num_rows_deleted = db.session.query(ProjectIssues).delete()
         projects_topics_num_rows_deleted = db.session.query(ProjectTopics).delete()
         db.session.commit()
-        print(f"Deleted {projects_num_rows_deleted} rows from the projects table.")
-        print(f"Deleted {projects_issues_num_rows_deleted} rows from the project_issues table.")
-        print(f"Deleted {projects_topics_num_rows_deleted} rows from the project_topics table.")
+        
+        if testing:
+            print(f"Deleted {projects_num_rows_deleted} rows from the projects table.")
+            print(f"Deleted {projects_issues_num_rows_deleted} rows from the project_issues table.")
+            print(f"Deleted {projects_topics_num_rows_deleted} rows from the project_topics table.")
     except Exception as e:
         print(e)
 
