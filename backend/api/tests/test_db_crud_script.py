@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) # set path to backend\api
 from app import create_app
-from scripts import fetch_all_projects, add_project_to_db, delete_project_from_db, delete_all_projects_from_db
+from scripts import read_all_project_data_json, add_project_to_db, add_projects_to_db_from_json, delete_project_from_db, delete_all_projects_from_db
 from utils.models import Projects, ProjectIssues, ProjectTopics
 
 class AddProjectToDbTestCases(unittest.TestCase):
@@ -44,6 +44,21 @@ class AddProjectToDbTestCases(unittest.TestCase):
             self.assertEqual(response['status'], 'error')
             self.assertEqual(response['message'], 'Invalid GitHub repository URL.')
 
- 
+class AddProjectsToDbFromJsonTestCases(unittest.TestCase):
+
+    def test_valid_small_json(self):
+        app = create_app()
+        with app.app_context():
+            delete_all_projects_from_db() # ensure the database is empty
+            add_projects_to_db_from_json()
+
+class ReadAllProjectDataJsonTestCases(unittest.TestCase):
+
+    def test_valid_json(self):
+        app = create_app()
+        with app.app_context():
+            response = read_all_project_data_json()
+            self.assertEqual(type(response), dict)
+            
 if __name__ == '__main__':
     unittest.main()

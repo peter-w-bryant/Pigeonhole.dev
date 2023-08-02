@@ -64,7 +64,7 @@ def add_project_to_db(gh_repo_url: str):
     db.session.close()
     return {'status': 'success', 'message': 'Project added successfully.'}
 
-def add_projects_to_db_from_json(source_json_path = False, testing: bool = False):
+def add_projects_to_db_from_json(small_repo_data = True, testing: bool = False):
     """Populate the project table with projects links from a json file.
 
     Args:
@@ -76,31 +76,32 @@ def add_projects_to_db_from_json(source_json_path = False, testing: bool = False
     if testing:
         start = time.time()
 
-    if not source_json_path:
-        parent_dir = os.path.dirname(os.getcwd())
-
-        file_path = os.path.join(parent_dir, 'backend', 'api', 'resources', 'repo_scrapers', 'small_repo_data.json')
-    else: 
-        file_path = os.path.join(parent_dir, 'backend', 'api', 'resources', 'repo_scrapers', source_json_path)
+    parent_dir = os.path.dirname(os.getcwd())
+    if small_repo_data: file_path = os.path.join(parent_dir, 'api', 'resources', 'repo_scrapers', 'small_repo_data.json')
+    else: file_path = os.path.join(parent_dir, 'api', 'resources', 'repo_scrapers', 'static_repo_data.json')
     
-    repo_data = json.load(open(file_path, 'r')) 
+    with open(file_path, 'r') as f:
+        repo_data = json.load(f)
+
     failed_repos = {}
     success_count = 0
     duplicates_count = 0
     try:
         for repo_url in repo_data.values():
-            error, added = add_project_to_db(repo_url)
-            if error is True and added is False:
-                failed_repos[repo_url.split('/')[-1]] = repo_url
-            elif error is False and added is False:
-                duplicates_count += 1
-            elif error is False and added is True:
+            response_dict = add_project_to_db(repo_url)
+            response_msg = response_dict['message']
+            if response_msg == 'Project added successfully.':
                 success_count += 1
+            elif response_msg == 'Project already exists in the database.':
+                duplicates_count += 1
+            else:
+                failed_repos[repo_url.split('/')[-1]] = repo_url + ' | Response Message: ' + response_msg
 
     except Exception as e:
         print(e)
         # Write failed repos to a file
-        with open(os.path.join(os.getcwd(), 'api', 'resources', 'sample_data', 'failed_repos.json'), 'w') as f:
+        failed_repo_file_path = os.path.join(os.getcwd(), 'api', 'resources', 'sample_data', 'failed_repos.json')
+        with open(failed_repo_file_path, 'w') as f:
             json.dump(failed_repos, f, indent=4)
 
     if testing:
@@ -142,53 +143,44 @@ def delete_all_projects_from_db():
     except Exception as e:
         print(e)
 
-def fetch_all_projects():
-    """Fetch all data from the projects table.
+def read_all_project_data_json():
+    """
+    Fetch all data from the projects table.
     :return: A dictionary of dictionaries containing all the data from the projects table.
     """
     all_projects = Projects.query.all()
     all_projects_dict = {}
     for project in all_projects:
         single_project_dict = {}
+
+        # ___projects___ table
         single_project_dict["pUID"]= project.pUID
-        single_project_dict["gh_repo_name"]= project.gh_repo_name
-        single_project_dict["gh_description"]= project.gh_description
         single_project_dict["gh_rep_url"]= project.gh_repo_url
+        single_project_dict["gh_repo_name"]= project.gh_repo_name
+        single_project_dict["gh_username"]= project.gh_username
+        single_project_dict["gh_description"]= project.gh_description
+        
         single_project_dict["num_stars"]= project.num_stars
         single_project_dict["num_forks"]= project.num_forks
         single_project_dict["num_watchers"]= project.num_watchers
-        single_project_dict["issue_label_1"]= project.issue_label_1
-        single_project_dict["issue_label_2"]= project.issue_label_2
-        single_project_dict["issue_label_3"]= project.issue_label_3
-        single_project_dict["issue_label_4"]= project.issue_label_4
-        single_project_dict["issue_label_5"]= project.issue_label_5
-        single_project_dict["issue_label_6"]= project.issue_label_6
-        single_project_dict["issue_label_7"]= project.issue_label_7
-        single_project_dict["issue_label_1_count"]= project.issue_label_1_count
-        single_project_dict["issue_label_2_count"]= project.issue_label_2_count
-        single_project_dict["issue_label_3_count"]= project.issue_label_3_count
-        single_project_dict["issue_label_4_count"]= project.issue_label_4_count
-        single_project_dict["issue_label_5_count"]= project.issue_label_5_count
-        single_project_dict["issue_label_6_count"]= project.issue_label_6_count
-        single_project_dict["issue_label_7_count"]= project.issue_label_7_count
-        single_project_dict["gh_username"]= project.gh_username
+        
         single_project_dict["date_last_merged_PR"]= project.date_last_merged_PR
         single_project_dict["date_last_commit"]= project.date_last_commit
-        single_project_dict["gh_topics_0"]= project.gh_topics0
-        single_project_dict["gh_topics_1"]= project.gh_topics1
-        single_project_dict["gh_topics_2"]= project.gh_topics2
-        single_project_dict["gh_topics_3"]= project.gh_topics3
-        single_project_dict["gh_topics_4"]= project.gh_topics4
-        single_project_dict["gh_topics_5"]= project.gh_topics5
+
         single_project_dict["gh_contributing_url"]= project.contrib_url
         single_project_dict["new_contrib_score"]= project.new_contrib_score
-        all_projects_dict[single_project_dict["gh_repo_name"]] = single_project_dict
-    return all_projects_dict
 
-# if __name__ == "__main__":
-    # gh_repo_url  = 'https://github.com/rocketchat/rocket.chat'  
-    # print("Populating Projects table...")
-    # with app.app_context():
-    #     # add_project_to_db(gh_repo_url) # solo project pop
-    #     add_projects_to_db_from_json(testing= True)  # JSON project pops
-    #     # delete_projects() # delete all projects
+        # ___project_issues___ table
+        project_issues = ProjectIssues.query.filter_by(pUID=project.pUID).all()
+        for i in range(len(project_issues)):
+            single_project_dict[f"issue_label_{i+1:02d}"]= project_issues[i].issue_label
+            single_project_dict[f"issue_label_{i+1:02d}_count"]= project_issues[i].issue_label_count
+
+        # ___project_topics___ table
+        project_topics = ProjectTopics.query.filter_by(pUID=project.pUID).all()
+        for i in range(len(project_topics)):
+            single_project_dict[f"gh_topics_{i:02d}"]= project_topics[i].topic
+
+        all_projects_dict[single_project_dict["gh_repo_name"]] = single_project_dict
+
+    return all_projects_dict

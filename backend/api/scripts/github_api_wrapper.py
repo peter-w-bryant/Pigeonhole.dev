@@ -116,7 +116,7 @@ class GitHubAPIWrapper:
             message = template.format(type(e).__name__, e.args) # type(e).__name__ gets the name of the exception type and e.args gets the arguments passed to the exception
         return date_of_last_merged_pull_request
 
-    def get_issues(self):
+    def get_issues(self, max_issues=10):
         """Gets all the open issue labels and the counts of all issue labels for a given repository.
 
         Returns:
@@ -143,9 +143,9 @@ class GitHubAPIWrapper:
                     print(e)
                     pass
 
-        return self.get_issues_reorder_keys(issue_label_counts)
+        return self.get_issues_reorder_keys(issue_label_counts, max_issues)
     
-    def get_issues_reorder_keys(self, issue_dict):
+    def get_issues_reorder_keys(self, issue_dict, max_issues):
         """Reorders a dictionary of issue label count pairs so that our most important issue
         tags appear first. In order of importance:
             good first issue
@@ -166,8 +166,7 @@ class GitHubAPIWrapper:
         # add the rest of the keys
         for key in issue_dict.keys():
             if key not in resorted_issue_dict.keys():
-                resorted_issue_dict[key] = issue_dict[key]
-
+                resorted_issue_dict[key] = issue_dict[key]            
         return resorted_issue_dict
 
     def get_contribute_url(self):

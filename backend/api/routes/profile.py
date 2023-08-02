@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from flask_dance.contrib.github import make_github_blueprint, github
 from flask_jwt_extended import JWTManager, get_jwt_identity, jwt_required
 
-from scripts import GitHubAPIWrapper, fetch_all_projects
+from scripts import GitHubAPIWrapper, read_all_project_data_json
 from utils.db import db
 from utils.models import Users, SavedProjects, Projects
 from utils.auth import bcrypt, login_manager

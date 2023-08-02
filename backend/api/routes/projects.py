@@ -4,7 +4,7 @@ from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy 
 from sqlalchemy.exc import IntegrityError 
 
-from scripts import GitHubAPIWrapper, fetch_all_projects, add_project_to_db
+from scripts import GitHubAPIWrapper, read_all_project_data_json, add_project_to_db
 from utils.db import db
 from utils.models import Users, SavedProjects, Projects
 
@@ -39,4 +39,4 @@ def AllProjectData():
     :return: JSON object with all project data
     """
     if request.method == 'GET':
-        return fetch_all_projects(), 200
+        return read_all_project_data_json(), 200
