@@ -12,7 +12,6 @@ from scripts.github_api_wrapper import GitHubAPIWrapper
 from utils.db import db
 from utils.models import Users, Projects, ProjectIssues, ProjectTopics
 
-
 def add_project_to_db(gh_repo_url: str):
     """Populate the project table with data for a single project.
     :param gh_repo_url: GitHub repository URL
