@@ -34,7 +34,7 @@ def AddNewProject():
 @projects.route('/all-projects', methods=['GET'])
 def AllProjectData():
     """
-    Returns all project data in the database as a JSON object.
+    Returns all project data in the database as a JSON object or an error message if there was an error retrieving the data
     ---
     parameters:
       - name: per_page
@@ -52,10 +52,25 @@ def AllProjectData():
     responses:
       200:
         description: Project data returned successfully
-      404:
-        description: User not found
+      500:
+        description: Error retrieving project data
     """
     if request.method == 'GET':
         per_page = request.args.get('per_page', default=10, type=int)
         page = request.args.get('page', default=1, type=int)
-        return read_all_project_data_json(per_page, page), 200
+
+        # ensure per_page is between 1 and 100
+        if per_page > 100:
+            per_page = 100
+        elif per_page < 1:
+            per_page = 10
+
+        # ensure page is greater than 0
+        if page < 1:
+            page = 1
+
+        response_dict = read_all_project_data_json(per_page, page)
+        if 'status' in response_dict:
+            return response_dict, 500
+    
+        return response_dict, 200
