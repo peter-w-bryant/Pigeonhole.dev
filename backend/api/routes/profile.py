@@ -24,7 +24,7 @@ def save_project():
     Saves a project to the user's saved projects list
     ---
     tags:
-      - Public (Requires Authentication)
+      - Profile
     parameters:
       - name: username
         in: body
@@ -64,7 +64,7 @@ def remove_saved_project():
     """Removes a project from the user's saved projects list
     ---
     tags:
-      - Public (Requires Authentication)
+      - Profile
     parameters:
       - name: username
         in: body
@@ -102,7 +102,7 @@ def saved_projects():
   Returns a list of saved projects for a user
   ---
   tags:
-    - Public (Requires Authentication)
+    - Profile
   parameters:
     - name: username
       in: body
@@ -164,7 +164,7 @@ def delete_all_projects():
     Deletes all projects for a user
     ---
     tags:
-      - Private (Admin Only)
+      - Profile
     parameters:
       - name: username
         in: body

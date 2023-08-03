@@ -16,7 +16,7 @@ def AddNewProject():
     Adds a new project to the database
     ---
     tags:
-      - Public (Requires Authentication)
+      - Projects
     parameters:
       - name: gh_url
         in: body
@@ -56,7 +56,7 @@ def AllProjectData():
     Returns all project data in the database as a JSON object or an error message if there was an error retrieving the data
     ---
     tags:
-      - Public
+      - Projects
     parameters:
       - name: per_page
         in: query

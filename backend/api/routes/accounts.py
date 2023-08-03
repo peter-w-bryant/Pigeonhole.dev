@@ -59,7 +59,7 @@ def register():
             required: false
             type: string
             description: The admin secret to register a new admin user.
-            example: adminsecret
+            example: optional_adminsecret
     responses:
       200:
           description: User registered successfully, returns access token
@@ -169,7 +169,7 @@ def delete_account():
             print(e)
             return {'error': str(e)}, 500
 
-@accounts.route('/accounts/delete_all_accounts', methods=['POST'])
+@accounts.route('/accounts/protected/delete_all_accounts', methods=['POST'])
 @requires_admin
 def delete_all_accounts():
     """

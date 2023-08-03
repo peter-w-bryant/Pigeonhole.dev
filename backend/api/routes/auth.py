@@ -35,7 +35,7 @@ def login():
     Logs in a user
     ---
     tags:
-      - Public (Requires Authentication)
+      - Auth
     parameters:
       - name: username
         in: body
@@ -70,7 +70,7 @@ def logout():
     """Logs out a user
     ---
     tags:
-      - Public
+      - Auth
     responses:
         200:
             description: User logged out successfully
@@ -85,7 +85,7 @@ def github_login():
     Logs in a user using GitHub OAuth
     ---
     tags:
-        - Public (Requires Authentication)
+        - Auth
     responses:
         200:
             description: User logged in successfully, returns access token
