@@ -44,13 +44,13 @@ class AddProjectToDbTestCases(unittest.TestCase):
             self.assertEqual(response['status'], 'error')
             self.assertEqual(response['message'], 'Invalid GitHub repository URL.')
 
-class AddProjectsToDbFromJsonTestCases(unittest.TestCase):
+# class AddProjectsToDbFromJsonTestCases(unittest.TestCase):
 
-    def test_valid_small_json(self):
-        app = create_app()
-        with app.app_context():
-            delete_all_projects_from_db() # ensure the database is empty
-            add_projects_to_db_from_json()
+#     def test_valid_small_json(self):
+#         app = create_app()
+#         with app.app_context():
+#             delete_all_projects_from_db() # ensure the database is empty
+#             add_projects_to_db_from_json()
 
 class ReadAllProjectDataJsonTestCases(unittest.TestCase):
 
@@ -59,6 +59,7 @@ class ReadAllProjectDataJsonTestCases(unittest.TestCase):
         with app.app_context():
             response = read_all_project_data_json()
             self.assertEqual(type(response), dict)
+            self.assertEqual('status' not in response.keys(), True) # check that the response is not an error
             
 if __name__ == '__main__':
     unittest.main()

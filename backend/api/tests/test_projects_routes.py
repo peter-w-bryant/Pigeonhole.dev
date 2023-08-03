@@ -15,8 +15,10 @@ class ProjectsTestCase(unittest.TestCase):
         app = create_app()
         with app.test_client() as client:
             response = client.get('/api/1/all-projects')
-            # response_json = response.json
             self.assertEqual(response.status_code, 200)
+            self.assertEqual(type(response.json), dict)
+
+            # Todo test query parameters: per_page, page, max_issues_per_project
 
     def test_add_new_project(self):
         app = create_app()

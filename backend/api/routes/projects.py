@@ -42,22 +42,36 @@ def AllProjectData():
         type: integer
         required: false
         default: 10
-        description: Number of results to return per page (max 100)
+        description: Number of results to return per page (max 100).
       - name: page
         in: query
         type: integer
         required: false
         default: 1
-        description: Page number to return
+        description: Page number to return.
+      - name: max_issues_per_project
+        in: query
+        type: string or integer
+        required: false
+        default: all
+        description: Maximum number of issues to return per project. Either provide an integer number of issues per project, or 'all' for all issues per project (can exceed 100). If the number of issues provided is negative, the default of 10 will be used.
+      - name: max_topics_per_project
+        in: query
+        type: string or integer
+        required: false
+        default: all
+        description: Maximum number of topics to return per project. Either provide an integer number of topics per project, or 'all' for all topics per project. If the number of topics provided is negative, the default of 10 will be used.
     responses:
       200:
-        description: Project data returned successfully
+        description: Project data returned successfully.
       500:
-        description: Error retrieving project data
+        description: Error retrieving project data.
     """
     if request.method == 'GET':
         per_page = request.args.get('per_page', default=10, type=int)
         page = request.args.get('page', default=1, type=int)
+        max_issues_per_project = request.args.get('max_issues_per_project', default='all', type=str)
+        max_topics_per_project = request.args.get('max_topics_per_project', default='all', type=str)
 
         # ensure per_page is between 1 and 100
         if per_page > 100:
@@ -69,7 +83,19 @@ def AllProjectData():
         if page < 1:
             page = 1
 
-        response_dict = read_all_project_data_json(per_page, page)
+        # ensure max_issues_per_project is => 0
+        if max_issues_per_project != 'all':
+            max_issues_per_project = int(max_issues_per_project)
+            if max_issues_per_project < 0:
+                max_issues_per_project = 10
+
+        # ensure max_topics_per_project is => 0
+        if max_topics_per_project != 'all':
+            max_topics_per_project = int(max_topics_per_project)
+            if max_topics_per_project < 0:
+                max_topics_per_project = 10
+
+        response_dict = read_all_project_data_json(per_page, page, max_issues_per_project, max_topics_per_project)
         if 'status' in response_dict:
             return response_dict, 500
     

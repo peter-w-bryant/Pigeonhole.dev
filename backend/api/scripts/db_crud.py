@@ -144,12 +144,13 @@ def delete_all_projects_from_db(testing=False):
     except Exception as e:
         print(e)
 
-def read_all_project_data_json(per_page, page_num):
+def read_all_project_data_json(per_page=10, page_num=1, max_issues_per_project='all', max_topics_per_project='all'):
     """
     Fetch all data from the projects table.
-    :param per_page: The number of results to return per page.
-    :param page_num: The page number to start retrieving results.
-    :return: A dictionary of dictionaries containing all the data from the projects table.
+    :param per_page: The number of results to return per page. (default is 10)
+    :param page_num: The page number to start retrieving results. (default is 1)
+    :param max_issues_per_project: The maximum number of issues to return per project. (default is 5)
+    :return: A dictionary of dictionaries containing all the data from the projects table, or an error message.
     """
     all_projects_dict = {}
 
@@ -162,6 +163,7 @@ def read_all_project_data_json(per_page, page_num):
     # Add the projects from the current page to the dictionary
     for project in projects_page.items:
         single_project_dict = {}
+
         # ___projects___ table
         single_project_dict["pUID"]= project.pUID
         single_project_dict["gh_rep_url"]= project.gh_repo_url
@@ -177,15 +179,30 @@ def read_all_project_data_json(per_page, page_num):
         single_project_dict["date_last_commit"]= project.date_last_commit
         single_project_dict["gh_contributing_url"]= project.contrib_url
         single_project_dict["new_contrib_score"]= project.new_contrib_score
+
         # ___project_issues___ table
         project_issues = ProjectIssues.query.filter_by(pUID=project.pUID).all()
-        for i in range(len(project_issues)):
-            single_project_dict[f"issue_label_{i+1:02d}"]= project_issues[i].issue_label
-            single_project_dict[f"issue_label_{i+1:02d}_count"]= project_issues[i].issue_label_count
+        if max_issues_per_project == 'all':
+            for i in range(len(project_issues)):
+                single_project_dict[f"issue_label_{i+1:02d}"]= project_issues[i].issue_label
+                single_project_dict[f"issue_label_{i+1:02d}_count"]= project_issues[i].issue_label_count
+        else:
+            for i in range(len(project_issues)):
+                if i >= max_issues_per_project:
+                    break
+                single_project_dict[f"issue_label_{i+1:02d}"]= project_issues[i].issue_label
+                single_project_dict[f"issue_label_{i+1:02d}_count"]= project_issues[i].issue_label_count
+
         # ___project_topics___ table
         project_topics = ProjectTopics.query.filter_by(pUID=project.pUID).all()
-        for i in range(len(project_topics)):
-            single_project_dict[f"gh_topics_{i:02d}"]= project_topics[i].topic
+        if max_topics_per_project == 'all':
+            for i in range(len(project_topics)):
+                single_project_dict[f"gh_topics_{i:02d}"]= project_topics[i].topic
+        else:
+            for i in range(len(project_topics)):
+                if i >= max_topics_per_project:
+                    break
+                single_project_dict[f"gh_topics_{i:02d}"]= project_topics[i].topic
+                
         all_projects_dict[project.pUID] = single_project_dict
-
     return all_projects_dict
