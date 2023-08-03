@@ -21,11 +21,41 @@ accounts = Blueprint('accounts', __name__)  # blueprint for auth routes
 @accounts.route('/accounts/register', methods=['POST'])
 def register():
     """
-    Registers a new user
+    Registers a new user to the database and returns an access token.
     ---
     tags:
-        - Public
+    - Accounts
+    parameters:
+    - name: User JSON object
+      in: body
+      required: true
+      description: Registers a new user to the database and returns an access token.
+      schema:
+        type: object
+        properties:
+          username:
+            type: string
+            description: The username of the new user.
+            example: testuser
+          password:
+            type: string
+            description: The password of the new user.
+            example: testpassword
+          email:
+            type: string
+            description: The email address of the new user.
+            example: test@email.com
+    responses:
+      200:
+          description: User registered successfully, returns access token
+      400:
+          description: Invalid payload, username, password, and email required in request body
+      409:
+          description: Username already exists
+      500:
+          description: Internal server error
     """
+
     if request.method == 'POST':
         data = request.get_json()
         if not all(key in data.keys() for key in ['username', 'password', 'email']):
@@ -61,17 +91,44 @@ def register():
 @accounts.route('/accounts/delete_account', methods=['POST'])
 def delete_account():
     """
-    Deletes a user account
+    Deletes a user account from the database.
     ---
     tags:
-        - Public (Requires Authentication)
+    - Accounts
+    parameters:
+    - name: User JSON object
+      in: body
+      required: true
+      description: Deletes a user account from the database.
+      schema:
+        type: object
+        properties:
+          username:
+            type: string
+            description: The username of the user.
+            example: testuser
+          password:
+            type: string
+            description: The password of the user.
+            example: testpassword
+    responses:
+      200:
+          description: User deleted successfully
+      400:
+          description: Invalid payload, username and password required in request body
+      401:
+            description: Incorrect password
+      404:
+          description: Username does not exist
+      500:
+          description: Internal server error
     """
     if request.method == 'POST':
         data = request.get_json()
         try:
             # ensure username and password are not empty
-            if data['username'] == '' or data['username'] == None or data['password'] == '' or data['password'] == None or data['email'] == '' or data['email'] == None:
-                return {'error': 'Username, password, and email cannot be empty!'}, 400
+            if data['username'] == '' or data['username'] == None or data['password'] == '' or data['password'] == None:
+                return {'error': 'Username or password cannot be empty!'}, 400
 
             # check if username already exists
             user = Users.query.filter_by(username=data['username']).first()
@@ -92,10 +149,41 @@ def delete_account():
 @accounts.route('/accounts/delete_all_accounts', methods=['GET'])
 def delete_all_accounts():
     """
-    Deletes all accounts
+    Protected route to delete all user accounts for testing purposes (requires admin access)
     ---
     tags:
-        - Private (Admin Only)
+    - Accounts
+    parameters:
+    - name: Admin JSON object
+      in: body
+      required: true
+      description: Deletes all user accounts from the database.
+      schema:
+        type: object
+        properties:
+          username:
+            type: string
+            description: The username of the administator.
+            example: admin
+          password:
+            type: string
+            description: The password of the administrator.
+            example: admin
+          secret:
+            type: string
+            description: The secret key of the administrator.
+            example: secret
+    responses:
+      200:
+          description: User deleted successfully
+      400:
+          description: Invalid payload, username and password required in request body
+      401:
+            description: Incorrect password
+      404:
+          description: Username does not exist
+      500:
+          description: Internal server error
     """
     if request.method == 'GET':
         try:
