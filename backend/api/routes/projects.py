@@ -10,12 +10,31 @@ from utils.models import Users, SavedProjects, Projects
 
 projects = Blueprint('projects', __name__) # blueprint for auth routes
 
-@projects.route('/add-project', methods=['GET', 'POST'])
+@projects.route('/projects/add-project', methods=['POST'])
 def AddNewProject():
-    """Add a new project to the database given a GH repo URL
-    :return: JSON object with the result of the insert
     """
-    if request.method == 'GET': # will be POST in production
+    Adds a new project to the database
+    ---
+    tags:
+      - Public (Requires Authentication)
+    parameters:
+      - name: gh_url
+        in: body
+        type: string
+        required: true
+        description: GitHub URL of the project to add to the database
+    responses:
+        200:
+            description: Project added to database successfully
+        400:
+            description: Invalid GitHub URL
+        409:
+            description: Project already exists in database
+        500:
+            description: Error adding project to database
+    """
+
+    if request.method == 'POST': # will be POST in production
         gh_url = request.get_json()['gh_url']
         gh = GitHubAPIWrapper(gh_url)
         if not gh.is_valid:
@@ -31,11 +50,13 @@ def AddNewProject():
         else:
             return jsonify({'status': 'error', 'message': 'Error adding project to database!'}), 500
 
-@projects.route('/all-projects', methods=['GET'])
+@projects.route('/projects/all-projects', methods=['GET'])
 def AllProjectData():
     """
     Returns all project data in the database as a JSON object or an error message if there was an error retrieving the data
     ---
+    tags:
+      - Public
     parameters:
       - name: per_page
         in: query

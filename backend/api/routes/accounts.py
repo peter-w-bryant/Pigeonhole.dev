@@ -18,9 +18,14 @@ import secrets
 
 accounts = Blueprint('accounts', __name__)  # blueprint for auth routes
 
-@accounts.route('/register', methods=['POST'])
+@accounts.route('/accounts/register', methods=['POST'])
 def register():
-    """Registers a new user"""
+    """
+    Registers a new user
+    ---
+    tags:
+        - Public
+    """
     if request.method == 'POST':
         data = request.get_json()
         if not all(key in data.keys() for key in ['username', 'password', 'email']):
@@ -53,9 +58,14 @@ def register():
             # print(e)
             return {'error': f"Exception {e}"}, 500
         
-@accounts.route('/delete_account', methods=['POST'])
+@accounts.route('/accounts/delete_account', methods=['POST'])
 def delete_account():
-    """Deletes a user account"""
+    """
+    Deletes a user account
+    ---
+    tags:
+        - Public (Requires Authentication)
+    """
     if request.method == 'POST':
         data = request.get_json()
         try:
@@ -79,9 +89,14 @@ def delete_account():
             print(e)
             return {'error': str(e)}, 500
 
-@accounts.route('/delete_all_accounts', methods=['GET'])
+@accounts.route('/accounts/delete_all_accounts', methods=['GET'])
 def delete_all_accounts():
-    """Deletes all accounts"""
+    """
+    Deletes all accounts
+    ---
+    tags:
+        - Private (Admin Only)
+    """
     if request.method == 'GET':
         try:
             db.session.query(Users).delete()

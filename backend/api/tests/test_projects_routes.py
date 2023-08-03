@@ -14,11 +14,11 @@ class ProjectsTestCase(unittest.TestCase):
     def test_all_projects(self):
         app = create_app()
         with app.test_client() as client:
-            response = client.get('/api/1/all-projects')
+            response = client.get('/api/1/projects/all-projects')
             self.assertEqual(response.status_code, 200)
             self.assertEqual(type(response.json), dict)
 
-            # Todo test query parameters: per_page, page, max_issues_per_project
+            # Todo test query parameters: per_page, page, max_issues_per_project, max_topics_per_project
 
     def test_add_new_project(self):
         app = create_app()
@@ -30,14 +30,14 @@ class ProjectsTestCase(unittest.TestCase):
 
             with app.test_client() as client:
                 # Test valid project url
-                response = client.get(f'/api/1/add-project', json={'gh_url': valid_url})
+                response = client.post(f'/api/1/projects/add-project', json={'gh_url': valid_url})
                 response_json = response.json
                 self.assertEqual(response.status_code, 200)
                 self.assertEqual(response_json['status'], 'success')
                 self.assertEqual(response_json['message'], 'Project added to database!')
 
                 # Test project that is already in the database
-                response = client.get(f'/api/1/add-project', json={'gh_url': valid_url})
+                response = client.post(f'/api/1/projects/add-project', json={'gh_url': valid_url})
                 response_json = response.json
                 self.assertEqual(response.status_code, 409)
                 self.assertEqual(response_json['status'], 'error')
@@ -45,7 +45,7 @@ class ProjectsTestCase(unittest.TestCase):
                 delete_project_from_db(valid_url)
 
                 # Test invalid project url
-                response = client.get(f'/api/1/add-project', json={'gh_url': invalid_url})
+                response = client.post(f'/api/1/projects/add-project', json={'gh_url': invalid_url})
                 response_json = response.json
                 self.assertEqual(response.status_code, 400)
                 self.assertEqual(response_json['status'], 'error')

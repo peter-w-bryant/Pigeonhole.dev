@@ -70,9 +70,9 @@ def create_app(config_class='development'):
     
     with app.app_context():
         app.register_blueprint(projects, url_prefix='/api/1')
-        app.register_blueprint(auth)
-        app.register_blueprint(profile)
-        app.register_blueprint(accounts)
+        app.register_blueprint(auth, url_prefix='/api/1')
+        app.register_blueprint(profile, url_prefix='/api/1')
+        app.register_blueprint(accounts, url_prefix='/api/1')
     return app
 
 if __name__ == '__main__':
