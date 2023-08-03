@@ -14,7 +14,7 @@ class ProjectsTestCase(unittest.TestCase):
     def test_all_projects(self):
         app = create_app()
         with app.test_client() as client:
-            response = client.get('/all-projects')
+            response = client.get('/api/1/all-projects')
             # response_json = response.json
             self.assertEqual(response.status_code, 200)
 
@@ -28,14 +28,14 @@ class ProjectsTestCase(unittest.TestCase):
 
             with app.test_client() as client:
                 # Test valid project url
-                response = client.get(f'/add-project', json={'gh_url': valid_url})
+                response = client.get(f'/api/1/add-project', json={'gh_url': valid_url})
                 response_json = response.json
                 self.assertEqual(response.status_code, 200)
                 self.assertEqual(response_json['status'], 'success')
                 self.assertEqual(response_json['message'], 'Project added to database!')
 
                 # Test project that is already in the database
-                response = client.get(f'/add-project', json={'gh_url': valid_url})
+                response = client.get(f'/api/1/add-project', json={'gh_url': valid_url})
                 response_json = response.json
                 self.assertEqual(response.status_code, 409)
                 self.assertEqual(response_json['status'], 'error')
@@ -43,7 +43,7 @@ class ProjectsTestCase(unittest.TestCase):
                 delete_project_from_db(valid_url)
 
                 # Test invalid project url
-                response = client.get(f'/add-project', json={'gh_url': invalid_url})
+                response = client.get(f'/api/1/add-project', json={'gh_url': invalid_url})
                 response_json = response.json
                 self.assertEqual(response.status_code, 400)
                 self.assertEqual(response_json['status'], 'error')

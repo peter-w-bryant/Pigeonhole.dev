@@ -5,6 +5,7 @@ from flask import Flask
 from flask_sslify import SSLify
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
+from flasgger import Swagger
 
 from routes.auth import auth
 from routes.projects import projects
@@ -17,6 +18,26 @@ from utils.auth import bcrypt, login_manager
 
 from config import config 
 
+swagger_template = {
+    "swagger": "2.0",
+    "info": {
+        "title": "Pigeonhole.dev API",
+        "description": "An enriched GitHub API offering Open Source Project Discovery for new developers.",
+        "contact": {
+            "responsibleDeveloper": "Peter Bryant",
+            "email": "peter.bryant@gatech.edu",
+        },
+        "termsOfService": "",
+        "version": "0.0.1"
+    },
+    "host": "localhost:5000",  
+    "basePath": "/", 
+    "schemes": [
+        "http",
+        "https"
+    ]
+}
+
 def create_app(config_class='development'):
     """Factory function to create app instance
     :param config_class: Configuration class to use (defined in config.py)
@@ -26,6 +47,8 @@ def create_app(config_class='development'):
     CORS(app)             # Initialize CORS for all routes
     jwt = JWTManager(app) # Initialize JWT for access tokens 
     sslify = SSLify(app)  # Initialize SSLify for HTTPS
+    swagger = Swagger(app, template=swagger_template) # Initialize Swagger for API documentation
+
     app.config.from_object(config[config_class]) # load config from config.py
     db.init_app(app)                             # initialize database
     login_manager.init_app(app)                  # initialize login manager for flask-login
@@ -46,7 +69,7 @@ def create_app(config_class='development'):
         return None
     
     with app.app_context():
-        app.register_blueprint(projects)
+        app.register_blueprint(projects, url_prefix='/api/1')
         app.register_blueprint(auth)
         app.register_blueprint(profile)
         app.register_blueprint(accounts)

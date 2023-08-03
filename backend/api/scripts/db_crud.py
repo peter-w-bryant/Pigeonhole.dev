@@ -99,7 +99,7 @@ def add_projects_to_db_from_json(small_repo_data = True, testing: bool = False):
     except Exception as e:
         print(e)
         # Write failed repos to a file
-        failed_repo_file_path = os.path.join(os.getcwd(), 'api', 'resources', 'sample_data', 'failed_repos.json')
+        failed_repo_file_path = os.path.join(os.getcwd(), 'resources', 'sample_data', 'failed_repos.json')
         with open(failed_repo_file_path, 'w') as f:
             json.dump(failed_repos, f, indent=4)
 
@@ -144,44 +144,57 @@ def delete_all_projects_from_db(testing=False):
     except Exception as e:
         print(e)
 
-def read_all_project_data_json():
+def read_all_project_data_json(per_page, page_num):
     """
     Fetch all data from the projects table.
+    :param per_page: The number of results to return per page.
+    :param page_num: The page number to start retrieving results.
     :return: A dictionary of dictionaries containing all the data from the projects table.
     """
-    all_projects = Projects.query.all()
     all_projects_dict = {}
-    for project in all_projects:
-        single_project_dict = {}
+    while True:
+        # Retrieve the current page of results
+        projects_page = Projects.query.paginate(page=page_num, per_page=per_page)
 
-        # ___projects___ table
-        single_project_dict["pUID"]= project.pUID
-        single_project_dict["gh_rep_url"]= project.gh_repo_url
-        single_project_dict["gh_repo_name"]= project.gh_repo_name
-        single_project_dict["gh_username"]= project.gh_username
-        single_project_dict["gh_description"]= project.gh_description
-        
-        single_project_dict["num_stars"]= project.num_stars
-        single_project_dict["num_forks"]= project.num_forks
-        single_project_dict["num_watchers"]= project.num_watchers
-        
-        single_project_dict["date_last_merged_PR"]= project.date_last_merged_PR
-        single_project_dict["date_last_commit"]= project.date_last_commit
+        # Add the projects from the current page to the dictionary
+        for project in projects_page.items:
+            single_project_dict = {}
 
-        single_project_dict["gh_contributing_url"]= project.contrib_url
-        single_project_dict["new_contrib_score"]= project.new_contrib_score
+            # ___projects___ table
+            single_project_dict["pUID"]= project.pUID
+            single_project_dict["gh_rep_url"]= project.gh_repo_url
+            single_project_dict["gh_repo_name"]= project.gh_repo_name
+            single_project_dict["gh_username"]= project.gh_username
+            single_project_dict["gh_description"]= project.gh_description
+            
+            single_project_dict["num_stars"]= project.num_stars
+            single_project_dict["num_forks"]= project.num_forks
+            single_project_dict["num_watchers"]= project.num_watchers
+            
+            single_project_dict["date_last_merged_PR"]= project.date_last_merged_PR
+            single_project_dict["date_last_commit"]= project.date_last_commit
 
-        # ___project_issues___ table
-        project_issues = ProjectIssues.query.filter_by(pUID=project.pUID).all()
-        for i in range(len(project_issues)):
-            single_project_dict[f"issue_label_{i+1:02d}"]= project_issues[i].issue_label
-            single_project_dict[f"issue_label_{i+1:02d}_count"]= project_issues[i].issue_label_count
+            single_project_dict["gh_contributing_url"]= project.contrib_url
+            single_project_dict["new_contrib_score"]= project.new_contrib_score
 
-        # ___project_topics___ table
-        project_topics = ProjectTopics.query.filter_by(pUID=project.pUID).all()
-        for i in range(len(project_topics)):
-            single_project_dict[f"gh_topics_{i:02d}"]= project_topics[i].topic
+            # ___project_issues___ table
+            project_issues = ProjectIssues.query.filter_by(pUID=project.pUID).all()
+            for i in range(len(project_issues)):
+                single_project_dict[f"issue_label_{i+1:02d}"]= project_issues[i].issue_label
+                single_project_dict[f"issue_label_{i+1:02d}_count"]= project_issues[i].issue_label_count
 
-        all_projects_dict[single_project_dict["gh_repo_name"]] = single_project_dict
+            # ___project_topics___ table
+            project_topics = ProjectTopics.query.filter_by(pUID=project.pUID).all()
+            for i in range(len(project_topics)):
+                single_project_dict[f"gh_topics_{i:02d}"]= project_topics[i].topic
+
+            all_projects_dict[project.pUID] = single_project_dict
+
+        # If there are no more pages of results, break out of the loop
+        if not projects_page.has_next:
+            break
+
+        # Increment the page number to retrieve the next page of results
+        page_num += 1
 
     return all_projects_dict

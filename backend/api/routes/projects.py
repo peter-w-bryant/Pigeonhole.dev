@@ -33,8 +33,29 @@ def AddNewProject():
 
 @projects.route('/all-projects', methods=['GET'])
 def AllProjectData():
-    """Get all project data from the database
-    :return: JSON object with all project data
+    """
+    Returns all project data in the database as a JSON object.
+    ---
+    parameters:
+      - name: per_page
+        in: query
+        type: integer
+        required: false
+        default: 10
+        description: Number of results to return per page (max 100)
+      - name: page
+        in: query
+        type: integer
+        required: false
+        default: 1
+        description: Page number to return
+    responses:
+      200:
+        description: Project data returned successfully
+      404:
+        description: User not found
     """
     if request.method == 'GET':
-        return read_all_project_data_json(), 200
+        per_page = request.args.get('per_page', default=10, type=int)
+        page = request.args.get('page', default=1, type=int)
+        return read_all_project_data_json(per_page, page), 200
