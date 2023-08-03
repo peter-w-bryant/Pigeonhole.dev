@@ -169,7 +169,7 @@ def delete_account():
             print(e)
             return {'error': str(e)}, 500
 
-@accounts.route('/accounts/delete_all_accounts', methods=['GET'])
+@accounts.route('/accounts/delete_all_accounts', methods=['POST'])
 @requires_admin
 def delete_all_accounts():
     """
@@ -205,12 +205,12 @@ def delete_all_accounts():
       500:
           description: Internal server error
     """
-    if request.method == 'GET':
+    if request.method == 'POST':
         try:
             # delete all accounts that are not admin accounts
             db.session.query(Users).filter(Users.is_admin == False).delete()
             db.session.commit()
-            return {'message': 'All accounts deleted!'}, 200
+            return {'message': 'All non-admin accounts deleted!'}, 200
         except Exception as e:
             print(e)
             return {'error': str(e)}, 500

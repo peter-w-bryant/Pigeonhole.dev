@@ -15,6 +15,8 @@ def requires_admin(f):
 def is_admin(request):
     # Check user table for admin username and check password
     user = Users.query.filter_by(username=request.json['username']).first()
+    if user is None:
+        return False
     if user.check_password(request.json['password']):
         if user.is_admin:
             return True
