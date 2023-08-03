@@ -9,8 +9,9 @@ from sqlalchemy.exc import IntegrityError
 
 from scripts import GitHubAPIWrapper, read_all_project_data_json
 from utils.db import db
-from utils.models import Users, SavedProjects, Projects
+from utils.models import Users, SavedProjects, Projects, AdminSecretKeys
 from utils.auth import bcrypt, login_manager
+from utils.admin import requires_admin, verify_admin_secret_key
 
 import requests
 import os
@@ -29,22 +30,36 @@ def register():
     - name: User JSON object
       in: body
       required: true
-      description: Registers a new user to the database and returns an access token.
+      description: Registers a new user to the database and returns an access token. Username, password, and email required in request body. The optional admin_secret field is required to register a new admin user.
       schema:
         type: object
+        required:
+            - username
+            - password
+            - email
+        optional:
+            - admin_secret
         properties:
           username:
+            required: true
             type: string
             description: The username of the new user.
             example: testuser
           password:
+            required: true
             type: string
             description: The password of the new user.
             example: testpassword
           email:
+            required: true
             type: string
             description: The email address of the new user.
             example: test@email.com
+          admin_secret:
+            required: false
+            type: string
+            description: The admin secret to register a new admin user.
+            example: adminsecret
     responses:
       200:
           description: User registered successfully, returns access token
@@ -59,7 +74,7 @@ def register():
     if request.method == 'POST':
         data = request.get_json()
         if not all(key in data.keys() for key in ['username', 'password', 'email']):
-             return {'error': 'Invalid payload, username, password, and email required i request body.'}, 400
+             return {'error': 'Invalid payload, username, password, and email required in request body.'}, 400
         try:
             # ensure username and password are not empty
             if data['username'] == '' or data['username'] == None or data['password'] == '' or data['password'] == None or data['email'] == '' or data['email'] == None:
@@ -72,20 +87,28 @@ def register():
                 return {'error': 'Username already exists!'}, 409
             
             hashed_password = bcrypt.generate_password_hash(data['password']) # hash password
-            new_user = Users(username=data['username'], password=hashed_password, # create new user
+            new_user = None
+
+            # if admin_secret is provided and correct, create admin user
+            if 'admin_secret' in data.keys():
+                # check if the admin secret key is correct
+                if verify_admin_secret_key(data['admin_secret']):
+                    new_user = Users(username=data['username'], password=hashed_password, # create new user
+                                     email=data['email'], is_admin=True)
+            if new_user == None:
+                new_user = Users(username=data['username'], password=hashed_password, # create new user
                              email=data['email'])
             
             db.session.add(new_user)  # add new user to database
             db.session.commit()       # commit changes to database
             access_token = create_access_token(identity=new_user.UID)
-            return jsonify({'access_token': access_token}), 200
+
+            return jsonify({'access_token': access_token, "admin_status": new_user.is_admin}), 200
 
         except IntegrityError as ie:
-            # print(ie)
             return {'error': 'IntegrityError: Username already exists!'}, 409
 
         except Exception as e:
-            # print(e)
             return {'error': f"Exception {e}"}, 500
         
 @accounts.route('/accounts/delete_account', methods=['POST'])
@@ -147,6 +170,7 @@ def delete_account():
             return {'error': str(e)}, 500
 
 @accounts.route('/accounts/delete_all_accounts', methods=['GET'])
+@requires_admin
 def delete_all_accounts():
     """
     Protected route to delete all user accounts for testing purposes (requires admin access)
@@ -164,15 +188,11 @@ def delete_all_accounts():
           username:
             type: string
             description: The username of the administator.
-            example: admin
+            example: admin_username
           password:
             type: string
             description: The password of the administrator.
-            example: admin
-          secret:
-            type: string
-            description: The secret key of the administrator.
-            example: secret
+            example: admin_password
     responses:
       200:
           description: User deleted successfully
@@ -187,7 +207,8 @@ def delete_all_accounts():
     """
     if request.method == 'GET':
         try:
-            db.session.query(Users).delete()
+            # delete all accounts that are not admin accounts
+            db.session.query(Users).filter(Users.is_admin == False).delete()
             db.session.commit()
             return {'message': 'All accounts deleted!'}, 200
         except Exception as e:

@@ -14,15 +14,15 @@ class RegisterAccountTestCase(unittest.TestCase):
         app = create_app()
         with app.test_client() as client:
             valid_account = {'username': 'p', 'password': 'p', 'email': 'peter.bryant@gatech.edu'}
-            response = client.post('/api/1/delete_account', json=valid_account) # ensure the account does not already exist
+            response = client.post('/api/1/accounts/delete_account', json=valid_account) # ensure the account does not already exist
 
             # Test register with valid credentials with no account already existing
-            response = client.post('/api/1/register', json=valid_account)
+            response = client.post('/api/1/accounts/register', json=valid_account)
             self.assertEqual(response.status_code, 200)
             self.assertIn('access_token', response.json)
 
             # Test register with valid credentials with account already existing
-            response = client.post('/api/1/register', json=valid_account)
+            response = client.post('/api/1/accounts/register', json=valid_account)
             self.assertEqual(response.status_code, 409)
             self.assertIn('error', response.json)
             self.assertEqual(response.json['error'], 'Username already exists!')
@@ -33,28 +33,28 @@ class RegisterAccountTestCase(unittest.TestCase):
 
             # Test register with no username
             invalid_account = {'username': '', 'password': 'p', 'email': 'bad_email'}
-            response = client.post('/api/1/register', json=invalid_account)
+            response = client.post('/api/1/accounts/register', json=invalid_account)
             self.assertEqual(response.status_code, 400)
             self.assertIn('error', response.json)
             self.assertEqual(response.json['error'], 'Username, password, and email cannot be empty!')
 
             # Test register with no password
             invalid_account = {'username': 'p', 'password': '', 'email': 'bad_email'}
-            response = client.post('/api/1/register', json=invalid_account)
+            response = client.post('/api/1/accounts/register', json=invalid_account)
             self.assertEqual(response.status_code, 400)
             self.assertIn('error', response.json)
             self.assertEqual(response.json['error'], 'Username, password, and email cannot be empty!')
 
             # Test register with no email
             invalid_account = {'username': 'p', 'password': 'p', 'email': ''}
-            response = client.post('/api/1/register', json=invalid_account)
+            response = client.post('/api/1/accounts/register', json=invalid_account)
             self.assertEqual(response.status_code, 400)
             self.assertIn('error', response.json)
             self.assertEqual(response.json['error'], 'Username, password, and email cannot be empty!')
 
             # Test register with invalid request body
             invalid_json = {'wrong_key': 'p', 'password': 'p', 'email': 'bad_email'} # wrong_key instead of username
-            response = client.post('/api/1/register', json=invalid_json)
+            response = client.post('/api/1/accounts/register', json=invalid_json)
             self.assertEqual(response.status_code, 400)
             self.assertIn('error', response.json)
             self.assertEqual(response.json['error'], 'Invalid payload, username, password, and email required i request body.')

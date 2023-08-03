@@ -47,6 +47,7 @@ class Users(db.Model, UserMixin):
     username = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(80), nullable=False)
     email = db.Column(db.String(50), unique=True, nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)
 
     def __str__(self):
         return f"User('{self.username}', '{self.password}', '{self.email}')"
@@ -62,6 +63,11 @@ class Users(db.Model, UserMixin):
     def print_all_users():
         for user in Users.query.all():
             print(user)
+
+class AdminSecretKeys(db.Model):
+    __tablename__ = 'admin_secret_keys'
+    askUID = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
+    hashed_secret_key = db.Column(db.String(50), unique=True, nullable=False)
 
 class SavedProjects(db.Model):
     __tablename__ = 'saved_projects'
