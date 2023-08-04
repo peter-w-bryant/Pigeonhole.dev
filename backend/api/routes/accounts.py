@@ -1,21 +1,12 @@
 # Path: backend\api\routes\auth.py
-from flask import Flask, render_template, session, request, redirect, jsonify, url_for, flash
-from flask import Blueprint, jsonify, current_app, render_template, redirect, url_for, request, flash
-from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-
-from flask_sqlalchemy import SQLAlchemy 
+from flask import request, jsonify, Blueprint
+from flask_jwt_extended import create_access_token
 from sqlalchemy.exc import IntegrityError  
 
-from scripts import GitHubAPIWrapper, read_all_project_data_json
 from utils.db import db
-from utils.models import Users, SavedProjects, Projects, AdminSecretKeys
+from utils.models import Users
 from utils.auth import bcrypt, login_manager
 from utils.admin import requires_admin, verify_admin_secret_key
-
-import requests
-import os
-import secrets
 
 accounts = Blueprint('accounts', __name__)  # blueprint for auth routes
 
@@ -216,4 +207,3 @@ def delete_all_accounts():
             return {'status': 'error', 'message': str(e)}, 500
         
     return {'status':'error', 'message': 'Invalid request method!'}, 401
-    

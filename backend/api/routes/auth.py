@@ -1,14 +1,10 @@
 # Path: backend\api\routes\auth.py
-from flask import Flask, render_template, session, request, redirect, jsonify, url_for, flash
-from flask import Blueprint, jsonify, current_app, render_template, redirect, url_for, request, flash
-from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.exc import IntegrityError
+from flask import request, jsonify, Blueprint, current_app
+from flask_login import login_user, logout_user, current_user
+from flask_jwt_extended import create_access_token, jwt_required
 
 from utils.db import db
-from utils.models import Users, SavedProjects, Projects
+from utils.models import Users
 from utils.auth import bcrypt, login_manager
 
 import requests
@@ -16,7 +12,6 @@ import os
 import secrets
 
 auth = Blueprint('auth', __name__)  # blueprint for auth routes
-
 
 def authenticate(username, password):
     # Get user object from database
