@@ -32,7 +32,7 @@ def authenticate(username, password):
 @auth.route('/auth/login', methods=['POST'])
 def login():
     """
-    Logs in a user and returns a JWT (access token)
+    Logs in a user and returns a JWT (access token).
     ---
     tags:
     - Auth
@@ -76,11 +76,10 @@ def logout():
     tags:
       - Auth
     parameters:
-    - name: access_token
+    - name: Authorization
       in: header
       required: true
-      description: "The JWT of the current user. The required header format is,
-      \n\n**{'Authorization: Bearer {token}'}**"
+      description: "The JWT of the current user. The required header format is: **{'Authorization: Bearer {token}'}**"
       schema:
         type: object
         properties:

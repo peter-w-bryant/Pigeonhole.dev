@@ -22,7 +22,7 @@ accounts = Blueprint('accounts', __name__)  # blueprint for auth routes
 @accounts.route('/accounts/register', methods=['POST'])
 def register():
     """
-    Registers a new user to the database and returns an access token.
+    Registers a new user to the database and returns a JWT (access token).
     ---
     tags:
     - Accounts
@@ -30,7 +30,7 @@ def register():
     - name: User JSON object
       in: body
       required: true
-      description: Registers a new user to the database and returns a JWT (access token). Username, password, and email required in request body. The optional admin_secret field is required to register a new admin user, allowing access to protected routes.
+      description: A JSON object containing a username, password, and email. The optional *admin_secret* field is required to register a new admin user, allowing access to protected routes.
       schema:
         type: object
         required:
@@ -122,7 +122,7 @@ def delete_account():
     - name: User JSON object
       in: body
       required: true
-      description: Deletes a user account from the database given a user's login credentials. Takes in a username and password in the request body for the user to be deleted.
+      description: A JSON object containing the username and password of the user to be deleted.
       schema:
         type: object
         properties:
@@ -181,7 +181,7 @@ def delete_all_accounts():
     - name: Admin JSON object
       in: body
       required: true
-      description: Protected route to delete all user accounts for testing purposes (requires admin access). Takes an admin's username and password in the request body, and only deletes non-admin user accounts.
+      description: A JSON object containing an admin's username and password.
       schema:
         type: object
         properties:
