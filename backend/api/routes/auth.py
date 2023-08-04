@@ -29,55 +29,73 @@ def authenticate(username, password):
     # Return None if authentication fails
     return None
 
-@auth.route('/auth/login', methods=['GET'])
+@auth.route('/auth/login', methods=['POST'])
 def login():
     """
-    Logs in a user
+    Logs in a user and returns an access token.
     ---
     tags:
-      - Auth
+    - Auth
     parameters:
-      - name: username
-        in: body
-        type: string
-        required: true
-        description: Username of the user logging in
-      - name: password
-        in: body
-        type: string
-        required: true
-        description: Password of the user logging in
+    - name: User JSON object
+      in: body
+      required: true
+      description: Logs in a user and returns a JWT (access token). Username and password required in request body.
+      schema:
+        type: object
+        properties:
+          username:
+            type: string
+            description: The username of the user.
+            example: testuser
+          password:
+            type: string
+            description: The password of the user.
+            example: testpassword
     responses:
-        200:
-            description: User logged in successfully, returns access token
-        401:
-            description: Invalid username or password, returns error message
+      200:
+          description: User logged in successfully, returns access token
+      401:
+          description: Invalid username or password, returns error message
     """
-    if request.method == 'GET':
+    if request.method == 'POST':
         data = request.get_json()
         user = authenticate(data['username'], data['password'])
         if user is None:
             return jsonify({'error': 'Invalid username or password'}), 401
-
-        # Create access token
         access_token = create_access_token(identity=user.UID)
+        login_user(user)
         return jsonify({'access_token': access_token}), 200
-
 
 @auth.route('/auth/logout', methods=['GET'])
 @jwt_required()
 def logout():
-    """Logs out a user
+    """
+    Logs out a user if they are logged in, requires an access token in the request header.
     ---
     tags:
       - Auth
+    parameters:
+    - name: access_token
+      in: header
+      required: true
+      description: "Logs out a user if they are logged in, requires an access token in the request header. The required header format is,
+      \n\n**{'Authorization': Bearer <access_token>}**"
+      schema:
+        type: object
+        properties:
+          access_token:
+            type: string
+            description: The access token of the user.
+            example: access_token
     responses:
-        200:
-            description: User logged out successfully
+      200:
+          description: User logged out successfully, returns success message
+      401:
+          description: Invalid access token, returns error message
     """
     logout_user()
     return jsonify({'message': 'User logged out'}), 200
-
 
 @auth.route('/auth/github_login', methods=['GET'])
 def github_login():

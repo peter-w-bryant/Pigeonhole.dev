@@ -16,24 +16,28 @@ class AuthTestCase(unittest.TestCase):
 
             # Register account if it does not already exist
             valid_account = {'username': 'p', 'password': 'p', 'email': 'peter.bryant@gatech.edu'}
-            response = client.post('/api/1/register', json=valid_account) # ensure the account is registered before logging in
+            response = client.post('/api/1/accounts/register', json=valid_account) # ensure the account is registered before logging in
 
             # Test with valid credentials
-            response = client.get('/api/1/auth/login', json={'username': 'p', 'password': 'p'})
+            response = client.post('/api/1/auth/login', json={'username': 'p', 'password': 'p'})
             self.assertEqual(response.status_code, 200)
             self.assertIn('access_token', response.json)
 
             # Test with invalid credentials (wrong password)
-            response = client.get('/api/1/auth/login', json={'username': 'p', 'password': 'wrongpassword'})
+            response = client.post('/api/1/auth/login', json={'username': 'p', 'password': 'wrongpassword'})
             response_json = response.json
             self.assertEqual(response.status_code, 401)
             self.assertEqual(response_json['error'], 'Invalid username or password')
 
             # Test with invalid credentials (wrong username)
-            response = client.get('/api/1/auth/login', json={'username': 'wrongusername', 'password': 'p'})
+            response = client.post('/api/1/auth/login', json={'username': 'wrongusername', 'password': 'p'})
             response_json = response.json
             self.assertEqual(response.status_code, 401)
             self.assertEqual(response_json['error'], 'Invalid username or password')
+
+            # Delete the account to return to original state
+            response = client.post('/api/1/accounts/delete_account', json=valid_account)
+            self.assertEqual(response.status_code, 200)
 
     def test_logout(self):
         app = create_app()
@@ -43,8 +47,17 @@ class AuthTestCase(unittest.TestCase):
             response = client.get('/api/1/auth/logout')
             self.assertEqual(response.status_code, 401)
 
+            valid_user = {'username': 'test_username', 'password': 'test_password', 'email': 'new_user@email.com'}
+
+            # Delete the account to return to original state
+            # response = client.post('/api/1/accounts/delete_account', json=valid_user)
+
+            # Register valid account
+            response = client.post('/api/1/accounts/register', json=valid_user) # ensure the account is registered before logging in
+            self.assertEqual(response.status_code, 200)
+
             # Login first, extract JWT token
-            response = client.get('/api/1/auth/login', json={'username': 'p', 'password': 'p'})
+            response = client.post('/api/1/auth/login', json=valid_user)
             access_token = response.json['access_token']
             self.assertEqual(response.status_code, 200)
             self.assertIn('access_token', response.json)
@@ -57,7 +70,7 @@ class AuthTestCase(unittest.TestCase):
             self.assertEqual(response_json['message'], 'User logged out')
 
             # Test with invalid JWT token
-            response = client.get('/api/1/auth/login', json={'username': 'p', 'password': 'p'})
+            response = client.post('/api/1/auth/login', json=valid_user)
             self.assertEqual(response.status_code, 200)
             self.assertIn('access_token', response.json)
             headers = {'Authorization': f'Bearer invalidtoken'}
@@ -65,10 +78,14 @@ class AuthTestCase(unittest.TestCase):
             self.assertEqual(response.status_code, 422) # 422 Unprocessable Entity
 
             # Test with no JWT token
-            response = client.get('/api/1/auth/login', json={'username': 'p', 'password': 'p'})
+            response = client.post('/api/1/auth/login', json=valid_user)
             response = client.get('/api/1/auth/logout')
             response_json = response.json
             self.assertEqual(response.status_code, 401) # 401 Unauthorized
+
+            # Delete the account to return to original state
+            response = client.post('/api/1/accounts/delete_account', json=valid_user)
+            self.assertEqual(response.status_code, 200)
         
     def test_github_login(self):
         # Test login with GitHub using personal access token (hidden)
@@ -81,7 +98,7 @@ class AuthTestCase(unittest.TestCase):
         app = create_app()
         with app.test_client() as client:
             login_params = {'code': 'not_a_real_code'}
-            response = client.get('/api/1/github_login', json=login_params, query_string={'testing_access_token': True})
+            response = client.get('/api/1/auth/github_login', json=login_params, query_string={'testing_access_token': True})
             self.assertEqual(response.status_code, 200)
             self.assertIn('access_token', response.json)
 

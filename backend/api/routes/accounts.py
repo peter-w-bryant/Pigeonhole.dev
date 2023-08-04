@@ -30,7 +30,7 @@ def register():
     - name: User JSON object
       in: body
       required: true
-      description: Registers a new user to the database and returns an access token. Username, password, and email required in request body. The optional admin_secret field is required to register a new admin user.
+      description: Registers a new user to the database and returns a JWT (access token). Username, password, and email required in request body. The optional admin_secret field is required to register a new admin user, allowing access to protected routes.
       schema:
         type: object
         required:
@@ -114,7 +114,7 @@ def register():
 @accounts.route('/accounts/delete_account', methods=['POST'])
 def delete_account():
     """
-    Deletes a user account from the database.
+    Deletes a user account from the database given a user's login credentials.
     ---
     tags:
     - Accounts
@@ -122,7 +122,7 @@ def delete_account():
     - name: User JSON object
       in: body
       required: true
-      description: Deletes a user account from the database.
+      description: Deletes a user account from the database given a user's login credentials. Takes in a username and password in the request body for the user to be deleted.
       schema:
         type: object
         properties:
@@ -173,7 +173,7 @@ def delete_account():
 @requires_admin
 def delete_all_accounts():
     """
-    Protected route to delete all user accounts for testing purposes (requires admin access)
+    Protected route to delete all non-admin user accounts for testing purposes (requires admin access).
     ---
     tags:
     - Accounts
@@ -181,7 +181,7 @@ def delete_all_accounts():
     - name: Admin JSON object
       in: body
       required: true
-      description: Deletes all user accounts from the database.
+      description: Protected route to delete all user accounts for testing purposes (requires admin access). Takes an admin's username and password in the request body, and only deletes non-admin user accounts.
       schema:
         type: object
         properties:

@@ -35,6 +35,20 @@ swagger_template = {
     "schemes": [
         "http",
         "https"
+    ],
+    "securityDefinitions": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+            "description": "\
+            JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\""
+        }
+    },
+    "security": [
+        {
+            "Bearer": []
+        }
     ]
 }
 
@@ -62,9 +76,7 @@ def create_app(config_class='development'):
         """
         current_user_id = get_jwt_identity()
         if current_user_id and current_user_id == int(UID):
-            # Here you can load the user object using the current_user_id
-            # For example, if you have a User model with a get_by_id method:
-            user = Users.get_by_id(current_user_id)
+            user = Users.query.filter_by(UID=UID).first()
             return user
         return None
     
