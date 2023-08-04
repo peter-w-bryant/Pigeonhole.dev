@@ -12,7 +12,7 @@ from scripts.github_api_wrapper import GitHubAPIWrapper
 from utils.db import db
 from utils.models import Users, Projects, ProjectIssues, ProjectTopics
 
-def add_project_to_db(gh_repo_url: str):
+def add_project_to_db(gh_repo_url: str, user_id: int):
     """Populate the project table with data for a single project.
     :param gh_repo_url: GitHub repository URL
     :return: True if successful, False otherwise
@@ -31,7 +31,7 @@ def add_project_to_db(gh_repo_url: str):
     # Insert the data into the database
     try:
         # __projects__ table        
-        project = Projects(gh_repo_url=gh.repo_url, gh_repo_name=gh.repo_name, gh_username=gh.username, gh_description=gh.gh_description, \
+        project = Projects(UID=user_id, gh_repo_url=gh.repo_url, gh_repo_name=gh.repo_name, gh_username=gh.username, gh_description=gh.gh_description, \
                            num_stars=gh.gh_stargazers_count, num_forks=gh.gh_forks_count, num_watchers=gh.gh_watchers_count, \
                            date_last_merged_PR=gh.gh_date_of_last_merged_pull_request, date_last_commit=gh.gh_date_of_last_commit, \
                            contrib_url=gh.gh_contributing_url, new_contrib_score=gh.gh_new_contributor_score)
@@ -60,8 +60,9 @@ def add_project_to_db(gh_repo_url: str):
         return {'status': 'error', 'message': 'Error: ' + str(e)}
 
     # Close the connection
+    return_dict = {'status': 'success', 'message': 'Project added successfully.', 'project_dict': project.to_dict()}
     db.session.close()
-    return {'status': 'success', 'message': 'Project added successfully.'}
+    return return_dict
 
 def add_projects_to_db_from_json(small_repo_data = True, testing: bool = False):
     """Populate the project table with projects links from a json file.
@@ -87,7 +88,7 @@ def add_projects_to_db_from_json(small_repo_data = True, testing: bool = False):
     duplicates_count = 0
     try:
         for repo_url in repo_data.values():
-            response_dict = add_project_to_db(repo_url)
+            response_dict = add_project_to_db(repo_url, user_id=1) # todo: change user_id to a random number
             response_msg = response_dict['message']
             if response_msg == 'Project added successfully.':
                 success_count += 1

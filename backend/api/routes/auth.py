@@ -74,7 +74,8 @@ def logout():
     - name: Authorization
       in: header
       required: true
-      description: "The JWT of the current user. The required header format is: **{'Authorization: Bearer {token}'}**"
+      description: "The JWT of the current user. The required header format is: **{'Authorization: Bearer {JWT}'}**"
+      example: Bearer <JWT_token>
       schema:
         type: object
         properties:

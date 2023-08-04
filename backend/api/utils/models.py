@@ -5,6 +5,7 @@ from utils.auth import bcrypt
 class Projects(db.Model):
     __tablename__ = 'projects'
     pUID = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
+    UID = db.Column(db.Integer, db.ForeignKey('users.UID'), nullable=False) # foreign key for which user added the project
     gh_repo_url = db.Column(db.String(150), nullable=False)
     gh_repo_name = db.Column(db.String(100), nullable=False)
     gh_username = db.Column(db.String(100), nullable=False)
@@ -22,6 +23,23 @@ class Projects(db.Model):
     # project contributors
     contrib_url = db.Column(db.String(150), nullable=True)
     new_contrib_score = db.Column(db.Float, nullable=True)
+
+    def to_dict(self):
+        return {
+            'pUID': self.pUID,
+            'UID': self.UID,
+            'gh_repo_url': self.gh_repo_url,
+            'gh_repo_name': self.gh_repo_name,
+            'gh_username': self.gh_username,
+            'gh_description': self.gh_description,
+            'num_stars': self.num_stars,
+            'num_forks': self.num_forks,
+            'num_watchers': self.num_watchers,
+            'date_last_merged_PR': self.date_last_merged_PR,
+            'date_last_commit': self.date_last_commit,
+            'contrib_url': self.contrib_url,
+            'new_contrib_score': self.new_contrib_score
+        }
     
     def get_all_projects(self):
         return Projects.query.all()

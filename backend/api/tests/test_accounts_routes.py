@@ -85,12 +85,15 @@ class RegisterAccountTestCase(unittest.TestCase):
         with app.test_client() as client:
             # Add two accounts to delete
             valid_account = {'username': 'new_user001', 'password': 'password', 'email': 'new_email001.com'}
-          
+            valid_account2 = {'username': 'new_user002', 'password': 'password', 'email': 'new_email002.com'}
+
+            # Remove the accounts if they already exist
+            response = client.post('/api/1/accounts/delete_account', json=valid_account)
             response = client.post('/api/1/accounts/register', json=valid_account)
             self.assertEqual(response.status_code, 200)
             self.assertIn('access_token', response.json)
 
-            valid_account2 = {'username': 'new_user002', 'password': 'password', 'email': 'new_email002.com'}
+            response = client.post('/api/1/accounts/delete_account', json=valid_account2)
             response = client.post('/api/1/accounts/register', json=valid_account2)
             self.assertEqual(response.status_code, 200)
             self.assertIn('access_token', response.json)

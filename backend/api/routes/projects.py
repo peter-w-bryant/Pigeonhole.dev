@@ -3,11 +3,13 @@ from flask_login import login_required
 from scripts import GitHubAPIWrapper, read_all_project_data_json, add_project_to_db
 from utils.db import db
 from utils.models import Users, Projects
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+
 
 projects = Blueprint('projects', __name__) # blueprint for auth routes
 
 @projects.route('/projects/add-project', methods=['POST'])
-@login_required
+@jwt_required()
 def AddNewProject():
     """
     Adds a new project to the database given a GitHub URL.
@@ -15,6 +17,12 @@ def AddNewProject():
     tags:
     - Projects
     parameters:
+    - name: Authorization
+      in: header
+      required: true
+      description: "The JWT of the current user. The required header format is: **{'Authorization: Bearer {JWT}'}**"
+      type: string
+      example: Bearer <JWT_token>
     - name: JSON object
       in: body
       required: true
@@ -36,7 +44,8 @@ def AddNewProject():
       500:
           description: Error adding project to database, returns error message
     """
-    if request.method == 'POST': # will be POST in production
+    if request.method == 'POST':
+        current_user_UID = get_jwt_identity()
         gh_url = request.get_json()['gh_url']
         gh = GitHubAPIWrapper(gh_url)
         if not gh.is_valid:
@@ -46,9 +55,9 @@ def AddNewProject():
         if project is not None:
             return jsonify({'status': 'error', 'message': 'Project already exists in database!'}), 409
         
-        response = add_project_to_db(gh.repo_url)
+        response = add_project_to_db(gh.repo_url, current_user_UID)
         if response['status'] == 'success':
-            return jsonify({'status': 'success', 'message': 'Project added to database!'}), 200
+            return jsonify({'status': 'success', 'message': 'Project added to database!', 'project_dict': response['project_dict']}), 200
         else:
             return jsonify({'status': 'error', 'message': 'Error adding project to database!'}), 500
 
