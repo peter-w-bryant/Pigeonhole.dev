@@ -32,7 +32,7 @@ def authenticate(username, password):
 @auth.route('/auth/login', methods=['POST'])
 def login():
     """
-    Logs in a user and returns an access token.
+    Logs in a user and returns a JWT (access token)
     ---
     tags:
     - Auth
@@ -40,7 +40,7 @@ def login():
     - name: User JSON object
       in: body
       required: true
-      description: Logs in a user and returns a JWT (access token). Username and password required in request body.
+      description: A JSON object containing the username and password of the user.
       schema:
         type: object
         properties:
@@ -79,8 +79,8 @@ def logout():
     - name: access_token
       in: header
       required: true
-      description: "Logs out a user if they are logged in, requires an access token in the request header. The required header format is,
-      \n\n**{'Authorization': Bearer <access_token>}**"
+      description: "The JWT of the current user. The required header format is,
+      \n\n**{'Authorization: Bearer {token}'}**"
       schema:
         type: object
         properties:
@@ -97,23 +97,35 @@ def logout():
     logout_user()
     return jsonify({'message': 'User logged out'}), 200
 
-@auth.route('/auth/github_login', methods=['GET'])
+@auth.route('/auth/github_login', methods=['POST'])
 def github_login():
     """
-    Logs in a user using GitHub OAuth
+    Logs in a user using GitHub OAuth and returns an access token.
     ---
     tags:
-        - Auth
+      - Auth
+    parameters:
+    - name: code
+      in: body
+      required: true
+      description: The authorization code returned by GitHub OAuth.
+      schema:
+        type: object
+        properties:
+          code:
+            type: string
+            description: The authorization code returned by GitHub OAuth.
+            example: aah17ka93ka045kal39ak
     responses:
-        200:
-            description: User logged in successfully, returns access token
-        401:
-            description: Invalid username or password, returns error message
+      200:
+          description: User logged in successfully, returns access token, username, and status
+      401:
+          description: Invalid authorization code, returns status and error message
     """
-    if request.method == 'GET':
+    if request.method == 'POST':
         data = request.get_json()
         code = data['code']
-        if code != None:
+        if code != None: # GitHub OAuth code is present
             # Define the parameters for the access token request
             token_params = {
                 'client_id': current_app.config['GITHUB_CLIENT_ID'],
@@ -121,6 +133,7 @@ def github_login():
                 'code': code
             }
 
+            # TODO: remove! testing_access_token is used for testing purposes
             testing_access_token = request.args.get('testing_access_token')
             if testing_access_token is None:
                 # Exchange the authorization code for an access token
@@ -163,6 +176,6 @@ def github_login():
 
             login_user(user)
             access_token = create_access_token(identity=username)
-            return {'username': username, 'access_token': access_token}, 200
+            return {'status': 'success', 'username': username, 'access_token': access_token}, 200
 
-    return 'Something went wrong!', 400
+    return {'status': 'error', 'message': 'Invalid code'}, 401

@@ -98,7 +98,7 @@ class AuthTestCase(unittest.TestCase):
         app = create_app()
         with app.test_client() as client:
             login_params = {'code': 'not_a_real_code'}
-            response = client.get('/api/1/auth/github_login', json=login_params, query_string={'testing_access_token': True})
+            response = client.post('/api/1/auth/github_login', json=login_params, query_string={'testing_access_token': True})
             self.assertEqual(response.status_code, 200)
             self.assertIn('access_token', response.json)
 
