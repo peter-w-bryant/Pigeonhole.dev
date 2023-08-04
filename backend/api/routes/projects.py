@@ -1,39 +1,41 @@
-from flask import Flask, render_template, request, redirect, jsonify, url_for, flash, Blueprint, current_app
-from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user # for handling user sessions
-from flask_bcrypt import Bcrypt 
-from flask_sqlalchemy import SQLAlchemy 
-from sqlalchemy.exc import IntegrityError 
-
+from flask import request, jsonify, Blueprint
+from flask_login import login_required
 from scripts import GitHubAPIWrapper, read_all_project_data_json, add_project_to_db
 from utils.db import db
-from utils.models import Users, SavedProjects, Projects
+from utils.models import Users, Projects
 
 projects = Blueprint('projects', __name__) # blueprint for auth routes
 
 @projects.route('/projects/add-project', methods=['POST'])
+@login_required
 def AddNewProject():
     """
-    Adds a new project to the database
+    Adds a new project to the database given a GitHub URL.
     ---
     tags:
-      - Projects
+    - Projects
     parameters:
-      - name: gh_url
-        in: body
-        type: string
-        required: true
-        description: GitHub URL of the project to add to the database
+    - name: JSON object
+      in: body
+      required: true
+      description: A JSON object containing the GitHub URL of the project.
+      schema:
+        type: object
+        properties:
+          gh_url:
+            type: string
+            description: The full GitHub URL of the project.
+            example: https://github.com/pallets/flask
     responses:
-        200:
-            description: Project added to database successfully
-        400:
-            description: Invalid GitHub URL
-        409:
-            description: Project already exists in database
-        500:
-            description: Error adding project to database
+      200:
+          description: Project added to database successfully, returns success message
+      400:
+          description: Invalid GitHub URL, returns error message
+      409:
+          description: Project already exists in database, returns error message
+      500:
+          description: Error adding project to database, returns error message
     """
-
     if request.method == 'POST': # will be POST in production
         gh_url = request.get_json()['gh_url']
         gh = GitHubAPIWrapper(gh_url)

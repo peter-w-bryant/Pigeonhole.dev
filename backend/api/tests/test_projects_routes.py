@@ -29,15 +29,32 @@ class ProjectsTestCase(unittest.TestCase):
             invalid_url = 'bad_url'
 
             with app.test_client() as client:
+
+                valid_user = {'username': 'test_username', 'password': 'test_password', 'email': 'new_user@email.com'}
+                response = client.post('/api/1/accounts/delete_account', json=valid_user)
+                
+                # Register valid account
+                response = client.post('/api/1/accounts/register', json=valid_user) # ensure the account is registered before logging in
+                self.assertEqual(response.status_code, 200)
+
+                # Login first, extract JWT token
+                response = client.post('/api/1/auth/login', json=valid_user)
+                access_token = response.json['access_token']
+                self.assertEqual(response.status_code, 200)
+                self.assertIn('access_token', response.json)
+
+                # Add authorization header to all requests
+                headers = {'Authorization': f'Bearer {access_token}'}
+
                 # Test valid project url
-                response = client.post(f'/api/1/projects/add-project', json={'gh_url': valid_url})
+                response = client.post(f'/api/1/projects/add-project', headers=headers, json={'gh_url': valid_url})
                 response_json = response.json
                 self.assertEqual(response.status_code, 200)
                 self.assertEqual(response_json['status'], 'success')
                 self.assertEqual(response_json['message'], 'Project added to database!')
 
                 # Test project that is already in the database
-                response = client.post(f'/api/1/projects/add-project', json={'gh_url': valid_url})
+                response = client.post(f'/api/1/projects/add-project', headers=headers, json={'gh_url': valid_url})
                 response_json = response.json
                 self.assertEqual(response.status_code, 409)
                 self.assertEqual(response_json['status'], 'error')
@@ -45,11 +62,15 @@ class ProjectsTestCase(unittest.TestCase):
                 delete_project_from_db(valid_url)
 
                 # Test invalid project url
-                response = client.post(f'/api/1/projects/add-project', json={'gh_url': invalid_url})
+                response = client.post(f'/api/1/projects/add-project', headers=headers, json={'gh_url': invalid_url})
                 response_json = response.json
                 self.assertEqual(response.status_code, 400)
                 self.assertEqual(response_json['status'], 'error')
                 self.assertEqual(response_json['message'], 'Invalid GitHub URL!')
+
+                # Delete the account to return to original state
+                response = client.post('/api/1/accounts/delete_account', json=valid_user)
+                self.assertEqual(response.status_code, 200)
 
 if __name__ == '__main__':
     unittest.main()
