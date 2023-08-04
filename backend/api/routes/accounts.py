@@ -210,10 +210,10 @@ def delete_all_accounts():
             # delete all accounts that are not admin accounts
             db.session.query(Users).filter(Users.is_admin == False).delete()
             db.session.commit()
-            return {'message': 'All non-admin accounts deleted!'}, 200
+            return {'status': 'success', 'message': 'All non-admin accounts deleted!'}, 200
         except Exception as e:
             print(e)
-            return {'error': str(e)}, 500
+            return {'status': 'error', 'message': str(e)}, 500
         
-    return {'error': 'Invalid request method!'}, 405
+    return {'status':'error', 'message': 'Invalid request method!'}, 401
     
