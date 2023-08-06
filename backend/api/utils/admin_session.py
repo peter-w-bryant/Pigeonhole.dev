@@ -34,6 +34,9 @@ class AdminSession():
         admin_user = {'username': self.username, 'password': self.password}
         response = self.client.post('/api/1/auth/login', json=admin_user)
         self.access_token = response.json['access_token']
+        self.headers = {'Authorization': 'Bearer ' + self.access_token}
+        headers = {'Authorization': f'Bearer {self.access_token}', 'Content-Type': 'application/json'}
+
         return self
         
     def __exit__(self, exc_type, exc_value, traceback):
@@ -43,10 +46,18 @@ class AdminSession():
         admin_user = {'username': self.username, 'password': self.password}
         self.client.post('/api/1/auth/logout', json=admin_user)
 
+    def delete_all_test_accounts(self):
+        """
+        Deletes all accounts that are not admin accounts
+        """
+        query_params = {'filter': 'test_accounts'}
+        response = self.client.post('/api/1/accounts/protected/delete_all_accounts', headers=self.headers, json=query_params)
+        return response 
+    
     def delete_all_non_admin_accounts(self):
         """
         Deletes all accounts that are not admin accounts
         """
-        header = {'Authorization': 'Bearer ' + self.access_token}
-        response = self.client.post('/api/1/accounts/protected/delete_all_accounts', headers=header)
-        return response
+        query_params = {'filter': 'all'}
+        response = self.client.post('/api/1/accounts/protected/delete_all_accounts', headers=self.headers, json=query_params)
+        return response  

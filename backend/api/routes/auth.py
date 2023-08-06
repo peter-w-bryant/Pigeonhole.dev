@@ -27,7 +27,7 @@ def authenticate(username, password):
 @auth.route('/auth/login', methods=['POST'])
 def login():
     """
-    Logs in a user and returns a JWT (access token).
+    Logs in a user given login credentials, returns a JWT (access token).
     ---
     tags:
     - Auth

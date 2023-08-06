@@ -7,37 +7,43 @@ from dotenv import load_dotenv
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) # set path to backend\api
 from app import create_app
+from utils.admin_session import AdminSession
 
 class AuthTestCase(unittest.TestCase):
 
     def test_login(self):
+
+        # Delete all test accounts
+        with AdminSession() as admin_session:
+            response = admin_session.delete_all_test_accounts()
+
         app = create_app()
         with app.test_client() as client:
 
             # Register account if it does not already exist
-            valid_account = {'username': 'p', 'password': 'p', 'email': 'peter.bryant@gatech.edu'}
+            valid_account = {'username': 'p', 'password': 'p', 'email': 'peter.bryant@gatech.edu', 'is_test_account': True}
             response = client.post('/api/1/accounts/register', json=valid_account) # ensure the account is registered before logging in
 
             # Test with valid credentials
-            response = client.post('/api/1/auth/login', json={'username': 'p', 'password': 'p'})
+            response = client.post('/api/1/auth/login', json={'username': 'p', 'password': 'p', 'is_test_account': True})
             self.assertEqual(response.status_code, 200)
             self.assertIn('access_token', response.json)
 
             # Test with invalid credentials (wrong password)
-            response = client.post('/api/1/auth/login', json={'username': 'p', 'password': 'wrongpassword'})
+            response = client.post('/api/1/auth/login', json={'username': 'p', 'password': 'wrongpassword', 'is_test_account': True})
             response_json = response.json
             self.assertEqual(response.status_code, 401)
             self.assertEqual(response_json['error'], 'Invalid username or password')
 
             # Test with invalid credentials (wrong username)
-            response = client.post('/api/1/auth/login', json={'username': 'wrongusername', 'password': 'p'})
+            response = client.post('/api/1/auth/login', json={'username': 'wrongusername', 'password': 'p', 'is_test_account': True})
             response_json = response.json
             self.assertEqual(response.status_code, 401)
             self.assertEqual(response_json['error'], 'Invalid username or password')
 
-            # Delete the account to return to original state
-            response = client.post('/api/1/accounts/delete_account', json=valid_account)
-            self.assertEqual(response.status_code, 200)
+            # Delete all test accounts
+            with AdminSession() as admin_session:
+                response = admin_session.delete_all_test_accounts()
 
     def test_logout(self):
         app = create_app()
@@ -47,10 +53,7 @@ class AuthTestCase(unittest.TestCase):
             response = client.get('/api/1/auth/logout')
             self.assertEqual(response.status_code, 401)
 
-            valid_user = {'username': 'test_username', 'password': 'test_password', 'email': 'new_user@email.com'}
-
-            # Delete the account to return to original state
-            # response = client.post('/api/1/accounts/delete_account', json=valid_user)
+            valid_user = {'username': 'test_username', 'password': 'test_password', 'email': 'new_user@email.com', 'is_test_account': True}
 
             # Register valid account
             response = client.post('/api/1/accounts/register', json=valid_user) # ensure the account is registered before logging in
@@ -83,9 +86,10 @@ class AuthTestCase(unittest.TestCase):
             response_json = response.json
             self.assertEqual(response.status_code, 401) # 401 Unauthorized
 
-            # Delete the account to return to original state
-            response = client.post('/api/1/accounts/delete_account', json=valid_user)
-            self.assertEqual(response.status_code, 200)
+            # Delete all test accounts
+            with AdminSession() as admin_session:
+                response = admin_session.delete_all_test_accounts()
+    
         
     def test_github_login(self):
         # Test login with GitHub using personal access token (hidden)

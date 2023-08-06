@@ -15,14 +15,16 @@ class RegisterAccountTestCase(unittest.TestCase):
         load_dotenv()
 
         # Delete all non-admin accounts
+            # Delete all test accounts
         with AdminSession() as admin_session:
-            response = admin_session.delete_all_non_admin_accounts()
+            response = admin_session.delete_all_test_accounts()
+
         self.assertEqual(response.status_code, 200)
 
         app = create_app()
         with app.test_client() as client:
 
-            valid_account = {'username': 'p', 'password': 'p', 'email': 'peter.bryant@gatech.edu'}
+            valid_account = {'username': 'p', 'password': 'p', 'email': 'peter.bryant@gatech.edu', 'is_test_account': True}
 
             # Test register with valid credentials with no account already existing
             response = client.post('/api/1/accounts/register', json=valid_account)
@@ -53,7 +55,7 @@ class RegisterAccountTestCase(unittest.TestCase):
         with app.test_client() as client:
 
             # Test register with no username
-            invalid_account = {'username': '', 'password': 'p', 'email': 'bad_email'}
+            invalid_account = {'username': '', 'password': 'p', 'email': 'bad_email', 'is_test_account': True}
             response = client.post('/api/1/accounts/register', json=invalid_account)
             self.assertEqual(response.status_code, 400)
             self.assertIn('error', response.json)
@@ -91,8 +93,8 @@ class RegisterAccountTestCase(unittest.TestCase):
         app = create_app()
         with app.test_client() as client:
             # Add two accounts to delete
-            valid_account = {'username': 'new_user001', 'password': 'password', 'email': 'new_email001.com'}
-            valid_account2 = {'username': 'new_user002', 'password': 'password', 'email': 'new_email002.com'}
+            valid_account = {'username': 'new_user001', 'password': 'password', 'email': 'new_email001.com', 'is_test_account': True}
+            valid_account2 = {'username': 'new_user002', 'password': 'password', 'email': 'new_email002.com', 'is_test_account': True}
             response = client.post('/api/1/accounts/register', json=valid_account)
             self.assertEqual(response.status_code, 200)
             self.assertIn('access_token', response.json)
@@ -109,5 +111,9 @@ class RegisterAccountTestCase(unittest.TestCase):
             accounts = Users.query.filter_by(is_admin=False).all()
             self.assertEqual(len(accounts), 0)
 
+            # Delete all test accounts
+            with AdminSession() as admin_session:
+                response = admin_session.delete_all_test_accounts()
+            
 if __name__ == "__main__":
     unittest.main()

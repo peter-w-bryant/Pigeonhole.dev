@@ -1,5 +1,5 @@
 # pigeonhole.dev
-An enriched Dockerized GitHub API proxy for open-source project discovery built with Flask and Azure Postgres Database. Deployed with Azure Container Instances and load tested with k6. 
+An enriched, Dockerized GitHub API proxy for open-source project discovery built with Flask and Azure Postgres Database. Deployed with Azure Container Instances and load tested with k6. 
 
 # Table of Contents
 1. [Usage](#Usage)

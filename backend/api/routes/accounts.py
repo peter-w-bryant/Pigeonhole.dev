@@ -72,6 +72,10 @@ def register():
             if data['username'] == '' or data['username'] == None or data['password'] == '' or data['password'] == None or data['email'] == '' or data['email'] == None:
                 return {'error': 'Username, password, and email cannot be empty!'}, 400
 
+            # check if is_test_account is provided in request body
+            if 'is_test_account' not in data.keys(): is_test_account = False
+            else: is_test_account = data['is_test_account']
+
             # check if username already exists
             user = Users.query.filter_by(username=data['username']).first()
 
@@ -86,10 +90,11 @@ def register():
                 # check if the admin secret key is correct
                 if verify_admin_secret_key(data['admin_secret']):
                     new_user = Users(username=data['username'], password=hashed_password, # create new user
-                                     email=data['email'], is_admin=True)
+                                     email=data['email'], is_admin=True, is_test_account=is_test_account)
+            # otherwise, create a normal user
             if new_user == None:
                 new_user = Users(username=data['username'], password=hashed_password, # create new user
-                             email=data['email'])
+                             email=data['email'], is_test_account=is_test_account)
             
             db.session.add(new_user)  # add new user to database
             db.session.commit()       # commit changes to database
@@ -107,7 +112,7 @@ def register():
 @jwt_required()
 def delete_account():
     """
-    Deletes a user account from the database given a user's login credentials.
+    Deletes a user account from the database, requires a JWT for the user to be deleted.
     ---
     tags:
     - Accounts
@@ -151,7 +156,7 @@ def delete_account():
 @requires_admin
 def delete_all_accounts():
     """
-    Protected route to delete all non-admin user accounts for testing purposes (requires admin access).
+    Protected route to delete all accounts from the database. By default, this route will delete all non-admin accounts. If the query parameter **filter** is set to **test_accounts**, only test accounts will be deleted.
     ---
     tags:
     - Accounts
@@ -178,10 +183,21 @@ def delete_all_accounts():
     """
     if request.method == 'POST':
         try:
-            # delete all accounts that are not admin accounts
-            db.session.query(Users).filter(Users.is_admin == False).delete()
-            db.session.commit()
-            return {'status': 'success', 'message': 'All non-admin accounts deleted!'}, 200
+            # check to see if query parameter is provided
+            if request.get_json() != None:
+                filter_by = request.get_json()['filter']
+                if filter_by == 'test_accounts':
+                    # delete all test accounts
+                    db.session.query(Users).filter(Users.is_test_account == True).delete()
+                    db.session.commit()
+                    return {'status': 'success', 'message': 'All test accounts deleted!'}, 200
+                elif filter_by == 'all':
+                    # delete all accounts that are not admin accounts
+                    db.session.query(Users).filter(Users.is_admin == False).delete()
+                    db.session.commit()
+                    return {'status': 'success', 'message': 'All non-admin accounts deleted!'}, 200
+                else:
+                    return {'status': 'error', 'message': 'Invalid query parameter!'}, 400
         except Exception as e:
             print(e)
             return {'status': 'error', 'message': str(e)}, 500

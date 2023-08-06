@@ -66,6 +66,7 @@ class Users(db.Model, UserMixin):
     password = db.Column(db.String(80), nullable=False)
     email = db.Column(db.String(50), unique=True, nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
+    is_test_account = db.Column(db.Boolean, default=False)
 
     def __str__(self):
         return f"User('{self.username}', '{self.password}', '{self.email}')"

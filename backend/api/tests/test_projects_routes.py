@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) # set path to backend\api
 from app import create_app
 from scripts import read_all_project_data_json, add_project_to_db, add_projects_to_db_from_json, delete_project_from_db, delete_all_projects_from_db
+from utils.admin_session import AdminSession
 
 class ProjectsTestCase(unittest.TestCase):
 
@@ -28,10 +29,13 @@ class ProjectsTestCase(unittest.TestCase):
             response = delete_project_from_db(valid_url)
             invalid_url = 'bad_url'
 
+            # Delete all test accounts
+            with AdminSession() as admin_session:
+                response = admin_session.delete_all_test_accounts()
+
             with app.test_client() as client:
 
-                valid_user = {'username': 'test_username', 'password': 'test_password', 'email': 'new_user@email.com'}
-                response = client.post('/api/1/accounts/delete_account', json=valid_user)
+                valid_user = {'username': 'test_username', 'password': 'test_password', 'email': 'new_user@email.com', 'is_test_account': True}
                 
                 # Register valid account
                 response = client.post('/api/1/accounts/register', json=valid_user) # ensure the account is registered before logging in
@@ -68,9 +72,8 @@ class ProjectsTestCase(unittest.TestCase):
                 self.assertEqual(response_json['status'], 'error')
                 self.assertEqual(response_json['message'], 'Invalid GitHub URL!')
 
-                # Delete the account to return to original state
-                response = client.post('/api/1/accounts/delete_account', json=valid_user)
-                self.assertEqual(response.status_code, 200)
+            with AdminSession() as admin_session:
+                response = admin_session.delete_all_test_accounts()
 
 if __name__ == '__main__':
     unittest.main()
