@@ -1,4 +1,5 @@
 from flask import request, jsonify
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from functools import wraps
 from utils.models import Users, AdminSecretKeys
 from utils.auth import bcrypt, login_manager
@@ -6,20 +7,19 @@ from utils.auth import bcrypt, login_manager
 def requires_admin(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        # Check if user is an admin
-        if not is_admin(request):
+        if not is_admin():
             return jsonify({'status': 'error', 'message': 'Admin access required'}), 401
         return f(*args, **kwargs)
     return decorated
 
-def is_admin(request):
-    # Check user table for admin username and check password
-    user = Users.query.filter_by(username=request.json['username']).first()
+@jwt_required()
+def is_admin():
+    user_uid = get_jwt_identity()
+    user = Users.query.filter_by(UID=user_uid).first()
     if user is None:
         return False
-    if user.check_password(request.json['password']):
-        if user.is_admin:
-            return True
+    if user.is_admin:
+        return True
     return False
 
 def verify_admin_secret_key(secret_key):

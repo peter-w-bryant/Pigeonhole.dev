@@ -22,7 +22,7 @@ swagger_template = {
     "swagger": "2.0",
     "info": {
         "title": "Pigeonhole.dev API",
-        "description": "An enriched GitHub API offering Open Source Project Discovery for new developers.",
+        "description": "An enriched, Dockerized GitHub API proxy for open-source project discovery. Built with Flask and Azure Postgres Database & deployed with Azure Container Instances. Load tested with k6.",
         "contact": {
             "responsibleDeveloper": "Peter Bryant",
             "email": "peter.bryant@gatech.edu",

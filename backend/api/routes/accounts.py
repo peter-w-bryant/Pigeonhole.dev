@@ -1,6 +1,7 @@
 # Path: backend\api\routes\auth.py
 from flask import request, jsonify, Blueprint
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+
 from sqlalchemy.exc import IntegrityError  
 
 from utils.db import db
@@ -103,6 +104,7 @@ def register():
             return {'error': f"Exception {e}"}, 500
         
 @accounts.route('/accounts/delete_account', methods=['POST'])
+@jwt_required()
 def delete_account():
     """
     Deletes a user account from the database given a user's login credentials.
@@ -110,57 +112,42 @@ def delete_account():
     tags:
     - Accounts
     parameters:
-    - name: User JSON object
-      in: body
+    - name: Authorization
+      in: header
       required: true
-      description: A JSON object containing the username and password of the user to be deleted.
+      description: "The JWT of the current user. The required header format is: **{'Authorization: Bearer {JWT}'}**"
+      example: Bearer <JWT_token>
       schema:
         type: object
         properties:
-          username:
+          access_token:
             type: string
-            description: The username of the user.
-            example: testuser
-          password:
-            type: string
-            description: The password of the user.
-            example: testpassword
+            description: The access token of the user.
+            example: access_token
     responses:
       200:
           description: User deleted successfully
-      400:
-          description: Invalid payload, username and password required in request body
-      401:
-            description: Incorrect password
       404:
-          description: Username does not exist
+          description: Unable to verify current user
       500:
           description: Internal server error
     """
     if request.method == 'POST':
-        data = request.get_json()
         try:
-            # ensure username and password are not empty
-            if data['username'] == '' or data['username'] == None or data['password'] == '' or data['password'] == None:
-                return {'error': 'Username or password cannot be empty!'}, 400
-
-            # check if username already exists
-            user = Users.query.filter_by(username=data['username']).first()
-            if user == None:
-                return {'error': 'Username does not exist!'}, 404
-            
-            if user.check_password(data['password']):
-                db.session.delete(user)
-                db.session.commit()
-                return {'message': 'Account deleted!'}, 200
-            else:
-                return {'error': 'Incorrect password!'}, 401
-
+            current_user_id = get_jwt_identity()
+            current_user = Users.query.filter_by(UID=current_user_id).first()  
+            if current_user == None:
+                return {'error': 'Unable to verify current user!'}, 404
+            db.session.delete(current_user)
+            db.session.commit()
+            return {'message': 'Account deleted!'}, 200
+        
         except Exception as e:
             print(e)
             return {'error': str(e)}, 500
 
 @accounts.route('/accounts/protected/delete_all_accounts', methods=['POST'])
+@jwt_required()
 @requires_admin
 def delete_all_accounts():
     """
@@ -169,30 +156,23 @@ def delete_all_accounts():
     tags:
     - Accounts
     parameters:
-    - name: Admin JSON object
-      in: body
+    - name: Authorization
+      in: header
       required: true
-      description: A JSON object containing an admin's username and password.
+      description: "The JWT of the current admin user. The required header format is: **{'Authorization: Bearer {JWT}'}**"
+      example: Bearer <JWT_token>
       schema:
         type: object
         properties:
-          username:
+          access_token:
             type: string
-            description: The username of the administator.
-            example: admin_username
-          password:
-            type: string
-            description: The password of the administrator.
-            example: admin_password
+            description: The access token of the user.
+            example: access_token
     responses:
       200:
-          description: User deleted successfully
-      400:
-          description: Invalid payload, username and password required in request body
+          description: All non-admin accounts deleted
       401:
-            description: Incorrect password
-      404:
-          description: Username does not exist
+            description: Invalid request method
       500:
           description: Internal server error
     """

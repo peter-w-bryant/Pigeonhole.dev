@@ -1,22 +1,28 @@
 import os
 import sys
 import unittest
-import requests
-from flask import Flask
 from dotenv import load_dotenv
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) # set path to backend\api
 from app import create_app
 from utils.db import db
 from utils.models import Users
+from utils.admin_session import AdminSession
 
 class RegisterAccountTestCase(unittest.TestCase):
 
     def test_register_valid_account(self):
+        load_dotenv()
+
+        # Delete all non-admin accounts
+        with AdminSession() as admin_session:
+            response = admin_session.delete_all_non_admin_accounts()
+        self.assertEqual(response.status_code, 200)
+
         app = create_app()
         with app.test_client() as client:
+
             valid_account = {'username': 'p', 'password': 'p', 'email': 'peter.bryant@gatech.edu'}
-            response = client.post('/api/1/accounts/delete_account', json=valid_account) # ensure the account does not already exist
 
             # Test register with valid credentials with no account already existing
             response = client.post('/api/1/accounts/register', json=valid_account)
@@ -29,8 +35,15 @@ class RegisterAccountTestCase(unittest.TestCase):
             self.assertIn('error', response.json)
             self.assertEqual(response.json['error'], 'Username already exists!')
 
+            # Login to the account and extract the access token
+            response = client.post('/api/1/auth/login', json=valid_account)
+            self.assertEqual(response.status_code, 200)
+            self.assertIn('access_token', response.json)
+            access_token = response.json['access_token']
+
             # Delete the account to return to original state
-            response = client.post('/api/1/accounts/delete_account', json=valid_account)
+            headers = {'Authorization': f'Bearer {access_token}'}
+            response = client.post('/api/1/accounts/delete_account', json=valid_account, headers=headers)
             self.assertEqual(response.status_code, 200)
             self.assertIn('message', response.json)
             self.assertEqual(response.json['message'], 'Account deleted!')
@@ -74,44 +87,23 @@ class RegisterAccountTestCase(unittest.TestCase):
             self.assertIn('admin_status', response.json)
             self.assertEqual(response.json['admin_status'], False)
 
-            # Delete the account to return to original state
-            response = client.post('/api/1/accounts/delete_account', json=invalid_json)
-            self.assertEqual(response.status_code, 200)
-            self.assertIn('message', response.json)
-            self.assertEqual(response.json['message'], 'Account deleted!')
-
     def test_protected_admin_delete_all_accounts(self):
         app = create_app()
         with app.test_client() as client:
             # Add two accounts to delete
             valid_account = {'username': 'new_user001', 'password': 'password', 'email': 'new_email001.com'}
             valid_account2 = {'username': 'new_user002', 'password': 'password', 'email': 'new_email002.com'}
-
-            # Remove the accounts if they already exist
-            response = client.post('/api/1/accounts/delete_account', json=valid_account)
             response = client.post('/api/1/accounts/register', json=valid_account)
             self.assertEqual(response.status_code, 200)
             self.assertIn('access_token', response.json)
-
-            response = client.post('/api/1/accounts/delete_account', json=valid_account2)
             response = client.post('/api/1/accounts/register', json=valid_account2)
             self.assertEqual(response.status_code, 200)
             self.assertIn('access_token', response.json)
 
             # Test delete all accounts with invalid admin credentials
-            invalid_json = {'username': 'invalid_user', 'password': 'invalid_password'}
-            response = client.post('/api/1/accounts/protected/delete_all_accounts', json=invalid_json)
-            self.assertEqual(response.status_code, 401)
-            self.assertIn('status', response.json)
-            self.assertEqual(response.json['status'], 'error')
-
-            # Test delete all accounts with valid admin credentials
-            admin_user = input('Enter admin username: ')
-            admin_password = input('Enter admin password: ')
-            response = client.post('/api/1/accounts/protected/delete_all_accounts', json={'username': admin_user, 'password': admin_password})
+            with AdminSession() as admin_session:
+                response = admin_session.delete_all_non_admin_accounts()
             self.assertEqual(response.status_code, 200)
-            self.assertIn('status', response.json)
-            self.assertEqual(response.json['status'], 'success')
 
             # Check that there are no users in the database with is_admin = false
             accounts = Users.query.filter_by(is_admin=False).all()
