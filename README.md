@@ -1,34 +1,23 @@
-# pigeonhole.dev
+# Pigeonhole.dev
 An aggregated list of open source projects with issues looking for contributors.
 
 # Table of Contents
 1. [Usage](#Usage)
 
-## Usage
-In order to run this project in ```development mode``` locally, first clone this repo and step into the project directory,
-
-```bash
-git clone https://github.com/peter-w-bryant/pigeonhole.dev.git
-cd pigeonhole.dev
+## Pigeonhole.dev API v1.0.0
+### Run the API server locally
+#### Create a local SQLite DB instance
+The backend requires access to a private Azure PostgreSQL DB instance, so in order to run the API server locally I recommend creating a local SQLite DB instance, and adding the following to the ```/api/config.py``` file,
+```python
+SQLALCHEMY_DATABASE_URI = 'sqlite:///instance/database.db'
 ```
-Next, initializing and running the backend and frontend servers.
-
-### Backend Setup
-First, step into the backend directory, create/activate a Python virtual environment, and install all dependencies.
-
-```bash
-cd backend
-python3 -m venv ./env
-env/Scripts/activate
-pip install -r requirements.txt
+and commenting out the following line,
+```python
+SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
 ```
-Next, initialize a local SQLite DB instance by stepping into the ```/api``` directory and executing the following commands in Python interactive mode,
 
-```bash
-cd api
-python3
-```
-now from interactive mode,
+Initialize a local SQLite DB instance by stepping into the ```/api``` directory and executing the following commands in Python interactive mode,
+
 ```python
 from app import create_app
 from utils.db import db
@@ -36,20 +25,21 @@ app = create_app()
 with app.app_context():
   db.create_all()
 ```
-this will create a SQLite DB instance named ```database.db``` in the ```/backend/api/instance```. Check that your DB was created correctly by checking that executing the following commands from your terminal,
+We have provided a script to populate the DB with data from static JSON files. Run the following commands from the ```/api``` directory to populate the DB with sample data,
+
+```python
+<replace>
+```
+
+#### Create a Docker image and run the image in a container
+Run the API server locally by cloning the repo, creating a Docker image and running the image in a container.
+
 ```bash
-cd instance
-sqlite3 database.db
-sqlite> .tables
+git clone https://github.com/peter-w-bryant/pigeonhole.dev.git
+cd pigeonhole.dev
+docker build -t ph .
+docker run -p 5000:5000 ph
 ```
-you should then see ```projects  users``` indicating that both the projects and users tables were created successfully. To populate the projects table, you need to run the ```scripts/database.py``` script while in the ```backend/api```. You should go to the main method located in this script and make sure it contains,
-```python
-with app.app_context():
-  pop_projects_from_json()
-```
-this will populate the database with the projects stored in ```small_repo_data.json```, but you can also pass in the name of another JSON file which contains more projects. You can run,
-```python
-with app.app_context():
-  pop_projects_from_json("static_repo_data.json")
-```
-which has many more projects to populate the database with.
+
+#### API Documentation
+Access the API documentation at ```http://localhost:5000/api/v1.0/apidocs```.
