@@ -9,7 +9,7 @@ An aggregated list of open source projects with issues looking for contributors.
 #### Create a local SQLite DB instance
 The backend requires access to a private Azure PostgreSQL DB instance, so in order to run the API server locally I recommend creating a local SQLite DB instance, and adding the following to the ```/api/config.py``` file,
 ```python
-SQLALCHEMY_DATABASE_URI = 'sqlite:///instance/database.db'
+SQLALCHEMY_DATABASE_URI = 'sqlite:///database.db'
 ```
 and commenting out the following line,
 ```python
