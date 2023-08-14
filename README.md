@@ -28,7 +28,7 @@ with app.app_context():
 We have provided a script to populate the DB with data from static JSON files. Run the following commands from the ```/api``` directory to populate the DB with sample data,
 
 ```python
-<replace>
+python3 scripts/populate_db.py
 ```
 
 #### Create a Docker image and run the image in a container
