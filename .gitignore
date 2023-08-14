@@ -2,8 +2,6 @@
 backend/config.py
 backend/api/instance/
 *pyc
-backend/api/scripts/create_admin_secret_key.py
-backend/api/scripts/gen_admin_secret_key.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
