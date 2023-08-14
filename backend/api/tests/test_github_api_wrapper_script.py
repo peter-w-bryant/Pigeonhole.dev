@@ -26,7 +26,7 @@ class GitHubAPIWrapperTestCases(unittest.TestCase):
         self.assertEqual(gh.gh_topics, ['flask', 'jinja', 'pallets', 'python', 'web-framework', 'werkzeug', 'wsgi'])
 
         # Test the issues attribute
-        self.assertEqual(len(gh.gh_issues_dict), 0)
+        self.assertEqual(len(gh.gh_issues_dict), 1)
         self.assertEqual(type(gh.gh_issues_dict), dict)
 
         # Test repo counts
