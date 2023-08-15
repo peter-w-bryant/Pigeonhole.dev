@@ -83,6 +83,7 @@ class GitHubAPIWrapperTestCases(unittest.TestCase):
         app = create_app()
         with app.app_context():
             delete_all_projects_from_db(testing=True)
+            
             # valid_url = 'https://github.com/pytorch/pytorch'
             valid_url = 'https://github.com/up-for-grabs/up-for-grabs.net'
             # valid_url = 'https://github.com/SSENSE/vue-carousel/'
@@ -90,8 +91,11 @@ class GitHubAPIWrapperTestCases(unittest.TestCase):
             # valid_url = 'https://github.com/SeleniumHQ/selenium'
             # valid_url = 'https://github.com/pypa/setuptools/'
             # valid_url = 'https://github.com/JuliaPlots/Plots.jl/'
+
+            
             current_time = dt.now()
             gh = GitHubAPIWrapper(valid_url)
+            add_project_to_db(valid_url,1)
             print(f"gh_num_contributors = {gh.gh_num_contributors}")
             # print(f"gh_collaboration_health = {gh.gh_collaboration_health}")
             # print(f"Contains bounties: {gh.gh_has_bounty_label}")
