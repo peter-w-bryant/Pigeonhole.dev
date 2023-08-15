@@ -34,7 +34,7 @@ def add_project_to_db(gh_repo_url: str, user_id: int):
         project = Projects(UID=user_id, gh_repo_url=gh.repo_url, gh_repo_name=gh.repo_name, gh_username=gh.username, gh_description=gh.gh_description, \
                            num_stars=gh.gh_stargazers_count, num_forks=gh.gh_forks_count, num_watchers=gh.gh_watchers_count, \
                            date_last_merged_PR=gh.gh_date_of_last_merged_pull_request, date_last_commit=gh.gh_date_of_last_commit, \
-                           contrib_url=gh.gh_contributing_url, new_contrib_score=gh.gh_new_contributor_score)
+                           contrib_url=gh.gh_contributing_url, new_contrib_score=gh.gh_new_contributor_score, has_bounty_label=gh.gh_has_bounty_label)
         db.session.add(project)
         db.session.flush() 
         pUID = project.pUID

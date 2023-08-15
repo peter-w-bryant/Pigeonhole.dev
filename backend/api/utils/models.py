@@ -24,6 +24,9 @@ class Projects(db.Model):
     contrib_url = db.Column(db.String(150), nullable=True)
     new_contrib_score = db.Column(db.Float, nullable=True)
 
+    # project issues contain bounty labels
+    has_bounty_label = db.Column(db.Boolean, default=False)
+
     def to_dict(self):
         return {
             'pUID': self.pUID,
