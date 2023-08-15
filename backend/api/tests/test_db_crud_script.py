@@ -61,6 +61,6 @@ class ReadAllProjectDataJsonTestCases(unittest.TestCase):
             response = read_all_project_data_json()
             self.assertEqual(type(response), dict)
             self.assertEqual('status' not in response.keys(), True) # check that the response is not an error
-            
+
 if __name__ == '__main__':
     unittest.main()

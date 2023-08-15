@@ -3,13 +3,26 @@ import requests
 from datetime import datetime
 from dotenv import dotenv_values, load_dotenv
 import os
+from datetime import datetime as dt
+
+new_contrib_issue_list = ['good first issue', 'up-for-grabs', 'help wanted', 'easy to fix',
+                          'easy', 'starter-task', 'contribution-starter', 'level:starter',
+                          'newbie', 'beginner experience', 'beginners', 'beginner friendly',
+                          'beginner-friendly-issues', 'beginner-task', 'difficulty:beginner',
+                          'difficulty:easy', 'easy pick', 'easy-pickings', 'first-timers-only',
+                          'junior job', 'needs help', 'learning opportunity', 'documentation',
+                          'bug', 'enhancement', 'refactor', 'needs investigation', 'testing'
+                          'minor', 'trivial']
+
+bounty_list = ['bounty', 'bounties']
 
 class GitHubAPIWrapper:
-    """GitHub API wrapper class"""
+    """
+    GitHub API wrapper class
+    """
     def __init__(self, repo_url):
         load_dotenv()
         try:
-
             if not repo_url.startswith("https://github.com") or repo_url == "https://github.com":
                 self.is_valid = False
             else:
@@ -22,17 +35,17 @@ class GitHubAPIWrapper:
                 self.response = requests.get(self.base_url, headers=self.auth_headers)
                 self.status_code = self.response.status_code
                 self.repo_data = self.response.json()
+                self.gh_has_bounty_label = False
   
                 if not self.verify_repo_url():
                     self.is_valid = False
                 else:
-
                     self.is_valid = True
-                    self.gh_description = self.get_repo_description() # Get the data from GitHub API
+                    self.gh_description = self.get_repo_description()
 
                     # Topics / tech stack
-                    self.gh_topics = [''] * 6 # empty list of 6 strings to store the topics
-                    self.gh_topics[:len(self.get_topics())] = self.get_topics() # get the topics
+                    self.gh_topics = []
+                    self.gh_topics.extend(self.get_topics())
 
                     # Issues / labels
                     self.gh_issues_dict = self.get_issues()
@@ -124,44 +137,56 @@ class GitHubAPIWrapper:
         of open issues that have that label tag.
         """
         issue_label_counts = {}
-        page = 0
-        while True:
-            page += 1
-            issues_json = requests.get(self.base_url + f"/issues?state=open&per_page=100&page={page}", headers=self.auth_headers).json()
-            if issues_json == []:
-                break
-            for issue in issues_json:
-                try:
-                    if issue['labels'] != []:
-                        for i in range(len(issue['labels'])):
-                            if issue['labels'][i]['name'] not in issue_label_counts.keys():
-                                issue_label_counts[issue['labels'][i]['name']] = 1
-                            else:
-                                issue_label_counts[issue['labels'][i]['name']] += 1
+        issue_id_lookup = {}
 
-                except Exception as e:
-                    print(e)
-                    pass
+        for issue_label in new_contrib_issue_list:
+            is_valid_page = True
+            page = 0
+            while is_valid_page:
+                page += 1
+                query_url = f"{self.base_url}/issues?state=open&per_page=100&page={page}&labels={issue_label}"
+                issues_json = requests.get(query_url, headers=self.auth_headers).json()
+                if issues_json == []:
+                    if page != 1:
+                        is_valid_page = False
+                    break
+                for issue in issues_json:
+                    try:
+                        if issue['id'] not in issue_id_lookup.keys():
+                            issue_id_lookup[issue['id']] = True
+                            # add only the issue labels that are in our list of new contributor issue labels
+                            for i in range(len(issue['labels'])):
+                                label_name = issue['labels'][i]['name'].lower()
+                                # if the issue label is not in our dictionary, add it
+                                if label_name not in issue_label_counts.keys():
+                                    # if the issue label is in our list of new contributor issue labels or if it relates to bounties, add it
+                                    if (label_name in new_contrib_issue_list):
+                                        issue_label_counts[label_name] = 1
+                                    elif('bounty' in label_name) or ('bounties' in label_name):
+                                        self.gh_has_bounty_label = True
+                                        issue_label_counts[label_name] = 1
+                                # if the issue label is in our dictionary, increment the count
+                                else:
+                                    issue_label_counts[label_name] += 1
+                    except Exception as e:
+                        # print(e)
+                        pass
 
         return self.get_issues_reorder_keys(issue_label_counts)
     
     def get_issues_reorder_keys(self, issue_dict):
         """Reorders a dictionary of issue label count pairs so that our most important issue
-        tags appear first. In order of importance:
-            good first issue
-            up for grabs
-            help wanted
-            easy to fix
-            beginner experience
-            easy
-            *if label contains 'starter' or 'begginer'
+        tags appear first. 
+
+        Args:
+        issue_dict(dict): a dictionary with keys corresponding to unique issue labels whose values are the count
 
         Returns:
-        resorted_issue_dict: the same issue dictionary passed but with keys in order of importance.
+        resorted_issue_dict(dict): a dictionary with keys corresponding to unique issue labels whose values are the count
         """
         resorted_issue_dict = {}
-        for key in ['good first issue', 'up-for-grabs', 'help wanted', 'easy to fix', 'beginner experience', 'easy']:
-            if key in issue_dict.keys() or 'starter' in key or 'begginer' in key:
+        for key in new_contrib_issue_list:
+            if key in issue_dict.keys():
                 resorted_issue_dict[key] = issue_dict[key]
 
         # add the rest of the keys
