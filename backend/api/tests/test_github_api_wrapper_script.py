@@ -84,15 +84,16 @@ class GitHubAPIWrapperTestCases(unittest.TestCase):
         with app.app_context():
             delete_all_projects_from_db(testing=True)
             # valid_url = 'https://github.com/pytorch/pytorch'
-            # valid_url = 'https://github.com/up-for-grabs/up-for-grabs.net'
+            valid_url = 'https://github.com/up-for-grabs/up-for-grabs.net'
             # valid_url = 'https://github.com/SSENSE/vue-carousel/'
             # valid_url = 'https://github.com/urllib3/urllib3/'
             # valid_url = 'https://github.com/SeleniumHQ/selenium'
             # valid_url = 'https://github.com/pypa/setuptools/'
-            valid_url = 'https://github.com/JuliaPlots/Plots.jl/'
+            # valid_url = 'https://github.com/JuliaPlots/Plots.jl/'
             current_time = dt.now()
-            flask_gh_obj = GitHubAPIWrapper(valid_url)
-            # print(f"Contains bounties: {flask_gh_obj.gh_has_bounty_label}")
+            gh = GitHubAPIWrapper(valid_url)
+            print(f"gh_new_contributor_score = {gh.gh_new_contributor_score}")
+            # print(f"Contains bounties: {gh.gh_has_bounty_label}")
             end_time = dt.now()
 
 if __name__ == '__main__':

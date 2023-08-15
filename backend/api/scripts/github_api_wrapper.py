@@ -5,6 +5,8 @@ from dotenv import dotenv_values, load_dotenv
 import os
 from datetime import datetime as dt
 
+from .enrichment import generate_new_contributor_score, generate_collaboration_health_score
+
 new_contrib_issue_list = ['good first issue', 'up-for-grabs', 'help wanted', 'easy to fix',
                           'easy', 'starter-task', 'contribution-starter', 'level:starter',
                           'newbie', 'beginner experience', 'beginners', 'beginner friendly',
@@ -42,6 +44,12 @@ class GitHubAPIWrapper:
                 else:
                     self.is_valid = True
                     self.gh_description = self.get_repo_description()
+                    self.gh_stargazers_count = self.get_stargazers_count()
+                    self.gh_forks_count = self.get_forks_count()
+                    self.gh_watchers_count = self.get_watchers_count()
+                    self.gh_date_of_last_commit = self.get_date_of_last_commit()                           # Date of last commit
+                    self.gh_date_of_last_merged_pull_request = self.get_date_of_last_merged_pull_request() # Data of last MERGED pull request
+                    self.gh_contributing_url = self.get_contribute_url()                                   # Get CONTRIBUTING.md URL
 
                     # Topics / tech stack
                     self.gh_topics = []
@@ -50,24 +58,16 @@ class GitHubAPIWrapper:
                     # Issues / labels
                     self.gh_issues_dict = self.get_issues()
 
-                    # Stars, forks, watchers count
-                    self.gh_stargazers_count = self.get_stargazers_count()
-                    self.gh_forks_count = self.get_forks_count()
-                    self.gh_watchers_count = self.get_watchers_count()
-
-                    # Dates (last commit, last merged pull request)
-                    self.gh_date_of_last_commit = self.get_date_of_last_commit()                           # Date of last commit
-                    self.gh_date_of_last_merged_pull_request = self.get_date_of_last_merged_pull_request() # Data of last MERGED pull request
-
-                    self.gh_contributing_url = self.get_contribute_url() # sGet CONTRIBUTING.md URL
-                    self.gh_new_contributor_score = self.generate_new_contributor_score() # Generate New Contributor Score
+                    # Enrichment
+                    self.gh_collaboration_health = generate_collaboration_health_score(self) # Generate Collaboration Health Score
+                    self.gh_new_contributor_score = generate_new_contributor_score(self) # Generate New Contributor Score
 
         except IndexError as ie:
             # print("IndexError in GitHubAPIWrapper INIT:", ie)
             self.is_valid = False
         
         except Exception as e:
-            # print("Error in GitHubAPIWrapper INIT:", e)
+            print("Error in GitHubAPIWrapper INIT:", e)
             self.is_valid = False
 
     def __str__(self):
@@ -203,81 +203,3 @@ class GitHubAPIWrapper:
             return ""
         else:
             return contribute_url
-
-    # TODO
-    def generate_new_contributor_score(self):
-        """Generate a new contributor score"""
-        try:
-            score = 0
-            # Number of stars
-            num_stars = self.gh_stargazers_count
-            if 0 <= num_stars <= 25:
-                score += 20
-            elif 25 < num_stars <= 50:
-                score += 15
-            elif 50 < num_stars <= 100:
-                score += 10
-            elif 100 < num_stars <= 500:
-                score += 5
-            elif 500 < num_stars <= 1000:
-                score += 3
-            elif 1000 < num_stars <= 2500:
-                score += 2
-            elif 2500 < num_stars <= 5000:
-                score += 1
-        
-            # Number of Forks
-            num_forks = self.gh_forks_count
-            if 0 <= num_forks <= 5:
-                score += 20
-            elif 5 < num_forks <= 50:
-                score += 15
-            elif 50 < num_forks <= 100:
-                score += 10
-            elif 100 < num_forks <= 500:
-                score += 5
-            elif 500 < num_forks <= 1000:
-                score += 3
-            elif 1000 < num_forks <= 2500:
-                score += 2
-            elif 2500 < num_forks <= 5000:
-                score += 1
-
-            # Contains CONTRIBUTING.md
-            if self.gh_contributing_url != "":
-                score += 5
-
-            # Issue Labels
-            # label_score = 0
-            # for label in self.gh_issues:
-            #     if label in ["good first issue", "up-for-grabs", "easy to fix", "easy", "help wanted"] or "beginner" in label :
-            #         label_count = self.gh_issues_dict[label]
-            #         if 0 <= label_count <= 5:
-            #             label_score += self.gh_issues_dict[label] * 0.25
-            #         elif 5 < label_count <= 10:
-            #             label_score += self.gh_issues_dict[label] * 0.1
-            #         elif 10 < label_count <= 20:
-            #             label_score += self.gh_issues_dict[label] * 0.05
-            
-            # if 10 < label_score:
-            #     score += 10
-            # else:
-            #     score += label_score
-            
-            # Date of last merged PR
-            if self.gh_date_of_last_merged_pull_request != "":
-                date_last_pr = datetime.date(datetime.strptime(self.gh_date_of_last_merged_pull_request, "%Y-%m-%d")) 
-                date_today = datetime.date(datetime.today())
-                days_since_last_pr = abs((date_today - date_last_pr).days)
-                if days_since_last_pr <= 7:
-                    score += 3
-                elif 7 < days_since_last_pr <= 14:
-                    score += 2
-                elif 14 < days_since_last_pr <= 30:
-                    score += 1
-                elif 30 <= days_since_last_pr <= 60:
-                    score += 0.5
-            max_score = 58
-        except Exception as e:
-            print("Error in generate_contrib_score:" ,e)
-        return round((score/max_score) * 100, 2)
