@@ -16,8 +16,6 @@ new_contrib_issue_list = ['good first issue', 'up-for-grabs', 'help wanted', 'ea
                           'bug', 'enhancement', 'refactor', 'needs investigation', 'testing'
                           'minor', 'trivial']
 
-bounty_list = ['bounty', 'bounties']
-
 class GitHubAPIWrapper:
     """
     GitHub API wrapper class
@@ -44,6 +42,7 @@ class GitHubAPIWrapper:
                 else:
                     self.is_valid = True
                     self.gh_description = self.get_repo_description()
+                    self.gh_num_contributors = self.get_num_contributors()
                     self.gh_stargazers_count = self.get_stargazers_count()
                     self.gh_forks_count = self.get_forks_count()
                     self.gh_watchers_count = self.get_watchers_count()
@@ -104,6 +103,10 @@ class GitHubAPIWrapper:
     def get_topics(self):
         """Get the topics"""
         return self.repo_data["topics"]
+    
+    def get_num_contributors(self):
+        """Get the number of contributors"""
+        return self.repo_data["network_count"]
 
     def get_date_of_last_commit(self):
         """Get the date of the last commit"""

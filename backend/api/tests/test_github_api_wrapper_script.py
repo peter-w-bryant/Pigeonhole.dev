@@ -92,7 +92,8 @@ class GitHubAPIWrapperTestCases(unittest.TestCase):
             # valid_url = 'https://github.com/JuliaPlots/Plots.jl/'
             current_time = dt.now()
             gh = GitHubAPIWrapper(valid_url)
-            print(f"gh_new_contributor_score = {gh.gh_new_contributor_score}")
+            print(f"gh_num_contributors = {gh.gh_num_contributors}")
+            # print(f"gh_collaboration_health = {gh.gh_collaboration_health}")
             # print(f"Contains bounties: {gh.gh_has_bounty_label}")
             end_time = dt.now()
 
