@@ -9,6 +9,12 @@ def generate_collaboration_health_score(self):
     open_issues_count = repo_data.get('open_issues', 0)  # Replace with actual open issues count
     pr_acceptance_rate = repo_data.get('pr_acceptance_rate', 0.0)  # Replace with actual PR acceptance rate
     last_pushed_at = datetime.strptime(repo_data.get('pushed_at', ''), '%Y-%m-%dT%H:%M:%SZ')
+ 
+    # print all the above
+    print(f"commits_count: {commits_count}")
+    print(f"open_issues_count: {open_issues_count}")
+    print(f"pr_acceptance_rate: {pr_acceptance_rate}")
+    print(f"last_pushed_at: {last_pushed_at}")
 
     # Calculate pull request merging time (same as before)
     pr_merge_time = timedelta(seconds=0)  # Replace with actual pull request merging time calculation
