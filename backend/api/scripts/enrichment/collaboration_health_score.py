@@ -5,9 +5,6 @@ def generate_collaboration_health_score(self):
     repo_data = self.repo_data
 
     # Calculate metrics (same as before)
- 
-    # print("num_contributors", num_contributors)
-
     commits_count = repo_data.get('commits_count', 0)  # Replace with actual commit count
     open_issues_count = repo_data.get('open_issues', 0)  # Replace with actual open issues count
     pr_acceptance_rate = repo_data.get('pr_acceptance_rate', 0.0)  # Replace with actual PR acceptance rate
@@ -29,6 +26,7 @@ def generate_collaboration_health_score(self):
 
     # Calculate overall collaboration health score (same as before, adjusted weights)
     collaboration_health_score = (
+        0.2 * self.gh_num_contributors +
         0.2 * commits_count +
         0.2 * (1 - open_issues_count / max(1, open_issues_count)) +
         0.1 * pr_acceptance_rate +

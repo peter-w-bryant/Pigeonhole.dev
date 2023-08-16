@@ -12,6 +12,7 @@ class Projects(db.Model):
     gh_description = db.Column(db.String(300), nullable=True)
 
     # project stats
+    num_commits = db.Column(db.Integer, nullable=False)
     num_contributors = db.Column(db.Integer, nullable=False)
     num_stars = db.Column(db.Integer, nullable=False)
     num_forks = db.Column(db.Integer, nullable=False)
