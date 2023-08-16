@@ -3,9 +3,11 @@ import requests
 from datetime import datetime
 from dotenv import dotenv_values, load_dotenv
 import os
+import json
 from datetime import datetime as dt
 import sys
-from .enrichment import get_target_issues, get_contribute_url, get_date_of_last_commit, get_date_of_last_merged_pull_request, generate_new_contributor_score, generate_collaboration_health_score
+from .enrichment import get_target_issues, get_contribute_url, get_date_of_last_commit, get_date_of_last_merged_pull_request, \
+                        generate_new_contributor_score, generate_collaboration_health_score, get_num_commits, get_num_unique_contributors
 
 class GitHubAPIWrapper:
     def __init__(self, repo_url):
@@ -35,24 +37,20 @@ class GitHubAPIWrapper:
                     self.gh_topics = [].extend(self.get_topics())  # Get topics / tech stack
                     
                     # Quantitative Repo Data
-                    self.gh_num_commits = self.get_num_commits()
                     self.gh_num_open_issues = self.get_open_issues_count()
-                    self.gh_num_contributors = self.get_num_contributors()
                     self.gh_stargazers_count = self.get_stargazers_count()
                     self.gh_forks_count = self.get_forks_count()
                     self.gh_watchers_count = self.get_watchers_count()
                     
                     # Enrichment
-                    # -> Contributing URL
                     self.gh_contributing_url = get_contribute_url(self) # Get CONTRIBUTING.md URL
-                    # -> Issues
-                    self.gh_has_bounty_label = False              # Flag for if 'bounty' or 'bounties' exist in any issue labels, set in get_target_issues()
+                    self.gh_num_commits = get_num_commits(self) # Get number of commits
+                    self.gh_num_contributors = get_num_unique_contributors(self) # Get number of contributors
+                    self.gh_has_bounty_label = False # Flag for if 'bounty' or 'bounties' exist in any issue labels, set in get_target_issues()
                     self.gh_issues_dict = get_target_issues(self) # Get the issue labels and counts for targetted labels
-                    # -> Dates
-                    self.gh_date_of_last_commit = get_date_of_last_commit(self)                           # Date of last commit
+                    self.gh_date_of_last_commit = get_date_of_last_commit(self) # Date of last commit
                     self.gh_date_of_last_merged_pull_request = get_date_of_last_merged_pull_request(self) # Date of last MERGED pull request
-                    # -> Generated Scores and Analysis
-                    self.gh_new_contributor_score = generate_new_contributor_score(self)     # Generate New Contributor Score
+                    self.gh_new_contributor_score = generate_new_contributor_score(self) # Generate New Contributor Score
                     self.gh_collaboration_health = generate_collaboration_health_score(self) # Generate Collaboration Health Score
 
         except Exception as e:
@@ -60,7 +58,32 @@ class GitHubAPIWrapper:
             self.is_valid = False
 
     def __str__(self):
-        return f"{self.repo_url}"
+        return f"{json.dumps(self.get_dict(), indent=4)}"
+    
+    def get_dict(self):
+        return {
+                "qualitative": {
+                    "is_valid": self.is_valid,
+                    "repo_url": self.repo_url,
+                    "gh_description": self.gh_description,
+                    "gh_topics": self.gh_topics,
+                    "gh_date_of_last_commit": self.gh_date_of_last_commit,
+                    "gh_date_of_last_merged_pull_request": self.gh_date_of_last_merged_pull_request,
+                    "gh_contributing_url": self.gh_contributing_url,
+                    "gh_has_bounty_label": self.gh_has_bounty_label,
+                    "gh_issues_dict": self.gh_issues_dict,
+                },
+                "quantitative": {
+                    "gh_num_commits": self.gh_num_commits,
+                    "gh_num_open_issues": self.gh_num_open_issues,
+                    "gh_num_contributors": self.gh_num_contributors,
+                    "gh_stargazers_count": self.gh_stargazers_count,
+                    "gh_forks_count": self.gh_forks_count,
+                    "gh_watchers_count": self.gh_watchers_count,
+                    "gh_new_contributor_score": self.gh_new_contributor_score,
+                    "gh_collaboration_health": self.gh_collaboration_health
+                }
+        }
 
     def verify_repo_url(self):
         """Verify if the repo url is valid"""
@@ -87,9 +110,3 @@ class GitHubAPIWrapper:
     
     def get_open_issues_count(self):
         return self.repo_data["open_issues_count"]
-    
-    def get_num_commits(self):
-        return self.repo_data["size"]
-    
-    def get_num_contributors(self):
-        return self.repo_data["network_count"]

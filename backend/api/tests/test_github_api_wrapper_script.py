@@ -93,13 +93,10 @@ class GitHubAPIWrapperTestCases(unittest.TestCase):
             # valid_url = 'https://github.com/pypa/setuptools/'
             # valid_url = 'https://github.com/JuliaPlots/Plots.jl/'
 
-            
             current_time = dt.now()
             gh = GitHubAPIWrapper(valid_url)
+            print(gh)
             add_project_to_db(valid_url,1)
-            print(f"gh_collaboration_health = {gh.gh_collaboration_health}")
-            # print(f"gh_collaboration_health = {gh.gh_collaboration_health}")
-            # print(f"Contains bounties: {gh.gh_has_bounty_label}")
             end_time = dt.now()
 
 if __name__ == '__main__':
