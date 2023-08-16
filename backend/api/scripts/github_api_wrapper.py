@@ -44,13 +44,13 @@ class GitHubAPIWrapper:
                     
                     # Enrichment
                     self.gh_contributing_url = get_contribute_url(self) # Get CONTRIBUTING.md URL
-                    self.gh_num_commits = get_num_commits(self) # Get number of commits
+                    self.gh_num_commits = get_num_commits(self)         # Get number of commits
                     self.gh_num_contributors = get_num_unique_contributors(self) # Get number of contributors
-                    self.gh_has_bounty_label = False # Flag for if 'bounty' or 'bounties' exist in any issue labels, set in get_target_issues()
-                    self.gh_issues_dict = get_target_issues(self) # Get the issue labels and counts for targetted labels
-                    self.gh_date_of_last_commit = get_date_of_last_commit(self) # Date of last commit
+                    self.gh_has_bounty_label = False                             # Flag for if 'bounty' or 'bounties' exist in any issue labels, set in get_target_issues()
+                    self.gh_issues_dict = get_target_issues(self)                # Get the issue labels and counts for targetted labels
+                    self.gh_date_of_last_commit = get_date_of_last_commit(self)  # Date of last commit
                     self.gh_date_of_last_merged_pull_request = get_date_of_last_merged_pull_request(self) # Date of last MERGED pull request
-                    self.gh_new_contributor_score = generate_new_contributor_score(self) # Generate New Contributor Score
+                    self.gh_new_contributor_score = generate_new_contributor_score(self)     # Generate New Contributor Score
                     self.gh_collaboration_health = generate_collaboration_health_score(self) # Generate Collaboration Health Score
 
         except Exception as e:
