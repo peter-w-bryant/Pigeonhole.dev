@@ -9,6 +9,7 @@ def get_date_of_last_commit(self):
         print(self.repo_name, e)
         date_of_last_commit = ""
     return date_of_last_commit
+
 def get_date_of_last_merged_pull_request(self):
     """Get the date of the last merged pull request"""
     try:

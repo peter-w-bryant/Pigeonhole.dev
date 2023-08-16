@@ -8,9 +8,6 @@ import sys
 from .enrichment import get_target_issues, get_contribute_url, get_date_of_last_commit, get_date_of_last_merged_pull_request, generate_new_contributor_score, generate_collaboration_health_score
 
 class GitHubAPIWrapper:
-    """
-    GitHub API wrapper class
-    """
     def __init__(self, repo_url):
         load_dotenv()
         try:
