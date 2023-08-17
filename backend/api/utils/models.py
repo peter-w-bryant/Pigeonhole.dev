@@ -12,6 +12,8 @@ class Projects(db.Model):
     gh_description = db.Column(db.String(300), nullable=True)
 
     # project stats
+    num_commits = db.Column(db.Integer, nullable=False)
+    num_contributors = db.Column(db.Integer, nullable=False)
     num_stars = db.Column(db.Integer, nullable=False)
     num_forks = db.Column(db.Integer, nullable=False)
     num_watchers = db.Column(db.Integer, nullable=False)
@@ -35,13 +37,15 @@ class Projects(db.Model):
             'gh_repo_name': self.gh_repo_name,
             'gh_username': self.gh_username,
             'gh_description': self.gh_description,
+            'num_contributors': self.num_contributors,
             'num_stars': self.num_stars,
             'num_forks': self.num_forks,
             'num_watchers': self.num_watchers,
             'date_last_merged_PR': self.date_last_merged_PR,
             'date_last_commit': self.date_last_commit,
             'contrib_url': self.contrib_url,
-            'new_contrib_score': self.new_contrib_score
+            'new_contrib_score': self.new_contrib_score,
+            'has_bounty_label': self.has_bounty_label
         }
     
     def get_all_projects(self):
