@@ -6,8 +6,9 @@ import os
 import json
 from datetime import datetime as dt
 import sys
-from .enrichment import get_target_issues, get_contribute_url, get_date_of_last_commit, get_date_of_last_merged_pull_request, \
-                        generate_new_contributor_score, generate_collaboration_health_score, get_num_commits, get_num_unique_contributors
+from .enrichment import get_target_issues, get_contribute_url, get_date_of_last_commit, \
+                        generate_new_contributor_score, generate_collaboration_health_score, get_num_commits, get_num_unique_contributors, \
+                        get_pr_analysis
 
 class GitHubAPIWrapper:
     def __init__(self, repo_url):
@@ -45,11 +46,11 @@ class GitHubAPIWrapper:
                     # Enrichment
                     self.gh_contributing_url = get_contribute_url(self) # Get CONTRIBUTING.md URL
                     self.gh_num_commits = get_num_commits(self)         # Get number of commits
+                    self.gh_pr_dict = get_pr_analysis(self)
                     self.gh_num_contributors = get_num_unique_contributors(self) # Get number of contributors
                     self.gh_has_bounty_label = False                             # Flag for if 'bounty' or 'bounties' exist in any issue labels, set in get_target_issues()
                     self.gh_issues_dict = get_target_issues(self)                # Get the issue labels and counts for targetted labels
                     self.gh_date_of_last_commit = get_date_of_last_commit(self)  # Date of last commit
-                    self.gh_date_of_last_merged_pull_request = get_date_of_last_merged_pull_request(self) # Date of last MERGED pull request
                     self.gh_new_contributor_score = generate_new_contributor_score(self)     # Generate New Contributor Score
                     self.gh_collaboration_health = generate_collaboration_health_score(self) # Generate Collaboration Health Score
 
@@ -68,10 +69,10 @@ class GitHubAPIWrapper:
                     "gh_description": self.gh_description,
                     "gh_topics": self.gh_topics,
                     "gh_date_of_last_commit": self.gh_date_of_last_commit,
-                    "gh_date_of_last_merged_pull_request": self.gh_date_of_last_merged_pull_request,
                     "gh_contributing_url": self.gh_contributing_url,
                     "gh_has_bounty_label": self.gh_has_bounty_label,
                     "gh_issues_dict": self.gh_issues_dict,
+                    "gh_pr_dict": self.gh_pr_dict
                 },
                 "quantitative": {
                     "gh_num_commits": self.gh_num_commits,
@@ -110,3 +111,6 @@ class GitHubAPIWrapper:
     
     def get_open_issues_count(self):
         return self.repo_data["open_issues_count"]
+    
+    def get_pr_count(self):
+        return self.repo_data["pulls_count"]

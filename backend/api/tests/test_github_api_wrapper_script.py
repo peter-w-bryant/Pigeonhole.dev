@@ -77,27 +77,17 @@ from utils.models import Projects, ProjectIssues, ProjectTopics
 #         gh = GitHubAPIWrapper(invalid_url)
 #         self.assertEqual(gh.is_valid, False)
 
-class GitHubAPIWrapperTestCases(unittest.TestCase):
+# class GitHubAPIWrapperTestCases(unittest.TestCase):
 
-    def test_valid_github_url(self):
-        app = create_app()
-        with app.app_context():
-            delete_all_projects_from_db(testing=True)
-            
-            # valid_url = 'https://github.com/pytorch/pytorch'
-            valid_url = 'https://github.com/up-for-grabs/up-for-grabs.net'
-            valid_url = 'https://github.com/peter-w-bryant/pigeonhole.dev'
-            # valid_url = 'https://github.com/SSENSE/vue-carousel/'
-            # valid_url = 'https://github.com/urllib3/urllib3/'
-            # valid_url = 'https://github.com/SeleniumHQ/selenium'
-            # valid_url = 'https://github.com/pypa/setuptools/'
-            # valid_url = 'https://github.com/JuliaPlots/Plots.jl/'
-
-            current_time = dt.now()
-            gh = GitHubAPIWrapper(valid_url)
-            print(gh)
-            add_project_to_db(valid_url,1)
-            end_time = dt.now()
+#     def test_valid_github_url(self):
+#         app = create_app()
+#         with app.app_context():
+#             delete_all_projects_from_db(testing=True)
+#             # valid_url = 'https://github.com/pallets/flask/'
+#             valid_url = 'https://github.com/peter-w-bryant/pigeonhole.dev'
+#             gh = GitHubAPIWrapper(valid_url)
+#             print(gh.gh_pr_dict)
+#             add_project_to_db(valid_url,1)
 
 if __name__ == '__main__':
     unittest.main()

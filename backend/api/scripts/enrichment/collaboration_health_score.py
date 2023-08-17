@@ -5,8 +5,8 @@ def generate_collaboration_health_score(self):
     repo_data = self.repo_data
 
     # Calculate metrics (same as before)
-    commits_count = repo_data.get('commits_count', 0)  # Replace with actual commit count
-    open_issues_count = repo_data.get('open_issues', 0)  # Replace with actual open issues count
+    commits_count = self.gh_num_commits
+    open_issues_count = self.gh_num_open_issues
     pr_acceptance_rate = repo_data.get('pr_acceptance_rate', 0.0)  # Replace with actual PR acceptance rate
     last_pushed_at = datetime.strptime(repo_data.get('pushed_at', ''), '%Y-%m-%dT%H:%M:%SZ')
     

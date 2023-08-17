@@ -60,18 +60,18 @@ def generate_new_contributor_score(self):
             #     score += label_score
             
             # Date of last merged PR
-            if self.gh_date_of_last_merged_pull_request != "":
-                date_last_pr = datetime.date(datetime.strptime(self.gh_date_of_last_merged_pull_request, "%Y-%m-%d")) 
-                date_today = datetime.date(datetime.today())
-                days_since_last_pr = abs((date_today - date_last_pr).days)
-                if days_since_last_pr <= 7:
-                    score += 3
-                elif 7 < days_since_last_pr <= 14:
-                    score += 2
-                elif 14 < days_since_last_pr <= 30:
-                    score += 1
-                elif 30 <= days_since_last_pr <= 60:
-                    score += 0.5
+            # if self.gh_date_of_last_merged_pull_request != "":
+            #     date_last_pr = datetime.date(datetime.strptime(self.gh_date_of_last_merged_pull_request, "%Y-%m-%d")) 
+            #     date_today = datetime.date(datetime.today())
+            #     days_since_last_pr = abs((date_today - date_last_pr).days)
+            #     if days_since_last_pr <= 7:
+            #         score += 3
+            #     elif 7 < days_since_last_pr <= 14:
+            #         score += 2
+            #     elif 14 < days_since_last_pr <= 30:
+            #         score += 1
+            #     elif 30 <= days_since_last_pr <= 60:
+            #         score += 0.5
             max_score = 58
         except Exception as e:
             print("Error in generate_contrib_score:" ,e)
