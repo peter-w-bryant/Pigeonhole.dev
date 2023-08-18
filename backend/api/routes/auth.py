@@ -1,14 +1,10 @@
 # Path: backend\api\routes\auth.py
-from flask import Flask, render_template, session, request, redirect, jsonify, url_for, flash
-from flask import Blueprint, jsonify, current_app, render_template, redirect, url_for, request, flash
-from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
-from flask_jwt_extended import create_access_token
-
-from flask_sqlalchemy import SQLAlchemy  
-from sqlalchemy.exc import IntegrityError  
+from flask import request, jsonify, Blueprint, current_app
+from flask_login import login_user, logout_user, current_user
+from flask_jwt_extended import create_access_token, jwt_required
 
 from utils.db import db
-from utils.models import Users, SavedProjects, Projects
+from utils.models import Users
 from utils.auth import bcrypt, login_manager
 
 import requests
@@ -17,90 +13,164 @@ import secrets
 
 auth = Blueprint('auth', __name__)  # blueprint for auth routes
 
-@auth.route('/login', methods=['POST'])
+def authenticate(username, password):
+    # Get user object from database
+    user = Users.query.filter_by(username=username).first()
+
+    # Check if user exists and password is correct
+    if user is not None and user.check_password(password):
+        return user
+
+    # Return None if authentication fails
+    return None
+
+@auth.route('/auth/login', methods=['POST'])
 def login():
-    """Logs in a user"""
+    """
+    Logs in a user given login credentials, returns a JWT (access token).
+    ---
+    tags:
+    - Auth
+    parameters:
+    - name: User JSON object
+      in: body
+      required: true
+      description: A JSON object containing the username and password of the user.
+      schema:
+        type: object
+        properties:
+          username:
+            type: string
+            description: The username of the user.
+            example: testuser
+          password:
+            type: string
+            description: The password of the user.
+            example: testpassword
+    responses:
+      200:
+          description: User logged in successfully, returns access token
+      401:
+          description: Invalid username or password, returns error message
+    """
     if request.method == 'POST':
         data = request.get_json()
-        user = Users.query.filter_by(username=data['username']).first()
-        if user != None:
-            if bcrypt.check_password_hash(user.password, data['password']):
-                login_user(user)
-                return 'Logged in successfully!', 200
+        user = authenticate(data['username'], data['password'])
+        if user is None:
+            return jsonify({'error': 'Invalid username or password'}), 401
+        access_token = create_access_token(identity=user.UID)
+        login_user(user)
+        return jsonify({'access_token': access_token}), 200
 
-            return 'Incorrect password!', 401
-        else:
-            return 'Username not found!', 401
-        
-@auth.route('/logout', methods=['GET', 'POST'])
-@login_required
+@auth.route('/auth/logout', methods=['GET'])
+@jwt_required()
 def logout():
+    """
+    Logs out a user if they are logged in, requires an access token in the request header.
+    ---
+    tags:
+      - Auth
+    parameters:
+    - name: Authorization
+      in: header
+      required: true
+      description: "The JWT of the current user. The required header format is: **{'Authorization: Bearer {JWT}'}**"
+      example: Bearer <JWT_token>
+      schema:
+        type: object
+        properties:
+          access_token:
+            type: string
+            description: The access token of the user.
+            example: access_token
+    responses:
+      200:
+          description: User logged out successfully, returns success message
+      401:
+          description: Invalid access token, returns error message
+    """
     logout_user()
-    return 'Logged out successfully!', 200
+    return jsonify({'message': 'User logged out'}), 200
 
-@auth.route('/github_login', methods=['GET', 'POST'])
+@auth.route('/auth/github_login', methods=['POST'])
 def github_login():
-    if request.method == 'GET':
-        req_args = request.args
-        if 'code' in req_args:
-            code = req_args['code']
+    """
+    Logs in a user using GitHub OAuth and returns an access token.
+    ---
+    tags:
+      - Auth
+    parameters:
+    - name: code
+      in: body
+      required: true
+      description: The authorization code returned by GitHub OAuth.
+      schema:
+        type: object
+        properties:
+          code:
+            type: string
+            description: The authorization code returned by GitHub OAuth.
+            example: aah17ka93ka045kal39ak
+    responses:
+      200:
+          description: User logged in successfully, returns access token, username, and status
+      401:
+          description: Invalid authorization code, returns status and error message
+    """
+    if request.method == 'POST':
+        data = request.get_json()
+        code = data['code']
+        if code != None: # GitHub OAuth code is present
             # Define the parameters for the access token request
             token_params = {
                 'client_id': current_app.config['GITHUB_CLIENT_ID'],
                 'client_secret': current_app.config['GITHUB_CLIENT_SECRET'],
                 'code': code
             }
-            # Exchange the authorization code for an access token
-            token_response = requests.post('https://github.com/login/oauth/access_token',
-                                        params=token_params, headers={'Accept': 'application/json'})
 
-            # Check for errors in the response
-            token_response.raise_for_status()
+            # TODO: remove! testing_access_token is used for testing purposes
+            testing_access_token = request.args.get('testing_access_token')
+            if testing_access_token is None:
+                # Exchange the authorization code for an access token
+                token_response = requests.post('https://github.com/login/oauth/access_token',
+                                               params=token_params, headers={'Accept': 'application/json'})
 
-            # Extract the access token from the response
-            access_token = token_response.json().get('access_token')
+                token_response.raise_for_status()  # Check for errors in the response
+                # Extract the access token from the response
+                access_token = token_response.json().get('access_token')
+            else:
+                # Use the testing access token
+                access_token = os.environ.get('GITHUB_TOKEN')
 
-            # Convert to bearer token
-            bearer_token = "Bearer " + access_token
+            # Define the headers for the profile request
+            profile_headers = {
+                'Authorization': f'Bearer {access_token}', 'Accept': 'application/json'}
 
             # Use the access token to fetch the user's GitHub profile information
-            profile_response = requests.get('https://api.github.com/user', headers={
-                                            'Authorization': bearer_token, 'Accept': 'application/json'})
-            
+            profile_response = requests.get(
+                'https://api.github.com/user', headers=profile_headers)
+
             # Extract the user's name from the GitHub profile information
             username = profile_response.json().get('login')
 
-            # Create a JSON Web Token (JWT) for the user
-            auth_token = create_access_token(identity=username)
-
-            # Save the JWT to the user's session
-            session['jwt_token'] = auth_token
-
             # If the username is already in the database, log the user in
             user = Users.query.filter_by(username=username).first()
-            if user != None:
-                login_user(user)
-                return {'username': username, 'auth_token': auth_token}, 200
 
-            else:
-                # If the username is not in the database, create a new user
+            if user is None:
+                # if the username is not in the database, create a new user
                 email = profile_response.json().get('email')
-
-                # Generate a random password for the user
+                # generate a random password for the user
                 password = secrets.token_urlsafe(16)
-
-                # Hash the password
-                hashed_password = bcrypt.generate_password_hash(password)
-
+                hashed_password = bcrypt.generate_password_hash(
+                    password)     # hash the password
                 new_user = Users(username=username, password=hashed_password,  # create new user
-                                    email=email)
+                                 email=email)
+                db.session.add(new_user)
+                db.session.commit()
+                user = new_user
 
-                db.session.add(new_user)  # add new user to database
+            login_user(user)
+            access_token = create_access_token(identity=username)
+            return {'status': 'success', 'username': username, 'access_token': access_token}, 200
 
-                db.session.commit()      # commit changes to database
-
-                login_user(new_user)    # log in the new user
-
-            return {'username': username, 'auth_token': auth_token}, 200
-
-    return 'Something went wrong!', 200
+    return {'status': 'error', 'message': 'Invalid code'}, 401

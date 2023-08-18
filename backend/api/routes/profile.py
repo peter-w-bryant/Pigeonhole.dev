@@ -1,14 +1,12 @@
-# Path: backend\api\routes\auth.py
 from flask import session, request, redirect, jsonify, url_for, flash, Blueprint, current_app
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
-from flask_sqlalchemy import SQLAlchemy  # for database
-from sqlalchemy.exc import IntegrityError  # for handling duplicate entries
+from flask_sqlalchemy import SQLAlchemy  
+from sqlalchemy.exc import IntegrityError  
 
 from flask_dance.contrib.github import make_github_blueprint, github
 from flask_jwt_extended import JWTManager, get_jwt_identity, jwt_required
 
-
-from utils import GitHubAPIWrapper, fetch_all_projects
+from scripts import GitHubAPIWrapper, read_all_project_data_json
 from utils.db import db
 from utils.models import Users, SavedProjects, Projects
 from utils.auth import bcrypt, login_manager
@@ -19,15 +17,37 @@ import secrets
 
 profile = Blueprint('profile', __name__)  # blueprint for auth routes
 
-@profile.route('/save-project', methods = ['GET', 'POST'])
+@profile.route('/profile/save-project', methods = ['POST'])
 @login_required
 def save_project():
-    """Saves a project to the user's saved projects list"""
+    """
+    Saves a project to the user's saved projects list
+    ---
+    tags:
+      - Profile
+    parameters:
+      - name: username
+        in: body
+        type: string
+        required: true
+        description: Username of the user saving the project
+      - name: pUID
+        in: body
+        type: string
+        required: true
+        description: Project UID of the project to save
+    responses:
+        200:
+            description: Project saved successfully
+        403:
+            description: Project already saved
+        404: 
+            description: Project not found
+    """
     if request.method == 'POST':
         data = request.get_json()
         user = Users.query.filter_by(username=data['username']).first()
         UID = user.UID
-        print(UID)
         if user != None:
             project_exists = SavedProjects.query.filter_by(UID=UID, pUID=data['pUID']).first()
             if project_exists != None:
@@ -38,10 +58,30 @@ def save_project():
                 db.session.commit()
                 return {"success": "Project added successfully!"}, 200
 
-@profile.route('/remove-saved-project', methods = ['GET', 'POST'])
+@profile.route('/profile/remove-saved-project', methods = ['POST'])
 @login_required
 def remove_saved_project():
-    """Removes a project from the user's saved projects list"""
+    """Removes a project from the user's saved projects list
+    ---
+    tags:
+      - Profile
+    parameters:
+      - name: username
+        in: body
+        type: string
+        required: true
+        description: Username of the user removing the project
+      - name: pUID
+        in: body
+        type: string
+        required: true
+        description: Project UID of the project to remove
+    responses:
+        200:
+            description: Project removed successfully
+        404:
+            description: Project not found
+        """
     if request.method == 'POST':
         data = request.get_json()
         user = Users.query.filter_by(username=data['username']).first()
@@ -55,10 +95,26 @@ def remove_saved_project():
                 db.session.commit()
                 return {"success": "Project removed successfully!"}, 200
 
-@profile.route('/saved-projects', methods=['POST'])
+@profile.route('/profile/saved-projects', methods=['POST'])
 @login_required
 def saved_projects():
-  """Returns a list of saved projects for a user"""
+  """
+  Returns a list of saved projects for a user
+  ---
+  tags:
+    - Profile
+  parameters:
+    - name: username
+      in: body
+      type: string
+      required: true
+      description: Username of the user
+  responses:
+    200:
+      description: List of saved projects
+    404:
+      description: User not found
+  """
   if request.method == 'POST':
     data = request.get_json()
     username = data['username']
@@ -101,10 +157,26 @@ def saved_projects():
     else:
       return {"message": "User not found"}, 404
         
-@profile.route('/delete-all-projects', methods = ['GET', 'POST'])
+@profile.route('/profile/delete-all-projects', methods = ['POST'])
 @login_required
 def delete_all_projects():
-    """Deletes all projects for a user"""
+    """
+    Deletes all projects for a user
+    ---
+    tags:
+      - Profile
+    parameters:
+      - name: username
+        in: body
+        type: string
+        required: true
+        description: Username of the user
+    responses:
+        200:
+            description: Projects deleted successfully
+        404:
+            description: User not found
+    """
     if request.method == 'POST':
         data = request.get_json()
         user = Users.query.filter_by(username=data['username']).first()
