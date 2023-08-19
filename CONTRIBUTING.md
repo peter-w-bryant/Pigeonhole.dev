@@ -1,5 +1,5 @@
 1. [[#Running the API server locally]]
-	- [[#Environment Setup]]
+	- [Environment Setup](#environment-setup)
 	- [[#Create a local SQLite DB instance]]
 	- [[#Populate the Database with Sample Project Data]]
 	- [[#Modify .demo-env]] 
