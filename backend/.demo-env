@@ -1,0 +1,17 @@
+# GitHub OAuth app credentials
+GITHUB_CLIENT_ID=''
+GITHUB_CLIENT_SECRET=''
+
+# GitHub personal access token with user:email scope
+GITHUB_TOKEN=''
+
+# Database URI (default is our local SQLite DB instance)
+DATABASE_URI='sqlite:///.db'
+
+# Secret keys
+SECRET_KEY=''
+JWT_SECRET_KEY=''
+
+# Admin credentials for testing
+ADMIN_USERNAME=''
+ADMIN_PASSWORD=''

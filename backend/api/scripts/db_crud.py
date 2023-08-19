@@ -19,43 +19,48 @@ def add_project_to_db(gh_repo_url: str, user_id: int):
     """
 
     exists = Projects.query.filter_by(gh_repo_url=gh_repo_url).first() # Check if the repo is already in the database
-
     if exists is not None:
         return {"status": "error", "message": "Project already exists in the database."}
     
-    gh = GitHubAPIWrapper(gh_repo_url) 
+    gh = GitHubAPIWrapper(gh_repo_url)
 
     if not gh.is_valid:
         return {"status": "error", "message": "Invalid GitHub repository URL."}
     
     # Insert the data into the database
     try:
+        change = "1/1/1" # todo fix PR dict
         # __projects__ table        
         project = Projects(UID=user_id, gh_repo_url=gh.repo_url, gh_repo_name=gh.repo_name, gh_username=gh.username, gh_description=gh.gh_description, \
-                           num_contributors=gh.gh_num_contributors, num_stars=gh.gh_stargazers_count, num_forks=gh.gh_forks_count, num_watchers=gh.gh_watchers_count, \
-                           date_last_merged_PR=gh.gh_date_of_last_merged_pull_request, date_last_commit=gh.gh_date_of_last_commit, \
+                           num_contributors=gh.gh_num_contributors, num_commits=gh.gh_num_commits, num_stars=gh.gh_stargazers_count, num_forks=gh.gh_forks_count, num_watchers=gh.gh_watchers_count, \
+                           date_last_merged_PR=change, date_last_commit=gh.gh_date_of_last_commit, \
                            contrib_url=gh.gh_contributing_url, new_contrib_score=gh.gh_new_contributor_score, has_bounty_label=gh.gh_has_bounty_label)
+
         db.session.add(project)
         db.session.flush() 
         pUID = project.pUID
 
         # ___project_topics___ table
-        for issue in gh.gh_issues_dict:
-            project_issue = ProjectIssues(pUID=pUID, issue_label=issue, issue_label_count=gh.gh_issues_dict[issue])
-            db.session.add(project_issue)
+        if gh.gh_issues_dict != None:
+            for issue in gh.gh_issues_dict:
+                project_issue = ProjectIssues(pUID=pUID, issue_label=issue, issue_label_count=gh.gh_issues_dict[issue])
+                db.session.add(project_issue)
 
         # __project_issues__ table
-        for topic in gh.gh_topics:
-            project_topic = ProjectTopics(pUID=pUID, topic=topic)
-            db.session.add(project_topic)
+        if gh.gh_topics != None:
+            for topic in gh.gh_topics:
+                project_topic = ProjectTopics(pUID=pUID, topic=topic)
+                db.session.add(project_topic)
 
         db.session.commit()
 
     except IndexError as ie:
+        print(ie)
         db.session.rollback()
         return {'status': 'error', 'message': 'IndexError: ' + str(ie)}
     
     except Exception as e:
+        print(e, "on line", sys.exc_info()[-1].tb_lineno)
         db.session.rollback()
         return {'status': 'error', 'message': 'Error: ' + str(e)}
 
@@ -64,7 +69,7 @@ def add_project_to_db(gh_repo_url: str, user_id: int):
     db.session.close()
     return return_dict
 
-def add_projects_to_db_from_json(small_repo_data = True, testing: bool = False):
+def add_projects_to_db_from_json(size_repo_data = "small", testing: bool = False):
     """Populate the project table with projects links from a json file.
 
     Args:
@@ -77,9 +82,8 @@ def add_projects_to_db_from_json(small_repo_data = True, testing: bool = False):
         start = time.time()
 
     parent_dir = os.path.dirname(os.getcwd())
-    if small_repo_data: file_path = os.path.join(parent_dir, 'api', 'resources', 'repo_scrapers', 'small_repo_data.json')
-    else: file_path = os.path.join(parent_dir, 'api', 'resources', 'repo_scrapers', 'static_repo_data.json')
-    
+    file_path = os.path.join(parent_dir, 'api', 'resources', 'sample_data', f'{size_repo_data}_repo_data.json')
+
     with open(file_path, 'r') as f:
         repo_data = json.load(f)
 

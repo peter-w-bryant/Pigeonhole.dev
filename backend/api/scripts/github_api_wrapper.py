@@ -46,7 +46,9 @@ class GitHubAPIWrapper:
                     # Enrichment
                     self.gh_contributing_url = get_contribute_url(self) # Get CONTRIBUTING.md URL
                     self.gh_num_commits = get_num_commits(self)         # Get number of commits
-                    self.gh_pr_dict = get_pr_analysis(self)
+
+                    # self.gh_pr_dict = get_pr_analysis(self)
+    
                     self.gh_num_contributors = get_num_unique_contributors(self) # Get number of contributors
                     self.gh_has_bounty_label = False                             # Flag for if 'bounty' or 'bounties' exist in any issue labels, set in get_target_issues()
                     self.gh_issues_dict = get_target_issues(self)                # Get the issue labels and counts for targetted labels
@@ -71,8 +73,9 @@ class GitHubAPIWrapper:
                     "gh_date_of_last_commit": self.gh_date_of_last_commit,
                     "gh_contributing_url": self.gh_contributing_url,
                     "gh_has_bounty_label": self.gh_has_bounty_label,
-                    "gh_issues_dict": self.gh_issues_dict,
-                    "gh_pr_dict": self.gh_pr_dict
+                    "gh_issues_dict": self.gh_issues_dict
+                    # ,
+                    # "gh_pr_dict": self.gh_pr_dict
                 },
                 "quantitative": {
                     "gh_num_commits": self.gh_num_commits,
