@@ -1,8 +1,8 @@
 1. [Running the API server locally](#Running-the-API-server-locally)
 	- [Environment Setup](#environment-setup)
-	- [Create a local SQLite DB instance](#Create-a-local-SQLite-DB-instance]]
+	- [Create a local SQLite DB instance](#Create-a-local-SQLite-DB-instance)
 	- [Populate the Database with Sample Project Data](#Populate-the-Database-with-Sample-Project-Data)
-	- [Modify .demo-env](#Modify-.demo-env) 
+	- [Modify .demo-env](#Modify-demo-env) 
 	- [Create a Docker image and run the image in a container](#Create-a-Docker-image-and-run-the-image-in-a-container)
 
 # Running the API server locally
