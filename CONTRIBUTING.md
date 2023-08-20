@@ -1,4 +1,4 @@
-# TOC
+# ToC
 1. 	[Running the API server locally](#Running-the-API-server-locally)
 	- [Environment Setup](#environment-setup)
 	- [Create a local SQLite DB instance](#Create-a-local-SQLite-DB-instance)
