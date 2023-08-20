@@ -43,7 +43,7 @@ GITHUB_CLIENT_SECRET=''
 # GitHub personal access token with user:email scope
 GITHUB_TOKEN=''
 
-# Database URI (default is our local SQLite DB instance)
+# Database URI (default is your local SQLite DB instance)
 DATABASE_URI='sqlite:///.db'
 
 # App secret key
