@@ -60,7 +60,7 @@ You should replace these empty strings and rename the file `backend/.env`. Note 
 We have provided a script to populate the DB with data from static JSON files. Run the following command from the ```/api``` directory to populate the DB with sample data,
 
 ```python
-python3 scripts/populate_db.py <optional number of projects (positive integer)>
+python3 scripts/populate_db.py <optional_number_of_projects">
 ```
 There is an optional command line argument to pass a positive integer for the number of projects to populate with; the default when no argument is passed is ~840 projects, which will take a very long time.
 
