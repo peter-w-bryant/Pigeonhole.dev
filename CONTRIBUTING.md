@@ -55,7 +55,7 @@ ADMIN_USERNAME=''
 ADMIN_PASSWORD=''
 ```
 
-You should replace these empty strings and rename the file `backend/.demo-env`. Note that `ADMIN_USERNAME` and `ADMIN_PASSWORD` should be the login credentials of a registered admin, these two fields are only required for running unit tests. Our `config.py` file will reference these environment variables, so make sure they are instantiated before running the project.
+You should replace these empty strings and rename the file `backend/.env`. Note that `ADMIN_USERNAME` and `ADMIN_PASSWORD` should be the login credentials of a registered admin, these two fields are only required for running unit tests. Our `config.py` file will reference these environment variables, so make sure they are instantiated before running the project.
 ## Populate the Database with Sample Project Data
 We have provided a script to populate the DB with data from static JSON files. Run the following commands from the ```/api``` directory to populate the DB with sample data,
 
