@@ -1,9 +1,11 @@
+# TOC
 1. 	[Running the API server locally](#Running-the-API-server-locally)
 	- [Environment Setup](#environment-setup)
 	- [Create a local SQLite DB instance](#Create-a-local-SQLite-DB-instance)
 	- [Populate the Database with Sample Project Data](#Populate-the-Database-with-Sample-Project-Data)
 	- [Modify .demo-env](#Modify-demo-env) 
 	- [Create a Docker image and run the image in a container](#Create-a-Docker-image-and-run-the-image-in-a-container)
+2. [Generate an Admin Secret Key](#Generate-an-Admin-Secret-Key)
 
 # Running the API server locally
 
@@ -69,3 +71,8 @@ docker build -t ph .
 docker run -p 5000:5000 ph
 ```
 You should now have your Flask server running in the container, and you can make request to the API, see https://localhost:5000/apidocs.
+
+# Generate an Admin Secret Key
+The backend Flask API makes use of an `admin_secret_keys` table storing hashed, secret keys to allow a user with administrative privileges to authenticate themselves during registration. When you first build the project locally, you may want to register an admin secret key in this table in order to register new admin users and access protected routes.  From a terminal, run the `backend/api/scripts/gen_admin_secret_key.py` script in order to register an admin secret key; when running the script, you will be prompted to enter a secret key and then to verify it before it is registered.
+
+When registering a new user with admin privileges at the [/api/1/accounts/register](https://app.swaggerhub.com/apis/peter-w-bryant/pigeonhole_api/0.0.1#/Accounts/post_api_1_accounts_register) route, you will need to specify this admin secret key within the request body. Look at the [API docs](https://app.swaggerhub.com/apis/peter-w-bryant/pigeonhole_api) for more information.

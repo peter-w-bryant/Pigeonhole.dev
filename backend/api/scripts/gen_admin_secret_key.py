@@ -19,7 +19,9 @@ if __name__ == "__main__":
     app = create_app()
     with app.app_context():
         secret_key = input('Enter admin secret key: ')
-        if add_admin_secret_key(secret_key):
+        verify_secret_key = input('Verify your admin secret key: ')
+
+        if secret_key == verify_secret_key and add_admin_secret_key(secret_key):
             print('Admin secret key added successfully!')
         else:
             print('Admin secret key not added!')
