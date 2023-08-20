@@ -57,12 +57,13 @@ ADMIN_PASSWORD=''
 
 You should replace these empty strings and rename the file `backend/.env`. Note that `ADMIN_USERNAME` and `ADMIN_PASSWORD` should be the login credentials of a registered user with administrative access, these two fields are only required for running unit tests (see [Generate an Admin Secret Key](#Generate-an-Admin-Secret-Key) for more information). Our `config.py` file will reference these environment variables, so make sure they are instantiated before running the project.
 ## Populate the Database with Sample Project Data
-We have provided a script to populate the DB with data from static JSON files. Run the following commands from the ```/api``` directory to populate the DB with sample data,
+We have provided a script to populate the DB with data from static JSON files. Run the following command from the ```/api``` directory to populate the DB with sample data,
 
 ```python
-python3 scripts/populate_db.py small
+python3 scripts/populate_db.py 5
 ```
-You have the option to pass a command line argument of either "small", "medium",  or "large" to populate a different number of projects (the default is the small project list).
+There is an optional command line argument to pass a positive integer for the number of projects to populate with; the default when no argument is passed is ~840 projects, which will take a very long time.
+
 #### Create a Docker image and run the image in a container
 To start the API server locally, create a Docker image and running the image in a container. Do this by running the following commands in the `Pigeonhole.dev` directory,
 
