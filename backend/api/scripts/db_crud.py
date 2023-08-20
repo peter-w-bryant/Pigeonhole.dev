@@ -2,7 +2,7 @@ import time
 import json
 import os
 import sys
-from dotenv import dotenv_values
+from dotenv import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import text
 
@@ -69,7 +69,7 @@ def add_project_to_db(gh_repo_url: str, user_id: int):
     db.session.close()
     return return_dict
 
-def add_projects_to_db_from_json(size_repo_data = "small", testing: bool = False):
+def add_projects_to_db_from_json(num_projects = -1, testing: bool = False):
     """Populate the project table with projects links from a json file.
 
     Args:
@@ -78,14 +78,23 @@ def add_projects_to_db_from_json(size_repo_data = "small", testing: bool = False
     Returns:
         success_count (int): number of projects successfully added to the database
     """
+    load_dotenv()
     if testing:
         start = time.time()
 
-    parent_dir = os.path.dirname(os.getcwd())
-    file_path = os.path.join(parent_dir, 'api', 'resources', 'sample_data', f'{size_repo_data}_repo_data.json')
+    parent_dir = os.path.dirname(os.path.abspath(__file__))
+    parent_dir = os.path.dirname(parent_dir)
+    
+    file_path = os.path.join(parent_dir, 'resources', 'sample_data', 'static_repo_data.json')
 
+    # Read only the first num_projects from the file
+    repo_data = []
     with open(file_path, 'r') as f:
         repo_data = json.load(f)
+        if num_projects > 0:
+            repo_data = {key: repo_data[key] for key in list(repo_data)[:num_projects]}
+        else:
+            repo_data = {key: repo_data[key] for key in list(repo_data)}
 
     failed_repos = {}
     success_count = 0

@@ -13,6 +13,9 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Add projects to the database from JSON file.")
-    parser.add_argument("size", choices=["small", "medium", "large"], help="Size of projects to add")
+    parser.add_argument("size", type=int, help="Number of projects to add", default=-1, nargs='?')
     args = parser.parse_args()
+    if args.size < 1:
+        print("Using all projects.")
+        args.size = -1
     main(args)
