@@ -34,7 +34,7 @@ with app.app_context():
 ```
 and then ensure a `database.db` file is created within the `/instance` directory.
 ## Modify .demo-env
-To run this project, you will need to set a number of environment variables. I have provided a file, ```backend/.demo-env```, which contains the following variable definitions,
+To run this project, you will need to set a number of environment variables. We have provided a file, ```backend/.demo-env```, which contains the following variable definitions,
 ```
 # GitHub OAuth app credentials
 GITHUB_CLIENT_ID=''
@@ -70,7 +70,7 @@ To start the API server locally, create a Docker image and running the image in 
 docker build -t ph .
 docker run -p 5000:5000 ph
 ```
-You should now have your Flask server running in the container, and you can make request to the API, see https://localhost:5000/apidocs.
+You should now have your Flask server running in the container, and you can make a request to the API, see https://localhost:5000/apidocs.
 
 # Generate an Admin Secret Key
 The backend Flask API makes use of an `admin_secret_keys` table storing hashed, secret keys to allow a user with administrative privileges to authenticate themselves during registration. When you first build the project locally, you may want to register an admin secret key in this table in order to register new admin users and access protected routes.  From a terminal, run the `backend/api/scripts/gen_admin_secret_key.py` script in order to register an admin secret key; when running the script, you will be prompted to enter a secret key and then to verify it before it is registered.
