@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/anchor-has-content */
-
 import { useContext, useEffect, useState } from 'react';
 import { Card, ListGroup } from 'react-bootstrap';
 
