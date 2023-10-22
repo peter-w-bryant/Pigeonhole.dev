@@ -170,7 +170,12 @@ def read_all_project_data_json(per_page=10, page_num=1, max_issues_per_project='
 
     # Retrieve the current page of results
     try:
+        # Print all projects
+        print("Printing all projects:")
+        print(Projects.query.all())
         projects_page = Projects.query.paginate(page=page_num, per_page=per_page)
+        print(projects_page)
+    
     except Exception as e:
         return {"status": "error", "message": "Page not found."}
     

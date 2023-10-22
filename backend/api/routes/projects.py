@@ -100,6 +100,7 @@ def AllProjectData():
         description: Error retrieving project data.
     """
     if request.method == 'GET':
+        print("GET request received")
         per_page = request.args.get('per_page', default=10, type=int)
         page = request.args.get('page', default=1, type=int)
         max_issues_per_project = request.args.get('max_issues_per_project', default='all', type=str)
@@ -127,7 +128,9 @@ def AllProjectData():
             if max_topics_per_project < 0:
                 max_topics_per_project = 10
 
+        print("Calling response dict")
         response_dict = read_all_project_data_json(per_page, page, max_issues_per_project, max_topics_per_project)
+        print(response_dict)
         if 'status' in response_dict:
             return response_dict, 500
     
