@@ -17,7 +17,7 @@
     <ul>
         <div class="project_container">
             {% for repo_url, repo_dict in projects.items() %}
-            <li><a href="{{ repo_url }}">{{ repo_dict['name'] }}</a></li>
+            {{repo_dict}}
         </div>
         {% endfor %}
     </ul>
