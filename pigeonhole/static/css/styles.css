@@ -11,6 +11,7 @@ body {
     display: flex;
     flex-direction: column;
     background-color: #6C684F;
+    font-family: 'Roboto', sans-serif;
 }
 
 /* Style the main content area */
@@ -24,17 +25,12 @@ body {
 /* Reset default list styles */
 .nav {
     margin: 0;
-    padding: 5px 20px;
-    /* Adjust the padding for a smaller height */
-    list-style: none;
+    padding: 5px 10px; /* Adjust the padding for a smaller height */
     background-color: #333;
-    /* Background color for the navigation bar */
     display: flex;
-    /* Make the navigation bar a flex container */
     justify-content: space-between;
-    /* Push items to both ends of the container */
     align-items: center;
-    /* Vertically center items within the container */
+    height: 40px;
 }
 
 .nav ul {
@@ -45,36 +41,28 @@ body {
 /* Style the list items (navigation links) */
 .nav li {
     display: inline;
-    margin: 0 15px;
-    /* Add spacing between the navigation items */
+    margin: 0 10px; /* Reduce the spacing between the navigation items */
 }
 
 /* Style the links */
 .nav a {
     text-decoration: none;
     color: #fff;
-    /* Text color for the links */
     font-weight: bold;
-    /* Make the text bold */
-    /* text-transform: uppercase; */
-    /* Convert text to uppercase */
+    font-size: 14px; /* Adjust the font size for the links */
 }
 
 /* Style the logo image */
 .nav-logo img {
-    /* Adjust the height of the image */
     padding: 0;
-    /* Remove padding from the image */
     margin: 0;
-    /* Remove margin from the image */
-    height: 50px;
+    height: 25px;
     width: auto;
 }
 
 /* Style link hover effect */
 .nav a:hover {
     color: #6C684F;
-    /* Change text color on hover */
 }
 
 /* Style the GitHub icon */
@@ -82,6 +70,7 @@ body {
     font-size: 24px;
     /* Adjust the size of the GitHub icon */
 }
+
 
 /* END NAV */
 
@@ -123,12 +112,10 @@ body {
 
 /* END Buy me a coffee */
 
-/* START project section */
-/* Style the hero section */
 .hero {
     background-color: #FEFBEA;
     /* Set the background color of the section to white */
-    width: 90%;
+    width: 70%;
     /* Limit the section to 90% of the width */
     margin: 0 auto;
     /* Center the section horizontally */
@@ -180,5 +167,294 @@ body {
 
 .hero-paragraph {
     margin: 0;
+    text-align: center;
     /* Remove default margin to eliminate space above and below the paragraph */
+}
+
+
+.project-search {
+    background-color: #FEFBEA;
+    /* Set the background color of the section to white */
+    width: 90%;
+    /* Limit the section to 90% of the width */
+    margin: 0 auto;
+    /* Center the section horizontally */
+    padding: 20px 0 20px 0;
+    /* Add padding to the top and bottom of the section, and no left and right padding */
+    border: 1px solid #ccc;
+    /* Add a border around the white box */
+    border-radius: 10px;
+    /* Round the corners of the box */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* Add a subtle shadow for depth */
+}
+
+.project-search-text {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.1em;
+    padding: 0px 50px 0px 50px;
+    /* Top, Right, Bottom, Left */
+    color: #333;
+    /* Set the text color to a readable shade of grey */
+}
+
+.project-search-text h3 {
+    /* font-size: 1.5em; */
+    text-align: center;
+    /* Increase the font size of the heading */
+    margin: 0;
+    /* Remove the default margin for the heading */
+}
+
+/* Style the hero-img container */
+.project-search-img {
+    display: flex;
+    justify-content: center;
+    /* Center horizontally */
+    align-items: center;
+    /* Center vertically */
+    padding: 20px 0;
+    /* Add 20px of padding on top and bottom */
+}
+
+/* Style the image inside the container */
+.project-search-img img {
+    max-width: 100px;
+    /* Adjust the maximum width of the image to make it smaller */
+    max-height: 100px;
+    /* Adjust the maximum height of the image */
+}
+
+.project-search-paragraph {
+    margin: 0;
+    text-align: center;
+    /* Remove default margin to eliminate space above and below the paragraph */
+}
+
+.projects {
+    padding-bottom: 50px;
+}
+
+.project-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.project-square {
+    position: relative;
+    width: 29%;
+    background-color: #FEFBEA;
+    border: 1px solid #ccc;
+    margin: 10px;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.project-top {
+    display: flex;
+}
+
+.project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.github-icon {
+    font-size: 30px;
+    /* Adjust the icon size as needed */
+    color: #000;
+    /* Set the default color */
+
+    /* Add a hover effect */
+    transition: color 0.3s;
+    /* Smooth color transition */
+    /* Make the icon on the right of the box */
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.github-icon:hover {
+    color: #007bff;
+    /* Change the color on hover to blue (#007bff) or your desired color */
+}
+
+.project-top {
+    display: flex;
+    align-items: center;
+}
+
+.project-name {
+    color: #000;
+    font-weight: bold;
+    margin: 0;
+    font-size: 22px;
+    padding-right: 4px;
+}
+
+.project-username {
+    margin: 0;
+    padding-bottom: 5px;
+    color: #007bff;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.project-icons {
+    display: flex;
+    align-items: center;
+    color: lightslategray;
+    font-size: 12px;
+}
+
+.project-icon {
+    margin-right: 5px;
+}
+
+.project-contributing {
+    text-decoration: none;
+    flex: left;
+    display: inline; 
+}
+
+.project-contributing-text{
+    text-decoration: none;
+    background-color: lightslategray;
+    color: #fff;
+    padding: 3px 5px;
+    font-size: 10px;
+    font-weight: bold;
+    border-radius: 15px; /* Add rounded corners */
+    transition: background-color 0.3s;
+    display: inline;
+}
+
+.project-contributing-text:hover {
+    background-color: #007bff;
+    /* Change the background color on hover to blue (#007bff) or your desired color */
+}
+
+.topic-container {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+}
+
+.project-topic-title{
+    margin: 0;
+    padding-bottom: 3px;
+    font-size: 12px;
+    color: lightslategray;
+    font-weight:bold;
+}
+
+.project-topic-text {
+    text-decoration: none;
+    background-color: #007bff;
+    color: #fff;
+    padding: 4px 6px;
+    font-size: 11px;
+    font-weight: bold;
+    border-radius: 15px;
+    display: inline;
+    margin: 2px 6px 2px 0; /* Adjust the margin to control the vertical and horizontal spacing */
+}
+
+.issue-container {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+}
+
+.project-issue-title{
+    margin: 0;
+    padding-bottom: 3px;
+    font-size: 12px;
+    color: lightslategray;
+    font-weight:bold;
+}
+
+.project-issue-text {
+    text-decoration: none;
+    background-color: #333;
+    color: #fff;
+    padding: 4px 6px;
+    font-size: 11px;
+    font-weight: bold;
+    border-radius: 15px;
+    display: inline;
+    margin: 2px 6px 2px 0; /* Adjust the margin to control the vertical and horizontal spacing */
+}
+
+.last-commit-title{
+    margin: 0;
+    padding-bottom: 3px;
+    font-size: 12px;
+    color: lightslategray;
+    font-weight:bold;
+}
+
+.last-commit-text {
+    text-decoration: none;
+    background-color: #6C684F;
+    color: #fff;
+    padding: 4px 6px;
+    font-size: 11px;
+    font-weight: bold;
+    border-radius: 15px;
+    display: inline;
+    margin: 2px 6px 2px 0; /* Adjust the margin to control the vertical and horizontal spacing */
+}
+
+.card-section-container {
+    padding-top:5px;
+}
+
+.section-divider {
+    border: 1px solid #ccc; /* Set border properties */
+    margin: 10px 0; /* Adjust margin for spacing */
+}
+
+.pigeonhole-analysis-container {
+    text-align: center;
+    margin-top: 10px; /* Adjust the margin as needed to reduce the space */
+}
+
+.pigeonhole-analysis-title {
+    font-size: 16px;
+    margin: 0; /* Reduce the bottom margin to reduce the space */
+}
+
+.analysis-item {
+    display: flex;
+    justify-content: center; /* Center content horizontally */
+    align-items: center;
+    font-size: 14px;
+}
+
+.analysis-icon {
+    font-size: 20px;
+    margin-right: 10px;
+    color: #007bff;
+}
+
+.score-badge {
+    background-color: #007bff;
+    color: #fff;
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 15px;
+    font-size: 12px;
+}
+
+.card-bottom {
+    margin-top: auto; /* Push the card-bottom to the bottom */
+    padding: 10px; /* Adjust padding as needed */
+    /* box-shadow: 0px -5px 10px rgba(0, 0, 0, 0.2);  */
 }

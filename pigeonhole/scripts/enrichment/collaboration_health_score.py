@@ -35,4 +35,4 @@ def generate_collaboration_health_score(self):
         0.05 * (recent_issue_comments + new_issues_count)
     )
 
-    return collaboration_health_score
+    return int(collaboration_health_score)

@@ -1,41 +1,119 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "layout.html" %}
+{% block content %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pigeonhole.dev</title>
-</head>
+<br>
 
-<body>
-    {% extends "layout.html" %}
-    {% block content %}
-
-    <br>
-    <section class="hero">
-        <div class="hero-text">
-            <h3>Open source project discovery catered towards new contributors.</h3>
-            <div class="hero-img">
-                <img src="static/images/pigeonhole_icon.png" alt="Pigeonhole icon">
-            </div>
-            <p class="hero-paragraph">Search and explore open source projects on GitHub with per-repository aggregated metrics and analysis on
-                the project's health, activity, popularity, new contributor friendliness, and more.</p>
+<!-- START HERO SECTION -->
+<section class="hero">
+    <div class="hero-text">
+        <h3>Open-source project discovery catered towards new contributors.</h3>
+        <div class="hero-img">
+            <img src="static/images/pigeonhole_icon.png" alt="Pigeonhole icon">
         </div>
+        <p class="hero-paragraph">Search and explore open-source projects on GitHub with per-repository aggregated
+            metrics and analysis on
+            the project's health, activity, popularity, new contributor friendliness, and more.</p>
+    </div>
+</section>
+<!-- END HERO SECTION -->
 
-    </section>
+<br><br>
 
-    {% if projects %}
-    <ul>
-        <div class="project_container">
-            {% for repo_url, repo_dict in projects.items() %}
-            {{repo_dict}}
+<!-- START PROJECT SEARCH SECTION -->
+<!-- <section class="project-search">
+        <div class="project-search-text">
+            <h3>Projects</h3>
+        </div>
+    </section> -->
+<!-- END PROJECT SEARCH SECTION -->
+
+<!-- START PROJECTS SECTION -->
+{% if projects %}
+<section class="projects">
+    <div class="project-container">
+        {% for project in projects.values() %}
+        <div class="project-square">
+            <div class="project-top">
+                <h2 class="project-name">{{ project.repo_name }}</h2>
+                {% if project.gh_contributing_url %}
+                <a class="project-contributing" style="text-decoration: none;" href="{{ project.gh_contributing_url }}"
+                    target="_blank">
+                    <p class="project-contributing-text">CONTRIBUTING.md</p>
+                </a>
+                {% endif %}
+                <a href="{{ project.repo_url }}" target="_blank">
+                    <i class="fab fa-github github-icon"></i>
+                </a>
+            </div>
+            <p class="project-username">{{ project.username }}</p>
+            <div class="project-icons">
+                <i class="fas fa-eye views-icon"></i>&nbsp;{{ project.gh_watchers_count }}&nbsp;&nbsp;
+                <i class="fas fa-code-branch forks-icon"></i>&nbsp;{{ project.gh_forks_count }}&nbsp;&nbsp;
+                <i class="fas fa-star stars-icon"></i>&nbsp;{{ project.gh_stargazers_count }}&nbsp;&nbsp;
+                <i class="fas fa-user users-icon"></i>&nbsp;{{ project.gh_num_contributors }}&nbsp;&nbsp;
+                <i class="fas fa-code code-icon"></i>&nbsp;{{ project.gh_num_commits }}
+            </div>
+            <p class="project-description">{{ project.gh_description }}</p>
+
+            <div class="card-section-container">
+                <p class="project-topic-title">Topics:</p>
+                <div class="topic-container">
+                    {% for topic in project.gh_topics %}
+                    <p class="project-topic-text">{{ topic }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {% if project.gh_issues_dict %}
+            <div class="card-section-container">
+                <p class="project-issue-title">Issues ({{project.gh_num_open_issues}} open):</p>
+                <div class="issue-container">
+                    {% for issue_type, count in project.gh_issues_dict.items() %}
+                    <p class="project-issue-text">{{ issue_type }} | {{ count }} </p>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if project.gh_date_of_last_commit %}
+            <div style="display: flex; justify-content: left; margin-top: 10px;">
+                <div>
+                    <p class="last-commit-title">Last Commit:&nbsp;<span class="last-commit-text">{{
+                            project.gh_date_of_last_commit }}</span></p>
+                </div>
+                <div>
+                    <p class="last-commit-title">Last Merged PR:&nbsp;<span class="last-commit-text">{{
+                            project.gh_date_of_last_commit }}</span></p>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="card-bottom">
+                <hr class="section-divider">
+                <div class="pigeonhole-analysis-container">
+                    <h3 class="pigeonhole-analysis-title">Pigeonhole Analysis</h3>
+
+                    <div class="analysis-item">
+                        <i class="fas fa-user-check analysis-icon"></i>
+                        <p>New Contributor Score:</p>&nbsp;
+                        <div class="score-badge">{{ project.gh_new_contributor_score }}</div>
+                    </div>
+
+                    <div class="analysis-item">
+                        <i class="fas fa-heartbeat analysis-icon"></i>
+                        <p>Project Collaboration Health:</p>&nbsp;
+                        <div class="score-badge">{{ project.gh_collaboration_health }}</div>
+                    </div>
+                </div>
+            </div>
         </div>
         {% endfor %}
-    </ul>
-    {% endif %}
+    </div>
+</section>
+
+{% endif %}
+
+<!-- START PROJECTS SECTION -->
 
 
-    {% endblock %}
-</body>
-
-</html>
+{% endblock %}

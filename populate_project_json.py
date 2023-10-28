@@ -12,7 +12,7 @@ def main(args):
         # repo_url = "https://github.com/peter-w-bryant/Pigeonhole.dev"
         # add_project_to_static_json(repo_url)
         delete_all_projects_from_static_json()
-        add_batch_projects_to_static_json(num_projects=3)
+        add_batch_projects_to_static_json(num_projects=args.size, static_json_filename="medium_repo_data.json")
         # delete_project_from_static_json(repo_url)
         
 if __name__ == "__main__":
