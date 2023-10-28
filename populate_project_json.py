@@ -1,11 +1,10 @@
 import sys
 import os
 import argparse
-from json_crud import add_project_to_static_json, add_batch_projects_to_static_json, \
+from pigeonhole.scripts.json_crud import add_project_to_static_json, add_batch_projects_to_static_json, \
     delete_project_from_static_json, delete_all_projects_from_static_json
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # set path to backend\api
-from app import create_app
+from pigeonhole import create_app
 
 def main(args):
     app = create_app()

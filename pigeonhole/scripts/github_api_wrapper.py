@@ -2,14 +2,12 @@
 import json
 import os
 import sys
-from datetime import datetime
-from datetime import datetime as dt
 
 import requests
 from dotenv import dotenv_values, load_dotenv
 from github import Auth, Github
 
-from pigeonhole.scripts.enrichment import (
+from scripts.enrichment import (
     generate_collaboration_health_score,
     generate_new_contributor_score,
     get_contribute_url,
@@ -59,7 +57,13 @@ class GitHubAPIWrapper:
                     self.gh_stargazers_count = self.repo.stargazers_count
                     self.gh_forks_count = self.repo.forks_count
                     self.gh_watchers_count = self.repo.watchers_count
-                    self.gh_num_contributors = self.repo.get_contributors().totalCount # Get number of contributors
+                    
+                    try:
+                        self.gh_num_contributors = self.repo.get_contributors().totalCount # Get number of contributors
+                    except Exception as e:
+                        print(f"Error in GitHubAPIWrapper INIT on line {sys.exc_info()[-1].tb_lineno}:", e)
+                        self.gh_num_contributors = 100
+                    
                     self.gh_topics = self.repo.get_topics()
 
                     # Enrichment
@@ -83,7 +87,8 @@ class GitHubAPIWrapper:
     def to_dict(self):
         return {
 
-                "is_valid": self.is_valid,
+                "repo_name": self.repo_name,
+                "username": self.username,
                 "repo_url": self.repo_url,
                 "gh_description": self.gh_description,
                 "gh_topics": self.gh_topics,
