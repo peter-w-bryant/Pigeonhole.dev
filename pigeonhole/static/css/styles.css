@@ -10,7 +10,7 @@ body {
 body {
     display: flex;
     flex-direction: column;
-    background-color: #CBD0DA;
+    background-color: #6C684F;
 }
 
 /* Style the main content area */
@@ -73,7 +73,7 @@ body {
 
 /* Style link hover effect */
 .nav a:hover {
-    color: #637d96;
+    color: #6C684F;
     /* Change text color on hover */
 }
 
@@ -126,7 +126,7 @@ body {
 /* START project section */
 /* Style the hero section */
 .hero {
-    background-color: white;
+    background-color: #FEFBEA;
     /* Set the background color of the section to white */
     width: 90%;
     /* Limit the section to 90% of the width */
@@ -179,5 +179,6 @@ body {
 }
 
 .hero-paragraph {
-    margin: 0; /* Remove default margin to eliminate space above and below the paragraph */
-  }
+    margin: 0;
+    /* Remove default margin to eliminate space above and below the paragraph */
+}
