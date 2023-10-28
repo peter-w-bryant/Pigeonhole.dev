@@ -1,17 +1,24 @@
 # Path: backend\github.py
-import requests
-from datetime import datetime
-from dotenv import dotenv_values, load_dotenv
-import os
 import json
-from datetime import datetime as dt
+import os
 import sys
-from .enrichment import get_target_issues, get_contribute_url, get_date_of_last_commit, \
-                        generate_new_contributor_score, generate_collaboration_health_score, get_num_commits, \
-                        get_pr_analysis
+from datetime import datetime
+from datetime import datetime as dt
 
-from github import Github
-from github import Auth
+import requests
+from dotenv import dotenv_values, load_dotenv
+from github import Auth, Github
+
+from pigeonhole.scripts.enrichment import (
+    generate_collaboration_health_score,
+    generate_new_contributor_score,
+    get_contribute_url,
+    get_date_of_last_commit,
+    get_num_commits,
+    get_pr_analysis,
+    get_target_issues,
+)
+
 
 class GitHubAPIWrapper:
     def __init__(self, repo_url):
@@ -71,32 +78,27 @@ class GitHubAPIWrapper:
             self.is_valid = False
 
     def __str__(self):
-        return f"{json.dumps(self.get_dict(), indent=4)}"
+        return f"{json.dumps(self.to_dict(), indent=4)}"
     
-    def get_dict(self):
+    def to_dict(self):
         return {
-                "qualitative": {
-                    "is_valid": self.is_valid,
-                    "repo_url": self.repo_url,
-                    "gh_description": self.gh_description,
-                    "gh_topics": self.gh_topics,
-                    "gh_date_of_last_commit": self.gh_date_of_last_commit,
-                    "gh_contributing_url": self.gh_contributing_url,
-                    "gh_has_bounty_label": self.gh_has_bounty_label,
-                    "gh_issues_dict": self.gh_issues_dict
-                    # ,
-                    # "gh_pr_dict": self.gh_pr_dict
-                },
-                "quantitative": {
-                    "gh_num_commits": self.gh_num_commits,
-                    "gh_num_open_issues": self.gh_num_open_issues,
-                    "gh_num_contributors": self.gh_num_contributors,
-                    "gh_stargazers_count": self.gh_stargazers_count,
-                    "gh_forks_count": self.gh_forks_count,
-                    "gh_watchers_count": self.gh_watchers_count,
-                    "gh_new_contributor_score": self.gh_new_contributor_score,
-                    "gh_collaboration_health": self.gh_collaboration_health
-                }
+
+                "is_valid": self.is_valid,
+                "repo_url": self.repo_url,
+                "gh_description": self.gh_description,
+                "gh_topics": self.gh_topics,
+                "gh_date_of_last_commit": self.gh_date_of_last_commit,
+                "gh_contributing_url": self.gh_contributing_url,
+                "gh_has_bounty_label": self.gh_has_bounty_label,
+                "gh_issues_dict": self.gh_issues_dict,
+                "gh_num_commits": self.gh_num_commits,
+                "gh_num_open_issues": self.gh_num_open_issues,
+                "gh_num_contributors": self.gh_num_contributors,
+                "gh_stargazers_count": self.gh_stargazers_count,
+                "gh_forks_count": self.gh_forks_count,
+                "gh_watchers_count": self.gh_watchers_count,
+                "gh_new_contributor_score": self.gh_new_contributor_score,
+                "gh_collaboration_health": self.gh_collaboration_health
         }
 
     def verify_repo_url(self):

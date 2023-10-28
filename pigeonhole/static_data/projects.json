@@ -1,0 +1,87 @@
+{
+    "https://github.com/pallets/flask": {
+        "is_valid": true,
+        "repo_url": "https://github.com/pallets/flask",
+        "gh_description": "The Python micro framework for building web applications.",
+        "gh_topics": [
+            "python",
+            "flask",
+            "wsgi",
+            "web-framework",
+            "werkzeug",
+            "jinja",
+            "pallets"
+        ],
+        "gh_date_of_last_commit": "2023-10-20",
+        "gh_contributing_url": "",
+        "gh_has_bounty_label": false,
+        "gh_issues_dict": {},
+        "gh_num_commits": 5177,
+        "gh_num_open_issues": 6,
+        "gh_num_contributors": 403,
+        "gh_stargazers_count": 64683,
+        "gh_forks_count": 15975,
+        "gh_watchers_count": 64683,
+        "gh_new_contributor_score": 0.0,
+        "gh_collaboration_health": 1116.0
+    },
+    "https://github.com/up-for-grabs/up-for-grabs.net": {
+        "is_valid": true,
+        "repo_url": "https://github.com/up-for-grabs/up-for-grabs.net",
+        "gh_description": "This is a list of projects which have curated tasks specifically for new contributors. These issues are a great way to get started with a project, or to help share the load of working on open source projects. Jump in!",
+        "gh_topics": [
+            "javascript",
+            "ruby",
+            "good-first-issue",
+            "up-for-grabs",
+            "help-wanted",
+            "hacktoberfest"
+        ],
+        "gh_date_of_last_commit": "2023-10-20",
+        "gh_contributing_url": "",
+        "gh_has_bounty_label": false,
+        "gh_issues_dict": {
+            "up-for-grabs": 16,
+            "bug": 1
+        },
+        "gh_num_commits": 5130,
+        "gh_num_open_issues": 51,
+        "gh_num_contributors": 436,
+        "gh_stargazers_count": 4909,
+        "gh_forks_count": 2107,
+        "gh_watchers_count": 4909,
+        "gh_new_contributor_score": 5.17,
+        "gh_collaboration_health": 1113.2
+    },
+    "https://github.com/pytorch/pytorch": {
+        "is_valid": true,
+        "repo_url": "https://github.com/pytorch/pytorch",
+        "gh_description": "Tensors and Dynamic neural networks in Python with strong GPU acceleration",
+        "gh_topics": [
+            "neural-network",
+            "autograd",
+            "gpu",
+            "numpy",
+            "deep-learning",
+            "tensor",
+            "python",
+            "machine-learning"
+        ],
+        "gh_date_of_last_commit": "2023-10-22",
+        "gh_contributing_url": "https://github.com/pytorch/pytorch/blob/master/CONTRIBUTING.md",
+        "gh_has_bounty_label": false,
+        "gh_issues_dict": {
+            "good first issue": 72,
+            "bug": 125,
+            "enhancement": 643
+        },
+        "gh_num_commits": 65331,
+        "gh_num_open_issues": 12941,
+        "gh_num_contributors": 341,
+        "gh_stargazers_count": 71868,
+        "gh_forks_count": 19767,
+        "gh_watchers_count": 71868,
+        "gh_new_contributor_score": 8.62,
+        "gh_collaboration_health": 13134.400000000001
+    }
+}

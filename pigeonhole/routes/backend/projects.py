@@ -1,48 +1,21 @@
-from flask import request, jsonify, Blueprint
+from flask import Blueprint, jsonify, request
+from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from flask_login import login_required
-from scripts import GitHubAPIWrapper, read_all_project_data_json, add_project_to_db
-from utils.db import db
-from utils.models import Users, Projects
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
+import pigeonhole.api_docs
+from pigeonhole.scripts import (
+    GitHubAPIWrapper,
+    add_project_to_static_json,
+    read_all_projects_from_static_json,
+)
 
 projects = Blueprint('projects', __name__) # blueprint for auth routes
 
 @projects.route('/projects/add-project', methods=['POST'])
 @jwt_required()
-def AddNewProject():
+def create_a_new_project():
     """
     Adds a new project to the database given a GitHub URL.
-    ---
-    tags:
-    - Projects
-    parameters:
-    - name: Authorization
-      in: header
-      required: true
-      description: "The JWT of the current user. The required header format is: **{'Authorization: Bearer {JWT}'}**"
-      type: string
-      example: Bearer <JWT_token>
-    - name: JSON object
-      in: body
-      required: true
-      description: A JSON object containing the GitHub URL of the project.
-      schema:
-        type: object
-        properties:
-          gh_url:
-            type: string
-            description: The full GitHub URL of the project.
-            example: https://github.com/pallets/flask
-    responses:
-      200:
-          description: Project added to database successfully, returns success message
-      400:
-          description: Invalid GitHub URL, returns error message
-      409:
-          description: Project already exists in database, returns error message
-      500:
-          description: Error adding project to database, returns error message
     """
     if request.method == 'POST':
         current_user_UID = get_jwt_identity()
@@ -61,8 +34,10 @@ def AddNewProject():
         else:
             return jsonify({'status': 'error', 'message': 'Error adding project to database!'}), 500
 
+create_a_new_project.__doc__ = pigeonhole.api_docs.create_project_doc.__doc__
+
 @projects.route('/projects/all-projects', methods=['GET'])
-def AllProjectData():
+def read_all_project_data():
     """
     Returns all project data in the database as a JSON object or an error message if there was an error retrieving the data
     ---
@@ -100,38 +75,34 @@ def AllProjectData():
         description: Error retrieving project data.
     """
     if request.method == 'GET':
-        print("GET request received")
+        # Get query parameters
         per_page = request.args.get('per_page', default=10, type=int)
         page = request.args.get('page', default=1, type=int)
         max_issues_per_project = request.args.get('max_issues_per_project', default='all', type=str)
         max_topics_per_project = request.args.get('max_topics_per_project', default='all', type=str)
 
-        # ensure per_page is between 1 and 100
+        # Ensure per_page is between 1 and 100
         if per_page > 100:
             per_page = 100
         elif per_page < 1:
             per_page = 10
 
-        # ensure page is greater than 0
+        # Ensure page is greater than 0
         if page < 1:
             page = 1
 
-        # ensure max_issues_per_project is => 0
+        # Ensure max_issues_per_project is >= 0
         if max_issues_per_project != 'all':
             max_issues_per_project = int(max_issues_per_project)
             if max_issues_per_project < 0:
                 max_issues_per_project = 10
 
-        # ensure max_topics_per_project is => 0
+        # Ensure max_topics_per_project is >= 0
         if max_topics_per_project != 'all':
             max_topics_per_project = int(max_topics_per_project)
             if max_topics_per_project < 0:
                 max_topics_per_project = 10
 
         print("Calling response dict")
-        response_dict = read_all_project_data_json(per_page, page, max_issues_per_project, max_topics_per_project)
-        print(response_dict)
-        if 'status' in response_dict:
-            return response_dict, 500
-    
-        return response_dict, 200
+        all_projects = read_all_projects_from_static_json()
+        return all_projects, 200
