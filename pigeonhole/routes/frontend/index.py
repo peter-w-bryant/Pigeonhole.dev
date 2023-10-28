@@ -24,6 +24,7 @@ def get_index():
         response = requests.get('http://localhost:5000/api/projects/all-projects')
         
         if response.status_code == 200:
+            ic(response.json())
             return render_template('index.html', projects=response.json())
         
         return render_template('index.html')
