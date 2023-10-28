@@ -1,22 +1,24 @@
-import os
-from datetime import timedelta
-
-from flask import Flask
-from flask_sslify import SSLify
-from flask_cors import CORS
-from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 from flasgger import Swagger
+from flask import Flask
+from flask_cors import CORS
+from flask_jwt_extended import (
+    JWTManager,
+    create_access_token,
+    get_jwt_identity,
+    jwt_required,
+)
+from flask_sslify import SSLify
 
-from routes.auth import auth
-from routes.projects import projects
-from routes.profile import profile
-from routes.accounts import accounts
+from pigeonhole.config import config
+from pigeonhole.routes.backend.projects import projects
+from pigeonhole.routes.frontend.index import index
+from pigeonhole.utils.auth import bcrypt, login_manager
 
-from utils.models import Users, Projects, SavedProjects
-from utils.db import db
-from utils.auth import bcrypt, login_manager
+# from routes.backend.auth import auth
+# from routes.backend.profile import profile
+# from routes.backend.accounts import accounts
 
-from config import config 
+
 
 swagger_template = {
     "swagger": "2.0",
@@ -52,6 +54,8 @@ swagger_template = {
     ]
 }
 
+# swagger_doc = Swagger.load_file('swagger.yml')
+
 def create_app(config_class='development'):
     """Factory function to create app instance
     :param config_class: Configuration class to use (defined in config.py)
@@ -61,10 +65,9 @@ def create_app(config_class='development'):
     CORS(app)             # Initialize CORS for all routes
     jwt = JWTManager(app) # Initialize JWT for access tokens 
     sslify = SSLify(app)  # Initialize SSLify for HTTPS
-    swagger = Swagger(app, template=swagger_template) # Initialize Swagger for API documentation
+    swagger = Swagger(app, template="swagger.yml") # Initialize Swagger for API documentation
 
     app.config.from_object(config[config_class]) # load config from config.py
-    db.init_app(app)                             # initialize database
     login_manager.init_app(app)                  # initialize login manager for flask-login
 
     @login_manager.user_loader
@@ -74,19 +77,16 @@ def create_app(config_class='development'):
         :param UID: User ID
         :return: User object or None
         """
-        current_user_id = get_jwt_identity()
-        if current_user_id and current_user_id == int(UID):
-            user = Users.query.filter_by(UID=UID).first()
-            return user
+        # current_user_id = get_jwt_identity()
+        # if current_user_id and current_user_id == int(UID):
+        #     user = Users.query.filter_by(UID=UID).first()
+        #     return user
         return None
     
     with app.app_context():
-        app.register_blueprint(projects, url_prefix='/api/1')
-        app.register_blueprint(auth, url_prefix='/api/1')
-        app.register_blueprint(profile, url_prefix='/api/1')
-        app.register_blueprint(accounts, url_prefix='/api/1')
+        app.register_blueprint(index, url_prefix='/')
+        app.register_blueprint(projects, url_prefix='/api')
+        # app.register_blueprint(auth, url_prefix='/api')
+        # app.register_blueprint(profile, url_prefix='/api')
+        # app.register_blueprint(accounts, url_prefix='/api')
     return app
-
-if __name__ == '__main__':
-    app = create_app()
-    app.run(debug=True,host='0.0.0.0')

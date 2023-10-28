@@ -1,16 +1,13 @@
-from flask import request, jsonify
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-from functools import wraps
-from utils.models import Users, AdminSecretKeys
-from utils.auth import bcrypt, login_manager
-import sys
 import os
-from dotenv import load_dotenv
+import sys
+from functools import wraps
 
-from app import create_app
+from dotenv import load_dotenv
+from flask import jsonify, request
+from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
+from utils.auth import bcrypt, login_manager
 from utils.db import db
-from utils.models import Users
-        
+
 
 class AdminSession():
     """

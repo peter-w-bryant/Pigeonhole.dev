@@ -1,14 +1,20 @@
 import os
 import sys
 import unittest
+
 import requests
-from flask import Flask
 from dotenv import load_dotenv
+from flask import Flask
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) # set path to backend\api
-from app import create_app
-from scripts import read_all_project_data_json, add_project_to_db, add_projects_to_db_from_json, delete_project_from_db, delete_all_projects_from_db
-from utils.models import Projects, ProjectIssues, ProjectTopics
+from scripts import (
+    add_project_to_db,
+    add_projects_to_db_from_json,
+    delete_all_projects_from_db,
+    delete_project_from_db,
+    read_all_project_data_json,
+)
+
 
 class AddProjectToDbTestCases(unittest.TestCase):
 

@@ -1,8 +1,9 @@
-from flask import request, jsonify
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from functools import wraps
-from utils.models import Users, AdminSecretKeys
+
+from flask import jsonify, request
+from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from utils.auth import bcrypt, login_manager
+
 
 def requires_admin(f):
     @wraps(f)

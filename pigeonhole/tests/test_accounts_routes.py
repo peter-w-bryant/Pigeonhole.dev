@@ -1,13 +1,12 @@
 import os
 import sys
 import unittest
+
 from dotenv import load_dotenv
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) # set path to backend\api
-from app import create_app
-from utils.db import db
-from utils.models import Users
-from utils.admin_session import AdminSession
+from pigeonhole.utils.admin_session import AdminSession
+from pigeonhole.utils.db import db
+
 
 class RegisterAccountTestCase(unittest.TestCase):
 
