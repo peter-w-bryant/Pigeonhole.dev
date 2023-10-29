@@ -30,8 +30,8 @@ class GitHubAPIWrapper:
                 self.username = repo_url.split('/')[3]
                 self.repo_name = repo_url.split('/')[4]
                 
-                # Strip the repo name from the URL
-                self.user_url = repo_url.replace(f"/{self.repo_name}", "")
+                # Strip the 
+                self.user_url = repo_url[:-len(self.repo_name)-1]
                 ic(self.user_url)
                 self.username = repo_url.split('/')[3]
                 self.repo_name = repo_url.split('/')[4]

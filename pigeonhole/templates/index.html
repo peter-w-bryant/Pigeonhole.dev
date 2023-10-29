@@ -34,7 +34,7 @@
         {% for project in projects.values() %}
         <div class="project-square">
             <div class="project-top">
-                <h2 class="project-name">{{ project.repo_name }}</h2>
+                <a href="{{ project.repo_url }}" class="project-name">{{ project.repo_name }}</a>&nbsp;
                 {% if project.gh_contributing_url %}
                 <a class="project-label" style="text-decoration: none;" href="{{ project.gh_contributing_url }}"
                     target="_blank">
@@ -44,16 +44,20 @@
                 {% if project.gh_has_bounty_label %}
                 <a class="project-label" style="text-decoration: none;" href="{{ project.gh_contributing_url }}"
                     target="_blank">
-                    <p class="project-contributing-text">Bug Bounty&nbsp;<i class="fas fa-bug" style="color: #FFD700;"></i></p>
+                    <p class="project-contributing-text">Bug Bounty&nbsp;<i class="fas fa-bug"
+                            style="color: #FFD700;"></i></p>
                 </a>
                 {% endif %}
                 <a href="{{ project.repo_url }}" target="_blank">
                     <i class="fab fa-github github-icon"></i>
                 </a>
             </div>
-            <p class="project-username">{{ project.username }}</p>
+            <div class="username-container">
+                <a href="{{ project.user_url }}" class="project-username">{{ project.username }}</a>
+            </div>
             <div class="project-icons">
-                <i class="fas fa-eye views-icon" title="{{ project.gh_watchers_count }} Watchers"></i>&nbsp;{{ project.gh_watchers_count }}&nbsp;&nbsp;
+                <i class="fas fa-eye views-icon" title="{{ project.gh_watchers_count }} Watchers"></i>&nbsp;{{
+                project.gh_watchers_count }}&nbsp;&nbsp;
                 <i class="fas fa-code-branch forks-icon" title="{{ project.gh_forks_count
                 }} Forks"></i>&nbsp;{{ project.gh_forks_count
                 }}&nbsp;&nbsp;
@@ -73,7 +77,7 @@
                 <p class="project-topic-title">Topics:</p>
                 <div class="topic-container">
                     {% for topic in project.gh_topics %}
-                    <p class="project-topic-text">{{ topic }}</p>
+                    <a href="https://github.com/search?q={{ topic }}&type=repositories" class="project-topic-text">{{ topic }}</a>
                     {% endfor %}
                 </div>
             </div>
@@ -83,7 +87,7 @@
                 <p class="project-issue-title">Issues ({{project.gh_num_open_issues}} open):</p>
                 <div class="issue-container">
                     {% for issue_type, count in project.gh_issues_dict.items() %}
-                    <p class="project-issue-text">{{ issue_type }} | {{ count }} </p>
+                    <a href="{{ project.repo_url }}/issues?q=is%3Aissue+is%3Aopen+label%3A%22{{ issue_type }}%22" class="project-issue-text">{{ issue_type }} | {{ count }} </a>
                     {% endfor %}
                 </div>
             </div>
@@ -92,12 +96,12 @@
             {% if project.gh_date_of_last_commit %}
             <div style="display: flex; justify-content: left; margin-top: 10px;">
                 <div>
-                    <p class="last-commit-title">Last Commit:&nbsp;<span class="last-commit-text">{{
-                            project.gh_date_of_last_commit }}</span></p>
+                    <p class="last-commit-title">Last Commit:&nbsp;<a href="{{ project.repo_url }}/commits" class="last-commit-text">{{
+                            project.gh_date_of_last_commit }}</a></p>
                 </div>
                 <div>
-                    <p class="last-commit-title">Last Merged PR:&nbsp;<span class="last-commit-text">{{
-                            project.gh_date_of_last_commit }}</span></p>
+                    <p class="last-commit-title">Last Merged PR:&nbsp;<a href="{{ project.repo_url }}//pulls?q=is%3Apr+is%3Aclosed" class="last-commit-text">{{
+                            project.gh_date_of_last_commit }}</a></p>
                 </div>
             </div>
             {% endif %}
