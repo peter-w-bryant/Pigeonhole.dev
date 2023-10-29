@@ -16,8 +16,8 @@ window.addEventListener('scroll', () => {
 
 window.addEventListener('load', () => {
 
-    // JavaScript to handle form submission and AJAX request
-    document.getElementById('search-form').addEventListener('submit', function (e) {
+    // JavaScript to handle form submission and AJAX request on any change to the search input
+    document.getElementById('search-form').addEventListener('submit', (e) => {
         console.log('Form submitted');
         e.preventDefault();
         const searchQuery = document.getElementById('search-input').value;
@@ -32,11 +32,12 @@ window.addEventListener('load', () => {
         })
             .then(response => response.json())
             .then(data => {
-                // Update the project list with the filtered data
-                const projectList = document.getElementById('project-list');
-                console.log(data);
-                // Update the project list with the filtered data
-                // You can use data to update the project list
+                console.log('Success:', data);
+                // Replace everything in  <div class="project-container"> with a project square
+                // for each project in the response
+                const projectContainer = document.querySelector('.project-container');
+                projectContainer.innerHTML = '';
+
             });
     });
 

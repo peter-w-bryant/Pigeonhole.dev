@@ -19,8 +19,6 @@ def search_projects():
     
     projects = read_all_projects_from_static_json()
     
-    # ic(projects)
-    
     for project_url, project_dict in projects.items():
         if query in project_dict['repo_name'].lower():
             ic(project_dict)

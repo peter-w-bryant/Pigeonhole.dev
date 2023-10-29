@@ -21,13 +21,13 @@
 
 <!-- START PROJECT SEARCH SECTION -->
 <section class="project-search">
-        <div class="project-search-text">
-            <form id="search-form">
-                <input type="text" id="search-input" placeholder="Search projects...">
-                <button type="submit">Search</button>
-            </form>
-        </div>
-    </section>
+    <div class="project-search-text">
+        <form id="search-form">
+            <input type="text" id="search-input" placeholder="Search projects...">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+</section>
 <!-- END PROJECT SEARCH SECTION -->
 
 <!-- START PROJECTS SECTION -->
@@ -80,7 +80,8 @@
                 <p class="project-topic-title">Topics:</p>
                 <div class="topic-container">
                     {% for topic in project.gh_topics %}
-                    <a href="https://github.com/search?q={{ topic }}&type=repositories" class="project-topic-text">{{ topic }}</a>
+                    <a href="https://github.com/search?q={{ topic }}&type=repositories" class="project-topic-text">{{
+                        topic }}</a>
                     {% endfor %}
                 </div>
             </div>
@@ -90,7 +91,8 @@
                 <p class="project-issue-title">Issues ({{project.gh_num_open_issues}} open):</p>
                 <div class="issue-container">
                     {% for issue_type, count in project.gh_issues_dict.items() %}
-                    <a href="{{ project.repo_url }}/issues?q=is%3Aissue+is%3Aopen+label%3A%22{{ issue_type }}%22" class="project-issue-text">{{ issue_type }} | {{ count }} </a>
+                    <a href="{{ project.repo_url }}/issues?q=is%3Aissue+is%3Aopen+label%3A%22{{ issue_type }}%22"
+                        class="project-issue-text">{{ issue_type }} | {{ count }} </a>
                     {% endfor %}
                 </div>
             </div>
@@ -99,11 +101,13 @@
             {% if project.gh_date_of_last_commit %}
             <div style="display: flex; justify-content: left; margin-top: 10px;">
                 <div>
-                    <p class="last-commit-title">Last Commit:&nbsp;<a href="{{ project.repo_url }}/commits" class="last-commit-text">{{
+                    <p class="last-commit-title">Last Commit:&nbsp;<a href="{{ project.repo_url }}/commits"
+                            class="last-commit-text">{{
                             project.gh_date_of_last_commit }}</a></p>
                 </div>
                 <div>
-                    <p class="last-commit-title">Last Merged PR:&nbsp;<a href="{{ project.repo_url }}//pulls?q=is%3Apr+is%3Aclosed" class="last-commit-text">{{
+                    <p class="last-commit-title">Last Merged PR:&nbsp;<a
+                            href="{{ project.repo_url }}//pulls?q=is%3Apr+is%3Aclosed" class="last-commit-text">{{
                             project.gh_date_of_last_commit }}</a></p>
                 </div>
             </div>
