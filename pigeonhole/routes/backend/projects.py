@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from flask_login import login_required
+from icecream import ic
 
 import pigeonhole.api_docs
 from pigeonhole.scripts import (
@@ -10,6 +11,22 @@ from pigeonhole.scripts import (
 )
 
 projects = Blueprint('projects', __name__) # blueprint for auth routes
+
+@projects.route('/search', methods=['POST'])
+def search_projects():
+    data = request.get_json()
+    query = data.get('query', '').lower()
+    
+    projects = read_all_projects_from_static_json()
+    
+    # ic(projects)
+    
+    for project_url, project_dict in projects.items():
+        if query in project_dict['repo_name'].lower():
+            ic(project_dict)
+            return jsonify(project_dict)
+
+    return {}
 
 @projects.route('/projects/add-project', methods=['POST'])
 @jwt_required()

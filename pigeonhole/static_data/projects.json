@@ -21,9 +21,9 @@
         "gh_num_commits": 5180,
         "gh_num_open_issues": 6,
         "gh_num_contributors": 403,
-        "gh_stargazers_count": 64752,
+        "gh_stargazers_count": 64753,
         "gh_forks_count": 15979,
-        "gh_watchers_count": 64752,
+        "gh_watchers_count": 64753,
         "gh_new_contributor_score": 0.0,
         "gh_collaboration_health": 1116
     },
@@ -73,7 +73,7 @@
             "python",
             "machine-learning"
         ],
-        "gh_date_of_last_commit": "2023-10-28",
+        "gh_date_of_last_commit": "2023-10-27",
         "gh_contributing_url": "https://github.com/pytorch/pytorch/blob/master/CONTRIBUTING.md",
         "gh_has_bounty_label": false,
         "gh_issues_dict": {
@@ -81,13 +81,13 @@
             "bug": 125,
             "enhancement": 646
         },
-        "gh_num_commits": 65619,
-        "gh_num_open_issues": 13042,
+        "gh_num_commits": 65621,
+        "gh_num_open_issues": 13041,
         "gh_num_contributors": 339,
-        "gh_stargazers_count": 72057,
-        "gh_forks_count": 19800,
-        "gh_watchers_count": 72057,
+        "gh_stargazers_count": 72056,
+        "gh_forks_count": 19802,
+        "gh_watchers_count": 72056,
         "gh_new_contributor_score": 8.62,
-        "gh_collaboration_health": 13191
+        "gh_collaboration_health": 13192
     }
 }
