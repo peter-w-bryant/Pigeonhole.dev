@@ -10,7 +10,7 @@
         <div class="hero-img">
             <img src="static/images/pigeonhole_icon.png" alt="Pigeonhole icon">
         </div>
-        <p class="hero-paragraph">Search and explore open-source projects on GitHub with per-repository aggregated
+        <p class="hero-paragraph">Search and explore open-source projects from GitHub with per-repository aggregated
             metrics and analysis on
             the project's health, activity, popularity, new contributor friendliness, and more.</p>
     </div>
@@ -36,9 +36,15 @@
             <div class="project-top">
                 <h2 class="project-name">{{ project.repo_name }}</h2>
                 {% if project.gh_contributing_url %}
-                <a class="project-contributing" style="text-decoration: none;" href="{{ project.gh_contributing_url }}"
+                <a class="project-label" style="text-decoration: none;" href="{{ project.gh_contributing_url }}"
                     target="_blank">
-                    <p class="project-contributing-text">CONTRIBUTING.md</p>
+                    <p class="project-contributing-text">CONTRIBUTING.md&nbsp;<i class="fas fa-file-code"></i></p>
+                </a>
+                {% endif %}
+                {% if project.gh_has_bounty_label %}
+                <a class="project-label" style="text-decoration: none;" href="{{ project.gh_contributing_url }}"
+                    target="_blank">
+                    <p class="project-contributing-text">Bug Bounty&nbsp;<i class="fas fa-bug" style="color: #FFD700;"></i></p>
                 </a>
                 {% endif %}
                 <a href="{{ project.repo_url }}" target="_blank">
@@ -47,12 +53,20 @@
             </div>
             <p class="project-username">{{ project.username }}</p>
             <div class="project-icons">
-                <i class="fas fa-eye views-icon"></i>&nbsp;{{ project.gh_watchers_count }}&nbsp;&nbsp;
-                <i class="fas fa-code-branch forks-icon"></i>&nbsp;{{ project.gh_forks_count }}&nbsp;&nbsp;
-                <i class="fas fa-star stars-icon"></i>&nbsp;{{ project.gh_stargazers_count }}&nbsp;&nbsp;
-                <i class="fas fa-user users-icon"></i>&nbsp;{{ project.gh_num_contributors }}&nbsp;&nbsp;
-                <i class="fas fa-code code-icon"></i>&nbsp;{{ project.gh_num_commits }}
+                <i class="fas fa-eye views-icon" title="{{ project.gh_watchers_count }} Watchers"></i>&nbsp;{{ project.gh_watchers_count }}&nbsp;&nbsp;
+                <i class="fas fa-code-branch forks-icon" title="{{ project.gh_forks_count
+                }} Forks"></i>&nbsp;{{ project.gh_forks_count
+                }}&nbsp;&nbsp;
+                <i class="fas fa-star stars-icon" title="{{ project.gh_stargazers_count
+                }} Stargazers"></i>&nbsp;{{ project.gh_stargazers_count
+                }}&nbsp;&nbsp;
+                <i class="fas fa-user users-icon" title="{{ project.gh_num_contributors
+                }} Contributors"></i>&nbsp;{{ project.gh_num_contributors
+                }}&nbsp;&nbsp;
+                <i class="fas fa-code code-icon" title="{{ project.gh_num_commits }} Commits"></i>&nbsp;{{
+                project.gh_num_commits }}
             </div>
+
             <p class="project-description">{{ project.gh_description }}</p>
 
             <div class="card-section-container">

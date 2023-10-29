@@ -25,7 +25,8 @@ body {
 /* Reset default list styles */
 .nav {
     margin: 0;
-    padding: 5px 10px; /* Adjust the padding for a smaller height */
+    padding: 5px 10px;
+    /* Adjust the padding for a smaller height */
     background-color: #333;
     display: flex;
     justify-content: space-between;
@@ -41,7 +42,8 @@ body {
 /* Style the list items (navigation links) */
 .nav li {
     display: inline;
-    margin: 0 10px; /* Reduce the spacing between the navigation items */
+    margin: 0 10px;
+    /* Reduce the spacing between the navigation items */
 }
 
 /* Style the links */
@@ -49,7 +51,8 @@ body {
     text-decoration: none;
     color: #fff;
     font-weight: bold;
-    font-size: 14px; /* Adjust the font size for the links */
+    font-size: 14px;
+    /* Adjust the font size for the links */
 }
 
 /* Style the logo image */
@@ -315,21 +318,22 @@ body {
     margin-right: 5px;
 }
 
-.project-contributing {
+.project-label {
     text-decoration: none;
     flex: left;
-    display: inline; 
+    display: inline;
 }
 
-.project-contributing-text{
+.project-contributing-text {
     text-decoration: none;
     background-color: lightslategray;
     color: #fff;
     padding: 3px 5px;
     font-size: 10px;
     font-weight: bold;
-    border-radius: 15px; /* Add rounded corners */
-    transition: background-color 0.3s;
+    border-radius: 15px;
+    /* Add rounded corners */
+    transition: background-color 0.3s ease-in-out;
     display: inline;
 }
 
@@ -345,12 +349,12 @@ body {
     justify-content: left;
 }
 
-.project-topic-title{
+.project-topic-title {
     margin: 0;
     padding-bottom: 3px;
     font-size: 12px;
     color: lightslategray;
-    font-weight:bold;
+    font-weight: bold;
 }
 
 .project-topic-text {
@@ -362,7 +366,8 @@ body {
     font-weight: bold;
     border-radius: 15px;
     display: inline;
-    margin: 2px 6px 2px 0; /* Adjust the margin to control the vertical and horizontal spacing */
+    margin: 2px 6px 2px 0;
+    /* Adjust the margin to control the vertical and horizontal spacing */
 }
 
 .issue-container {
@@ -372,12 +377,12 @@ body {
     justify-content: left;
 }
 
-.project-issue-title{
+.project-issue-title {
     margin: 0;
     padding-bottom: 3px;
     font-size: 12px;
     color: lightslategray;
-    font-weight:bold;
+    font-weight: bold;
 }
 
 .project-issue-text {
@@ -389,15 +394,16 @@ body {
     font-weight: bold;
     border-radius: 15px;
     display: inline;
-    margin: 2px 6px 2px 0; /* Adjust the margin to control the vertical and horizontal spacing */
+    margin: 2px 6px 2px 0;
+    /* Adjust the margin to control the vertical and horizontal spacing */
 }
 
-.last-commit-title{
+.last-commit-title {
     margin: 0;
     padding-bottom: 3px;
     font-size: 12px;
     color: lightslategray;
-    font-weight:bold;
+    font-weight: bold;
 }
 
 .last-commit-text {
@@ -409,37 +415,48 @@ body {
     font-weight: bold;
     border-radius: 15px;
     display: inline;
-    margin: 2px 6px 2px 0; /* Adjust the margin to control the vertical and horizontal spacing */
+    margin: 2px 6px 2px 0;
+    /* Adjust the margin to control the vertical and horizontal spacing */
 }
 
 .card-section-container {
-    padding-top:5px;
+    padding-top: 5px;
 }
 
 .section-divider {
-    border: 1px solid #ccc; /* Set border properties */
-    margin: 10px 0; /* Adjust margin for spacing */
+    border: 1px solid #ccc;
+    /* Set border properties */
+    margin: 10px 0;
+    /* Adjust margin for spacing */
 }
 
 .pigeonhole-analysis-container {
     text-align: center;
-    margin-top: 10px; /* Adjust the margin as needed to reduce the space */
+    margin: 0;
+    padding: 0; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .pigeonhole-analysis-title {
     font-size: 16px;
-    margin: 0; /* Reduce the bottom margin to reduce the space */
+    margin: 0;
+    /* Reduce the bottom margin to reduce the space */
 }
 
 .analysis-item {
     display: flex;
-    justify-content: center; /* Center content horizontally */
+    justify-content: center;
+    padding: 0; 
     align-items: center;
+    margin: 0;
     font-size: 14px;
 }
 
 .analysis-icon {
-    font-size: 20px;
+    font-size: 16px;
     margin-right: 10px;
     color: #007bff;
 }
@@ -448,13 +465,86 @@ body {
     background-color: #007bff;
     color: #fff;
     font-weight: bold;
+    margin: 0;
     padding: 4px 8px;
     border-radius: 15px;
     font-size: 12px;
 }
 
 .card-bottom {
-    margin-top: auto; /* Push the card-bottom to the bottom */
-    padding: 10px; /* Adjust padding as needed */
+    margin-top: auto;
+    /* Push the card-bottom to the bottom */
+    padding: 10px;
+    /* Adjust padding as needed */
     /* box-shadow: 0px -5px 10px rgba(0, 0, 0, 0.2);  */
+}
+
+/* Style the tooltips */
+.project-icons [title]:hover::after {
+    content: attr(title);
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
+    border-radius: 3px;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.project-icons [title]:hover::before {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 5px 5px 5px;
+    border-color: transparent transparent #333 transparent;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+.project-icons [title]:hover {
+    position: relative;
+}
+
+/* Show the tooltip on hover */
+.project-icons [title]:hover::after {
+    opacity: 1;
+}
+
+#back-to-top-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: none;
+    width: 50px;
+    height: 50px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 1;
+}
+
+#back-to-top-button::before {
+    content: '^';
+    font-size: 30px;
+    display: block;
+    position: relative;
+    justify-content: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#back-to-top-button:hover {
+    background-color: #0056b3;
 }

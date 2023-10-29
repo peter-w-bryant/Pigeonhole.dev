@@ -6,6 +6,7 @@ import sys
 import requests
 from dotenv import dotenv_values, load_dotenv
 from github import Auth, Github
+from icecream import ic
 
 from scripts.enrichment import (
     generate_collaboration_health_score,
@@ -25,8 +26,17 @@ class GitHubAPIWrapper:
             if not repo_url.startswith("https://github.com") or repo_url == "https://github.com":
                 self.is_valid = False
             else:
+                self.repo_url = repo_url
                 self.username = repo_url.split('/')[3]
                 self.repo_name = repo_url.split('/')[4]
+                
+                # Strip the repo name from the URL
+                self.user_url = repo_url.replace(f"/{self.repo_name}", "")
+                ic(self.user_url)
+                self.username = repo_url.split('/')[3]
+                self.repo_name = repo_url.split('/')[4]
+                self.base_url = f"https://api.github.com/repos/{self.username}/{self.repo_name}"
+                self.search_url = f"https://api.github.com/search/issues?q=repo:{self.username}/{self.repo_name}"
 
                 # New PyGithub API
                 auth = Auth.Token(os.environ.get('GITHUB_TOKEN'))
@@ -35,12 +45,7 @@ class GitHubAPIWrapper:
 
                 # Old GitHub API
                 self.auth_headers = {'Authorization': 'token ' + os.environ.get('GITHUB_TOKEN')}
-                self.repo_url = repo_url
-                self.username = repo_url.split('/')[3]
-                self.repo_name = repo_url.split('/')[4]
-                self.base_url = f"https://api.github.com/repos/{self.username}/{self.repo_name}"
-                self.search_url = f"https://api.github.com/search/issues?q=repo:{self.username}/{self.repo_name}"
-                
+                                
                 # Make request to GitHub API
                 self.response = requests.get(self.base_url, headers=self.auth_headers)
                 self.repo_data = self.response.json()
@@ -48,11 +53,8 @@ class GitHubAPIWrapper:
                 if not self.verify_repo_url():
                     self.is_valid = False
                 else:
-                    # Qualitative Repo Data
                     self.is_valid = True
                     self.gh_description = self.get_repo_description()
-                    
-                    # Quantitative Repo Data
                     self.gh_num_open_issues = self.repo.open_issues_count
                     self.gh_stargazers_count = self.repo.stargazers_count
                     self.gh_forks_count = self.repo.forks_count
@@ -62,7 +64,7 @@ class GitHubAPIWrapper:
                         self.gh_num_contributors = self.repo.get_contributors().totalCount # Get number of contributors
                     except Exception as e:
                         print(f"Error in GitHubAPIWrapper INIT on line {sys.exc_info()[-1].tb_lineno}:", e)
-                        self.gh_num_contributors = 100
+                        self.gh_num_contributors = 1000
                     
                     self.gh_topics = self.repo.get_topics()
 
@@ -90,6 +92,7 @@ class GitHubAPIWrapper:
                 "repo_name": self.repo_name,
                 "username": self.username,
                 "repo_url": self.repo_url,
+                "user_url": self.user_url,
                 "gh_description": self.gh_description,
                 "gh_topics": self.gh_topics,
                 "gh_date_of_last_commit": self.gh_date_of_last_commit,
