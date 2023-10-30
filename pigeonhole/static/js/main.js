@@ -28,7 +28,7 @@ window.addEventListener('load', () => {
                 return response.json();
             })
             .then((data) => {
-                console.log(data)
+                // console.log(data)
                 // Data is a json object mapping github url to project dict
                 // for key value pairs in data
                 for (const [key, value] of Object.entries(data)) {
@@ -203,62 +203,87 @@ window.addEventListener('load', () => {
                         }
                         // END creating project issues
 
-                        // projectCard.innerHTML = `
-            //             <p class="project-description">{{ project.gh_description }}</p>
+                        // START creating project last commit
+                        if (value.gh_date_of_last_commit) {
+                            const lastCommitContainer = document.createElement('div');
+                            lastCommitContainer.style.display = 'flex';
+                            lastCommitContainer.style.justifyContent = 'left';
+                            lastCommitContainer.style.marginTop = '10px';
+                            const lastCommit = document.createElement('div');
+                            const lastCommitTitle = document.createElement('p');
+                            lastCommitTitle.className = 'last-commit-title';
+                            lastCommitTitle.innerText = 'Last Commit:';
+                            lastCommit.appendChild(lastCommitTitle);
+                            const lastCommitLink = document.createElement('a');
+                            lastCommitLink.href = `${value.repo_url}/commits`;
+                            lastCommitLink.className = 'last-commit-text';
+                            lastCommitLink.innerText = value.gh_date_of_last_commit;
+                            lastCommit.appendChild(lastCommitLink);
+                            lastCommitContainer.appendChild(lastCommit);
 
-            // <div class="card-section-container">
-            //     <p class="project-topic-title">Topics:</p>
-            //     <div class="topic-container">
-            //         {% for topic in project.gh_topics %}
-            //         <a href="https://github.com/search?q={{ topic }}&type=repositories" class="project-topic-text">{{ topic }}</a>
-            //         {% endfor %}
-            //     </div>
-            // </div>
 
-            // {% if project.gh_issues_dict %}
-            // <div class="card-section-container">
-            //     <p class="project-issue-title">Issues ({{project.gh_num_open_issues}} open):</p>
-            //     <div class="issue-container">
-            //         {% for issue_type, count in project.gh_issues_dict.items() %}
-            //         <a href="{{ project.repo_url }}/issues?q=is%3Aissue+is%3Aopen+label%3A%22{{ issue_type }}%22" class="project-issue-text">{{ issue_type }} | {{ count }} </a>
-            //         {% endfor %}
-            //     </div>
-            // </div>
-            // {% endif %}
+                            // START creating project last merged PR
+                            const lastMerged = document.createElement('div');
+                            const lastMergedTitle = document.createElement('p');
+                            lastMergedTitle.className = 'last-commit-title';
+                            lastMergedTitle.innerText = 'Last Merged PR:';
+                            lastMerged.appendChild(lastMergedTitle);
+                            const lastMergedLink = document.createElement('a');
+                            lastMergedLink.href = `${value.repo_url}/pulls?q=is%3Apr+is%3Aclosed`;
+                            lastMergedLink.className = 'last-commit-text';
+                            lastMergedLink.innerText = value.gh_date_of_last_commit;
+                            lastMerged.appendChild(lastMergedLink);
+                            lastCommitContainer.appendChild(lastMerged);
+                            projectCard.appendChild(lastCommitContainer);
 
-            // {% if project.gh_date_of_last_commit %}
-            // <div style="display: flex; justify-content: left; margin-top: 10px;">
-            //     <div>
-            //         <p class="last-commit-title">Last Commit:&nbsp;<a href="{{ project.repo_url }}/commits" class="last-commit-text">{{
-            //                 project.gh_date_of_last_commit }}</a></p>
-            //     </div>
-            //     <div>
-            //         <p class="last-commit-title">Last Merged PR:&nbsp;<a href="{{ project.repo_url }}//pulls?q=is%3Apr+is%3Aclosed" class="last-commit-text">{{
-            //                 project.gh_date_of_last_commit }}</a></p>
-            //     </div>
-            // </div>
-            // {% endif %}
+                        }
+                        // END creating project last commit
 
-            // <div class="card-bottom">
-            //     <hr class="section-divider">
-            //     <div class="pigeonhole-analysis-container">
-            //         <h3 class="pigeonhole-analysis-title">Pigeonhole Analysis</h3>
+                        // START creating project bottom
+                        const cardBottom = document.createElement('div');
+                        cardBottom.className = 'card-bottom';
+                        const sectionDivider = document.createElement('hr');
+                        sectionDivider.className = 'section-divider';
+                        cardBottom.appendChild(sectionDivider);
+                        const pigeonholeAnalysisContainer = document.createElement('div');
+                        pigeonholeAnalysisContainer.className = 'pigeonhole-analysis-container';
+                        const pigeonholeAnalysisTitle = document.createElement('h3');
+                        pigeonholeAnalysisTitle.className = 'pigeonhole-analysis-title';
+                        pigeonholeAnalysisTitle.innerText = 'Pigeonhole Analysis';
+                        pigeonholeAnalysisContainer.appendChild(pigeonholeAnalysisTitle);
 
-            //         <div class="analysis-item">
-            //             <i class="fas fa-user-check analysis-icon"></i>
-            //             <p>New Contributor Score:</p>&nbsp;
-            //             <div class="score-badge">{{ project.gh_new_contributor_score }}</div>
-            //         </div>
+                        const newContributorScore = document.createElement('div');
+                        newContributorScore.className = 'analysis-item';
+                        const newContributorIcon = document.createElement('i');
+                        newContributorIcon.className = 'fas fa-user-check analysis-icon';
+                        newContributorScore.appendChild(newContributorIcon);
+                        const newContributorText = document.createElement('p');
+                        newContributorText.innerText = 'New Contributor Score:';
+                        newContributorScore.appendChild(newContributorText);
+                        const newContributorScoreBadge = document.createElement('div');
+                        newContributorScoreBadge.className = 'score-badge';
+                        newContributorScoreBadge.innerText = value.gh_new_contributor_score;
+                        newContributorScore.appendChild(newContributorScoreBadge);
+                        pigeonholeAnalysisContainer.appendChild(newContributorScore);
 
-            //         <div class="analysis-item">
-            //             <i class="fas fa-heartbeat analysis-icon"></i>
-            //             <p>Project Collaboration Health:</p>&nbsp;
-            //             <div class="score-badge">{{ project.gh_collaboration_health }}</div>
-            //         </div>
-            //     </div>
-            // </div>
+                        const collaborationHealth = document.createElement('div');
+                        collaborationHealth.className = 'analysis-item';
+                        const collaborationHealthIcon = document.createElement('i');
+                        collaborationHealthIcon.className = 'fas fa-heartbeat analysis-icon';
+                        collaborationHealth.appendChild(collaborationHealthIcon);
+                        const collaborationHealthText = document.createElement('p');
+                        collaborationHealthText.innerText = 'Project Collaboration Health:';
+                        collaborationHealth.appendChild(collaborationHealthText);
+                        const collaborationHealthBadge = document.createElement('div');
+                        collaborationHealthBadge.className = 'score-badge';
+                        collaborationHealthBadge.innerText = value.gh_collaboration_health;
+                        collaborationHealth.appendChild(collaborationHealthBadge);
+                        pigeonholeAnalysisContainer.appendChild(collaborationHealth);
 
-                        // `;
+                        cardBottom.appendChild(pigeonholeAnalysisContainer);
+                        projectCard.appendChild(cardBottom);
+                        // END creating project bottom
+
                         // Add the project card to the project container
                         projectContainer.appendChild(projectCard);
                     }
