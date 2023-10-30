@@ -14,9 +14,7 @@ projects = Blueprint('projects', __name__) # blueprint for auth routes
 
 @projects.route('/static_data/projects.json', methods=['GET'])
 def get_all_projects():    
-    projects = read_all_projects_from_static_json()
-    ic(projects)
-    return projects
+    return read_all_projects_from_static_json()
 
 @projects.route('/projects/add-project', methods=['POST'])
 @jwt_required()
@@ -40,8 +38,6 @@ def create_a_new_project():
             return jsonify({'status': 'success', 'message': 'Project added to database!', 'project_dict': response['project_dict']}), 200
         else:
             return jsonify({'status': 'error', 'message': 'Error adding project to database!'}), 500
-
-create_a_new_project.__doc__ = pigeonhole.api_docs.create_project_doc.__doc__
 
 @projects.route('/projects/all-projects', methods=['GET'])
 def read_all_project_data():
