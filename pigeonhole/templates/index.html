@@ -21,14 +21,16 @@
 
 <!-- START PROJECT SEARCH SECTION -->
 <section class="project-search">
-    <div class="project-search-text">
+    <div id="project-search-text" class="project-search-text">
         <form id="search-form">
-            <input type="text" id="search-input" placeholder="Search projects...">
-            <button type="submit">Search</button>
+            <input type="text" id="search-input" class="search-input" placeholder="Search by project name...">
+            <!-- <button type="submit">Search</button> -->
         </form>
     </div>
 </section>
 <!-- END PROJECT SEARCH SECTION -->
+
+<br><br>
 
 <!-- START PROJECTS SECTION -->
 {% if projects %}

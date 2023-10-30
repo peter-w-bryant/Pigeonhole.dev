@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/static/css/styles.css">
     <!-- link static/js/main.js -->
     <script type="module" src="/static/js/main.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon/apple-touch-icon.png') }}">
@@ -38,7 +39,7 @@
     {% block content %}{% endblock %}
     <!-- End Content -->
 
-    <button id="back-to-top-button" onclick="scrollToTop()"></button>
+    <button id="back-to-top-button"></button>
 
     <!-- Start Footer -->
     <footer class="footer">

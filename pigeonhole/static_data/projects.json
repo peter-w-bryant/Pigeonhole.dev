@@ -21,9 +21,9 @@
         "gh_num_commits": 5180,
         "gh_num_open_issues": 6,
         "gh_num_contributors": 403,
-        "gh_stargazers_count": 64753,
-        "gh_forks_count": 15979,
-        "gh_watchers_count": 64753,
+        "gh_stargazers_count": 64766,
+        "gh_forks_count": 15984,
+        "gh_watchers_count": 64766,
         "gh_new_contributor_score": 0.0,
         "gh_collaboration_health": 1116
     },
@@ -41,21 +41,21 @@
             "help-wanted",
             "hacktoberfest"
         ],
-        "gh_date_of_last_commit": "2023-10-27",
+        "gh_date_of_last_commit": "2023-10-30",
         "gh_contributing_url": "",
         "gh_has_bounty_label": false,
         "gh_issues_dict": {
             "up-for-grabs": 16,
             "bug": 1
         },
-        "gh_num_commits": 5147,
-        "gh_num_open_issues": 46,
+        "gh_num_commits": 5157,
+        "gh_num_open_issues": 44,
         "gh_num_contributors": 436,
-        "gh_stargazers_count": 4928,
-        "gh_forks_count": 2111,
-        "gh_watchers_count": 4928,
+        "gh_stargazers_count": 4929,
+        "gh_forks_count": 2113,
+        "gh_watchers_count": 4929,
         "gh_new_contributor_score": 5.17,
-        "gh_collaboration_health": 1116
+        "gh_collaboration_health": 1118
     },
     "https://github.com/pytorch/pytorch": {
         "repo_name": "pytorch",
@@ -73,21 +73,213 @@
             "python",
             "machine-learning"
         ],
-        "gh_date_of_last_commit": "2023-10-27",
+        "gh_date_of_last_commit": "2023-10-29",
         "gh_contributing_url": "https://github.com/pytorch/pytorch/blob/master/CONTRIBUTING.md",
         "gh_has_bounty_label": false,
         "gh_issues_dict": {
             "good first issue": 69,
             "bug": 125,
-            "enhancement": 646
+            "enhancement": 645
         },
-        "gh_num_commits": 65621,
-        "gh_num_open_issues": 13041,
+        "gh_num_commits": 65658,
+        "gh_num_open_issues": 13072,
         "gh_num_contributors": 339,
-        "gh_stargazers_count": 72056,
-        "gh_forks_count": 19802,
-        "gh_watchers_count": 72056,
+        "gh_stargazers_count": 72084,
+        "gh_forks_count": 19810,
+        "gh_watchers_count": 72084,
         "gh_new_contributor_score": 8.62,
-        "gh_collaboration_health": 13192
+        "gh_collaboration_health": 13199
+    },
+    "https://github.com/huggingface/datasets": {
+        "repo_name": "datasets",
+        "username": "huggingface",
+        "repo_url": "https://github.com/huggingface/datasets",
+        "user_url": "https://github.com/huggingface",
+        "gh_description": "\ud83e\udd17 The largest hub of ready-to-use datasets for ML models with fast, easy-to-use and efficient data manipulation tools",
+        "gh_topics": [
+            "nlp",
+            "datasets",
+            "pytorch",
+            "tensorflow",
+            "pandas",
+            "numpy",
+            "natural-language-processing",
+            "computer-vision",
+            "machine-learning",
+            "deep-learning",
+            "speech",
+            "hacktoberfest"
+        ],
+        "gh_date_of_last_commit": "2023-10-27",
+        "gh_contributing_url": "https://github.com/huggingface/datasets/blob/master/CONTRIBUTING.md",
+        "gh_has_bounty_label": false,
+        "gh_issues_dict": {
+            "good first issue": 5,
+            "help wanted": 2,
+            "documentation": 5,
+            "bug": 109,
+            "enhancement": 167
+        },
+        "gh_num_commits": 3596,
+        "gh_num_open_issues": 608,
+        "gh_num_contributors": 446,
+        "gh_stargazers_count": 17439,
+        "gh_forks_count": 2365,
+        "gh_watchers_count": 17439,
+        "gh_new_contributor_score": 12.07,
+        "gh_collaboration_health": 808
+    },
+    "https://github.com/aws/s2n-tls": {
+        "repo_name": "s2n-tls",
+        "username": "aws",
+        "repo_url": "https://github.com/aws/s2n-tls",
+        "user_url": "https://github.com/aws",
+        "gh_description": "An implementation of the TLS/SSL protocols",
+        "gh_topics": [
+            "tls",
+            "ssl",
+            "s2n",
+            "encryption",
+            "c",
+            "c99",
+            "cryptography",
+            "crypto"
+        ],
+        "gh_date_of_last_commit": "2023-10-28",
+        "gh_contributing_url": "",
+        "gh_has_bounty_label": false,
+        "gh_issues_dict": {
+            "good first issue": 13
+        },
+        "gh_num_commits": 4556,
+        "gh_num_open_issues": 460,
+        "gh_num_contributors": 174,
+        "gh_stargazers_count": 4312,
+        "gh_forks_count": 705,
+        "gh_watchers_count": 4312,
+        "gh_new_contributor_score": 6.9,
+        "gh_collaboration_health": 946
+    },
+    "https://github.com/tensorflow/tensorflow": {
+        "repo_name": "tensorflow",
+        "username": "tensorflow",
+        "repo_url": "https://github.com/tensorflow/tensorflow",
+        "user_url": "https://github.com/tensorflow",
+        "gh_description": "An Open Source Machine Learning Framework for Everyone",
+        "gh_topics": [
+            "tensorflow",
+            "machine-learning",
+            "python",
+            "deep-learning",
+            "deep-neural-networks",
+            "neural-network",
+            "ml",
+            "distributed"
+        ],
+        "gh_date_of_last_commit": "2023-10-30",
+        "gh_contributing_url": "https://github.com/tensorflow/tensorflow/blob/master/CONTRIBUTING.md",
+        "gh_has_bounty_label": false,
+        "gh_issues_dict": {
+            "good first issue": 1
+        },
+        "gh_num_commits": 155606,
+        "gh_num_open_issues": 2089,
+        "gh_num_contributors": 410,
+        "gh_stargazers_count": 178486,
+        "gh_forks_count": 89061,
+        "gh_watchers_count": 178486,
+        "gh_new_contributor_score": 8.62,
+        "gh_collaboration_health": 31203
+    },
+    "https://github.com/ethereum/go-ethereum": {
+        "repo_name": "go-ethereum",
+        "username": "ethereum",
+        "repo_url": "https://github.com/ethereum/go-ethereum",
+        "user_url": "https://github.com/ethereum",
+        "gh_description": "Official Go implementation of the Ethereum protocol",
+        "gh_topics": [
+            "go",
+            "blockchain",
+            "ethereum",
+            "p2p",
+            "geth"
+        ],
+        "gh_date_of_last_commit": "2023-10-27",
+        "gh_contributing_url": "",
+        "gh_has_bounty_label": false,
+        "gh_issues_dict": {
+            "good first issue": 5,
+            "up-for-grabs": 1,
+            "help wanted": 13
+        },
+        "gh_num_commits": 14625,
+        "gh_num_open_issues": 366,
+        "gh_num_contributors": 428,
+        "gh_stargazers_count": 43926,
+        "gh_forks_count": 18754,
+        "gh_watchers_count": 43926,
+        "gh_new_contributor_score": 0.0,
+        "gh_collaboration_health": 3010
+    },
+    "https://github.com/nodejs/node": {
+        "repo_name": "node",
+        "username": "nodejs",
+        "repo_url": "https://github.com/nodejs/node",
+        "user_url": "https://github.com/nodejs",
+        "gh_description": "Node.js JavaScript runtime :sparkles::turtle::rocket::sparkles:",
+        "gh_topics": [
+            "nodejs",
+            "javascript",
+            "node",
+            "js",
+            "runtime",
+            "mit",
+            "linux",
+            "macos",
+            "windows"
+        ],
+        "gh_date_of_last_commit": "2023-10-30",
+        "gh_contributing_url": "https://github.com/nodejs/node/blob/master/CONTRIBUTING.md",
+        "gh_has_bounty_label": false,
+        "gh_issues_dict": {
+            "good first issue": 11,
+            "help wanted": 63
+        },
+        "gh_num_commits": 40088,
+        "gh_num_open_issues": 1945,
+        "gh_num_contributors": 443,
+        "gh_stargazers_count": 98991,
+        "gh_forks_count": 27485,
+        "gh_watchers_count": 98991,
+        "gh_new_contributor_score": 8.62,
+        "gh_collaboration_health": 8106
+    },
+    "https://github.com/kubernetes/kubernetes": {
+        "repo_name": "kubernetes",
+        "username": "kubernetes",
+        "repo_url": "https://github.com/kubernetes/kubernetes",
+        "user_url": "https://github.com/kubernetes",
+        "gh_description": "Production-Grade Container Scheduling and Management",
+        "gh_topics": [
+            "kubernetes",
+            "go",
+            "cncf",
+            "containers"
+        ],
+        "gh_date_of_last_commit": "2023-10-30",
+        "gh_contributing_url": "https://github.com/kubernetes/kubernetes/blob/master/CONTRIBUTING.md",
+        "gh_has_bounty_label": false,
+        "gh_issues_dict": {
+            "good first issue": 21,
+            "help wanted": 133
+        },
+        "gh_num_commits": 119507,
+        "gh_num_open_issues": 2808,
+        "gh_num_contributors": 354,
+        "gh_stargazers_count": 102587,
+        "gh_forks_count": 38205,
+        "gh_watchers_count": 102587,
+        "gh_new_contributor_score": 8.62,
+        "gh_collaboration_health": 23972
     }
 }

@@ -1,11 +1,3 @@
-// Function to scroll to the top of the page
-function scrollToTop() {
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth' // Add smooth scrolling animation
-    });
-}
-
 // Debounce function to limit the number of times a function is called
 function debounce(func, delay) {
     let timeout;
@@ -55,7 +47,7 @@ function renderProjectCards(searchQuery) {
                     const projectCard = document.createElement('div');
                     projectCard.className = 'project-square';
 
-                    // START creating project top
+                    // START creating project top (project name, contributing.md link, bug label, github link)
                     const projectTop = document.createElement('div');
                     projectTop.className = 'project-top';
                     const projectName = document.createElement('a');
@@ -74,7 +66,7 @@ function renderProjectCards(searchQuery) {
                         contributingText.className = 'project-contributing-text';
                         contributingText.innerText = 'CONTRIBUTING.md';
                         const contributingIcon = document.createElement('i');
-                        contributingIcon.className = 'fas fa-file-code';
+                        contributingIcon.className = 'fas fa-file-code contributing-icon';
                         contributingText.appendChild(contributingIcon);
                         contributingLink.appendChild(contributingText);
                         projectTop.appendChild(contributingLink);
@@ -106,7 +98,7 @@ function renderProjectCards(searchQuery) {
                     githubLink.appendChild(githubIcon);
                     projectTop.appendChild(githubLink);
 
-                    // Add project top to project card
+                    // Add project top to the project card container
                     projectCard.appendChild(projectTop);
                     // END creating project top
 
@@ -328,8 +320,28 @@ window.addEventListener('load', () => {
     // JavaScript to handle form submission and filtering projects from projects.json
     document.getElementById('search-form').addEventListener('input', (e) => {
         e.preventDefault();
+        
+        // make the window scroll down to the project container
+        window.scrollTo({
+            top: document.getElementById('project-search-text').offsetTop,
+            behavior: 'smooth' // Add smooth scrolling animation
+        });
+        
         const searchQuery = document.getElementById('search-input').value;
         debounce(renderProjectCards(searchQuery), 300)(searchQuery);
     });
 
 });
+
+// if the user clicks on the back to top button, scroll to the top of the page
+document.getElementById('back-to-top-button').addEventListener('click', () => {
+    scrollToTop();
+});
+
+// Function to scroll to the top of the page
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth' // Add smooth scrolling animation
+    });
+}
