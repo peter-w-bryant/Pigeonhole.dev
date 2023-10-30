@@ -33,7 +33,7 @@
 <!-- START PROJECTS SECTION -->
 {% if projects %}
 <section class="projects">
-    <div class="project-container">
+    <div id="project-container" class="project-container">
         {% for project in projects.values() %}
         <div class="project-square">
             <div class="project-top">
@@ -62,13 +62,13 @@
                 <i class="fas fa-eye views-icon" title="{{ project.gh_watchers_count }} Watchers"></i>&nbsp;{{
                 project.gh_watchers_count }}&nbsp;&nbsp;
                 <i class="fas fa-code-branch forks-icon" title="{{ project.gh_forks_count
-                }} Forks"></i>&nbsp;{{ project.gh_forks_count
+        }} Forks"></i>&nbsp;{{ project.gh_forks_count
                 }}&nbsp;&nbsp;
                 <i class="fas fa-star stars-icon" title="{{ project.gh_stargazers_count
-                }} Stargazers"></i>&nbsp;{{ project.gh_stargazers_count
+        }} Stargazers"></i>&nbsp;{{ project.gh_stargazers_count
                 }}&nbsp;&nbsp;
                 <i class="fas fa-user users-icon" title="{{ project.gh_num_contributors
-                }} Contributors"></i>&nbsp;{{ project.gh_num_contributors
+        }} Contributors"></i>&nbsp;{{ project.gh_num_contributors
                 }}&nbsp;&nbsp;
                 <i class="fas fa-code code-icon" title="{{ project.gh_num_commits }} Commits"></i>&nbsp;{{
                 project.gh_num_commits }}
@@ -81,7 +81,8 @@
                 <div class="topic-container">
                     {% for topic in project.gh_topics %}
                     <a href="https://github.com/search?q={{ topic }}&type=repositories" class="project-topic-text">{{
-                        topic }}</a>
+                        topic
+                        }}</a>
                     {% endfor %}
                 </div>
             </div>
