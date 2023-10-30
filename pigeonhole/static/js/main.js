@@ -16,28 +16,37 @@ window.addEventListener('scroll', () => {
 
 window.addEventListener('load', () => {
 
-    // JavaScript to handle form submission and AJAX request on any change to the search input
+    // JavaScript to handle form submission and filtering projects from projects.json
     document.getElementById('search-form').addEventListener('submit', (e) => {
-        console.log('Form submitted');
         e.preventDefault();
         const searchQuery = document.getElementById('search-input').value;
-
-        // Make an AJAX request to Flask
-        fetch('/api/search', {
-            method: 'POST',
-            body: JSON.stringify({ query: searchQuery }),
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-                // Replace everything in  <div class="project-container"> with a project square
-                // for each project in the response
-                const projectContainer = document.querySelector('.project-container');
-                projectContainer.innerHTML = '';
-
+        const projectContainer = document.getElementById('project-container');
+        projectContainer.innerHTML = '';
+        // Read in static_data/projects.json
+        fetch('api/static_data/projects.json')
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                console.log(data)
+                // Data is a json object mapping github url to project dict
+                // for key value pairs in data
+                for (const [key, value] of Object.entries(data)) {
+                    // If the project name contains the search query
+                    if (value.repo_name.toLowerCase().includes(searchQuery.toLowerCase())) {
+                        // Create a new project card
+                        const projectCard = document.createElement('div');
+                        projectCard.className = 'project-card';
+                        projectCard.innerHTML = `
+                            <div class="project-card-text">
+                                <h3>${value.repo_name}</h3>
+                                <p>${value.gh_description}</p>
+                            </div>
+                        `;
+                        // Add the project card to the project container
+                        projectContainer.appendChild(projectCard);
+                    }
+                }
             });
     });
 

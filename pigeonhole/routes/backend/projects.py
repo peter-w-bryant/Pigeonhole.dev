@@ -12,19 +12,11 @@ from pigeonhole.scripts import (
 
 projects = Blueprint('projects', __name__) # blueprint for auth routes
 
-@projects.route('/search', methods=['POST'])
-def search_projects():
-    data = request.get_json()
-    query = data.get('query', '').lower()
-    
+@projects.route('/static_data/projects.json', methods=['GET'])
+def get_all_projects():    
     projects = read_all_projects_from_static_json()
-    
-    for project_url, project_dict in projects.items():
-        if query in project_dict['repo_name'].lower():
-            ic(project_dict)
-            return jsonify(project_dict)
-
-    return {}
+    ic(projects)
+    return projects
 
 @projects.route('/projects/add-project', methods=['POST'])
 @jwt_required()
