@@ -37,7 +37,24 @@ function renderProjectCards(searchQuery) {
             return response.json();
         })
         .then((data) => {
-            // console.log(data)
+            // Add all project names to the project names list 
+            const datalist = document.getElementById('project-names');
+            // Clear the datalist
+            datalist.innerHTML = '';
+            // for key value pairs in data
+            for (const [key, value] of Object.entries(data)) {
+                // Create a new option
+                const option = document.createElement('option');
+                // Set the option value to the project name
+                option.value = value.repo_name;
+                // Add "by username" to the option text but not the value
+                option.text = value.username;
+
+                // Add the option to the datalist
+                datalist.appendChild(option);
+            }
+
+    
             // Data is a json object mapping github url to project dict
             // for key value pairs in data
             for (const [key, value] of Object.entries(data)) {
@@ -322,10 +339,10 @@ window.addEventListener('load', () => {
         e.preventDefault();
         
         // make the window scroll down to the project container
-        window.scrollTo({
-            top: document.getElementById('project-search-text').offsetTop,
-            behavior: 'smooth' // Add smooth scrolling animation
-        });
+        // window.scrollTo({
+        //     top: document.getElementById('project-search-text').offsetTop,
+        //     behavior: 'smooth' // Add smooth scrolling animation
+        // });
         
         const searchQuery = document.getElementById('search-input').value;
         debounce(renderProjectCards(searchQuery), 300)(searchQuery);

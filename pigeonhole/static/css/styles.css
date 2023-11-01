@@ -62,7 +62,7 @@ body {
     margin: 0;
     height: 25px;
     width: auto;
-    padding-top:5px;
+    padding-top: 5px;
 }
 
 /* Style link hover effect */
@@ -183,7 +183,7 @@ body {
     /* Limit the section to 90% of the width */
     margin: 0 auto;
     /* Center the section horizontally */
-    padding: 10px 0 10px 0; 
+    padding: 10px 0 10px 0;
     /* Add padding to the top and bottom of the section, and no left and right padding */
     border: 1px solid #ccc;
     /* Add a border around the white box */
@@ -192,6 +192,35 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     /* Add a subtle shadow for depth */
 }
+
+/* Style for the datalist options */
+.project-name-option {
+    font-size: 18px;
+    /* Increase the text size */
+    background-color: #f0f0f0;
+    /* Background color */
+    color: #333;
+    /* Text color */
+    padding: 10px;
+    /* Padding to space out the options */
+    border: 1px solid #ccc;
+    /* Border */
+    border-radius: 5px;
+    /* Rounded corners */
+    cursor: pointer;
+    /* Show a pointer cursor on hover */
+    transition: background-color 0.3s, color 0.3s;
+    /* Smooth color transition */
+}
+
+/* Style for the datalist options on hover */
+.project-name-option:hover {
+    background-color: #337ab7;
+    /* Background color on hover */
+    color: #fff;
+    /* Text color on hover */
+}
+
 
 .project-search-text {
     font-family: 'Roboto', sans-serif;
