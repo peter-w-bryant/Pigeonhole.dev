@@ -33,12 +33,29 @@ function filterProjects() {
     let selectedTopics = Array.from(topicSelect.selectedOptions).map(option => option.value);
     let selectedIssues = Array.from(issueSelect.selectedOptions).map(option => option.value);
 
+    // Update the lists of selected topics and issues
+    updateSelectedList(topicSelect, 'selected-topics-list');
+    updateSelectedList(issueSelect, 'selected-issues-list');
+
     // Check if selectedTopics and selectedIssues are empty, and set them to null if necessary
     selectedTopics = selectedTopics.length === 0 ? null : selectedTopics;
     selectedIssues = selectedIssues.length === 0 ? null : selectedIssues;
 
     renderProjectCards(searchQuery, selectedTopics, selectedIssues);
 }
+
+function updateSelectedList(selectElement, listElementId) {
+    const listElement = document.getElementById(listElementId);
+    listElement.innerHTML = ''; // Clear the existing list items
+
+    // Add new list items for each selected option
+    Array.from(selectElement.selectedOptions).forEach(option => {
+        const listItem = document.createElement('li');
+        listItem.textContent = option.text;
+        listElement.appendChild(listItem);
+    });
+}
+
 
 // Add an event listener to the 'load' event to populate the select inputs
 window.addEventListener('load', () => {
@@ -74,15 +91,84 @@ window.addEventListener('load', () => {
                 option.textContent = issueType;
                 issueSelect.appendChild(option);
             }
+
+            updateSelectedList(topicSelect, 'selected-topics-list');
+            updateSelectedList(issueSelect, 'selected-issues-list');
         });
 });
+// main.js
+document.addEventListener('DOMContentLoaded', (event) => {
+    const clearButtons = document.querySelectorAll('.clear-button');
+
+    clearButtons.forEach(button => {
+        button.addEventListener('click', clearSelected);
+    });
+});
+
+function clearSelected(event) {
+    // Identify which button was clicked
+    const buttonId = event.target.id;
+
+    // Determine which list to clear based on the button ID
+    let listToClear;
+    if (buttonId === 'clear-topics') {
+        listToClear = document.getElementById('selected-topics-list');
+    } else if (buttonId === 'clear-issues') {
+        listToClear = document.getElementById('selected-issues-list');
+    }
+
+    // Clear the identified list
+    if (listToClear) {
+        listToClear.innerHTML = ''; // This removes all child elements in the list
+    }
+
+    console.log('clearing selected:', buttonId)
+    // If you also need to clear the selections from the <select> elements
+    if (buttonId === 'clear-topics') {
+        const topicSelect = document.getElementById('topic-select');
+        Array.from(topicSelect.options).forEach(option => option.selected = false);
+        const selectedTopics = document.getElementById('selected-topics-list');
+        //  Remove all list items from the selected topics list
+        selectedTopics.innerHTML = '';
+
+    } else if (buttonId === 'clear-issues') {
+        const issueSelect = document.getElementById('issue-select');
+        Array.from(issueSelect.options).forEach(option => option.selected = false);
+        const selectedIssues = document.getElementById('selected-issues-list');
+        //  Remove all list items from the selected issues list
+        selectedIssues.innerHTML = '';
+    }
+
+    // You may need to call some function to update other parts of the UI or state
+    // For example, re-render the project cards if they depend on these filters
+    const searchQuery = document.getElementById('search-input').value;
+    let selectedTopics = Array.from(topicSelect.selectedOptions).map(option => option.value);
+    let selectedIssues = Array.from(issueSelect.selectedOptions).map(option => option.value);
+    renderProjectCards(searchQuery, selectedTopics, selectedIssues);
+}
+
+
+function removeItem(event, itemValue) {
+    // Handle removing the specific item both visually and logically
+    event.target.parentNode.remove();
+    // Further logic to unselect the item from the actual select element goes here
+    const listItem = document.createElement('li');
+    listItem.textContent = selectedValue;
+    const removeButton = document.createElement('button');
+    removeButton.classList.add('remove-item-button');
+    removeButton.onclick = (event) => removeItem(event, selectedValue);
+    listItem.appendChild(removeButton);
+    document.getElementById('selected-topics-list').appendChild(listItem);
+}
+
+
+
 
 // Add event listeners for search inputs
 document.getElementById('topic-search').addEventListener('input', handleTopicSearch);
 document.getElementById('issue-search').addEventListener('input', handleIssueSearch);
 
 function handleTopicSearch() {
-    consoler.log('handling topic search')
     const searchTerm = this.value.toLowerCase();
     // const topicSelect = document.getElementById('topic-select');
 
@@ -103,6 +189,37 @@ function handleIssueSearch() {
     });
 
 }
+
+// Add event listener to scroll and back-to-top button
+window.addEventListener('scroll', handleScroll);
+document.getElementById('back-to-top-button').addEventListener('click', scrollToTop);
+
+function handleScroll() {
+    const button = document.getElementById('back-to-top-button');
+    if (window.scrollY > 200) {
+        button.style.display = 'block'; // Show the button when scroll position is greater than 200px
+    } else {
+        button.style.display = 'none'; // Hide the button when scroll position is less than 200px
+    }
+}
+
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth' // Add smooth scrolling animation
+    });
+}
+
+// Add event listener for search form
+document.getElementById('search-input').addEventListener('input', handleSearchForm);
+
+function handleSearchForm(e) {
+    e.preventDefault();
+
+    const searchQuery = document.getElementById('search-input').value;
+    debounce(() => renderProjectCards(searchQuery), 300)();
+}
+
 
 function renderProjectCards(searchQuery, selectedTopics, selectedIssues) {
     console.log('rendering projects');
@@ -411,34 +528,4 @@ function renderProjectCards(searchQuery, selectedTopics, selectedIssues) {
                 // Handle other errors
             }
         });
-}
-
-// Add event listener to scroll and back-to-top button
-window.addEventListener('scroll', handleScroll);
-document.getElementById('back-to-top-button').addEventListener('click', scrollToTop);
-
-function handleScroll() {
-    const button = document.getElementById('back-to-top-button');
-    if (window.scrollY > 200) {
-        button.style.display = 'block'; // Show the button when scroll position is greater than 200px
-    } else {
-        button.style.display = 'none'; // Hide the button when scroll position is less than 200px
-    }
-}
-
-function scrollToTop() {
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth' // Add smooth scrolling animation
-    });
-}
-
-// Add event listener for search form
-document.getElementById('search-input').addEventListener('input', handleSearchForm);
-
-function handleSearchForm(e) {
-    e.preventDefault();
-
-    const searchQuery = document.getElementById('search-input').value;
-    debounce(() => renderProjectCards(searchQuery), 300)();
 }
