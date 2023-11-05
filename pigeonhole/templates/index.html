@@ -23,16 +23,24 @@
 <section class="project-search">
     <div id="project-search-text" class="project-search-text">
         <form id="search-form">
-            <input type="text" id="search-input" class="search-input" placeholder="Search by project name..." 
-            list="project-names">
+            <input type="text" id="search-input" class="search-input" placeholder="Search by project name..."
+                list="project-names">
             <datalist id="project-names">
             </datalist>
             <!-- Create multi-select input to search by topics and issues with the select inputs side-by-side -->
             <div class="search-select-container">
-                <select id="topic-select" class="search-select" multiple>
-                </select>
-                <select id="issue-select" class="search-select" multiple>
-                </select>
+                <div class="custom-select">
+                    <input type="text" id="topic-search" class="search-input" placeholder="Search topics...">
+                    <select id="topic-select" class="search-select" multiple>
+                        <!-- Add your options here -->
+                    </select>
+                </div>
+                <div class="custom-select">
+                    <input type="text" id="issue-search" class="search-input" placeholder="Search issues...">
+                    <select id="issue-select" class="search-select" multiple>
+                        <!-- Add your options here -->
+                    </select>
+                </div>
             </div>
         </form>
     </div>

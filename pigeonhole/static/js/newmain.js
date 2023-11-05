@@ -28,7 +28,6 @@ issueSelect.addEventListener('change', filterProjects);
 
 // Create a function to filter projects based on selected topics and issues
 function filterProjects() {
-    console.log('filtering projects');
     const searchQuery = document.getElementById('search-input').value;
     let selectedTopics = Array.from(topicSelect.selectedOptions).map(option => option.value);
     let selectedIssues = Array.from(issueSelect.selectedOptions).map(option => option.value);
@@ -82,30 +81,30 @@ document.getElementById('topic-search').addEventListener('input', handleTopicSea
 document.getElementById('issue-search').addEventListener('input', handleIssueSearch);
 
 function handleTopicSearch() {
-    consoler.log('handling topic search')
     const searchTerm = this.value.toLowerCase();
-    // const topicSelect = document.getElementById('topic-select');
+    const topicSelect = document.getElementById('topic-select');
 
     Array.from(topicSelect.options).forEach((option) => {
         const text = option.textContent.toLowerCase();
         option.selected = text.includes(searchTerm);
     });
 
+    topicSelect.dispatchEvent(new Event('change'));
 }
 
 function handleIssueSearch() {
     const searchTerm = this.value.toLowerCase();
-    // const issueSelect = document.getElementById('issue-select');
+    const issueSelect = document.getElementById('issue-select');
 
     Array.from(issueSelect.options).forEach((option) => {
         const text = option.textContent.toLowerCase();
         option.selected = text.includes(searchTerm);
     });
 
+    issueSelect.dispatchEvent(new Event('change'));
 }
 
 function renderProjectCards(searchQuery, selectedTopics, selectedIssues) {
-    console.log('rendering projects');
     const projectContainer = document.getElementById('project-container');
     projectContainer.innerHTML = '';
 
@@ -141,6 +140,8 @@ function renderProjectCards(searchQuery, selectedTopics, selectedIssues) {
             // Data is a json object mapping github url to project dict
             // for key value pairs in data
             for (const [key, value] of Object.entries(data)) {
+                console.log("from renderProjectCards selectedTopics: ", selectedTopics)
+                console.log("from renderProjectCards selectedIssues: ", selectedIssues)
                 if (
                     value.repo_name.toLowerCase().includes(searchQuery.toLowerCase()) &&
                     (!selectedTopics || selectedTopics.some(topic => value.gh_topics.includes(topic))) &&
@@ -434,7 +435,7 @@ function scrollToTop() {
 }
 
 // Add event listener for search form
-document.getElementById('search-input').addEventListener('input', handleSearchForm);
+document.getElementById('search-form').addEventListener('input', handleSearchForm);
 
 function handleSearchForm(e) {
     e.preventDefault();
