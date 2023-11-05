@@ -19,7 +19,64 @@ function debounce(func, delay) {
 // Create a new AbortController for the current request
 let abortController = new AbortController();
 
-function renderProjectCards(searchQuery) {
+// Add event listeners to the select inputs
+const topicSelect = document.getElementById('topic-select');
+const issueSelect = document.getElementById('issue-select');
+
+topicSelect.addEventListener('change', filterProjects);
+issueSelect.addEventListener('change', filterProjects);
+
+// Create a function to filter projects based on selected topics and issues
+function filterProjects() {
+    const searchQuery = document.getElementById('search-input').value;
+    const selectedTopics = Array.from(topicSelect.selectedOptions).map(option => option.value);
+    const selectedIssues = Array.from(issueSelect.selectedOptions).map(option => option.value);
+    renderProjectCards(searchQuery, selectedTopics, selectedIssues);
+}
+
+// Add an event listener to the 'load' event to populate the select inputs
+window.addEventListener('load', () => {
+    fetch('api/static_data/projects.json')
+        .then((response) => {
+            return response.json();
+        })
+        .then((data) => {
+            const topicSelect = document.getElementById('topic-select');
+            const issueSelect = document.getElementById('issue-select');
+
+            const uniqueTopics = new Set();
+            const uniqueIssues = new Set();
+
+            // Collect unique topics and issues
+            for (const [key, value] of Object.entries(data)) {
+                for (const topic of value.gh_topics) {
+                    uniqueTopics.add(topic);
+                }
+
+                for (const issueType of Object.keys(value.gh_issues_dict)) {
+                    uniqueIssues.add(issueType);
+                }
+            }
+
+            // Populate the topic select input
+            for (const topic of uniqueTopics) {
+                const option = document.createElement('option');
+                option.value = topic;
+                option.textContent = topic;
+                topicSelect.appendChild(option);
+            }
+
+            // Populate the issue select input
+            for (const issueType of uniqueIssues) {
+                const option = document.createElement('option');
+                option.value = issueType;
+                option.textContent = issueType;
+                issueSelect.appendChild(option);
+            }
+        });
+});
+
+function renderProjectCards(searchQuery, selectedTopics, selectedIssues) {
     const projectContainer = document.getElementById('project-container');
     projectContainer.innerHTML = '';
 
@@ -54,12 +111,16 @@ function renderProjectCards(searchQuery) {
                 datalist.appendChild(option);
             }
 
-    
             // Data is a json object mapping github url to project dict
             // for key value pairs in data
             for (const [key, value] of Object.entries(data)) {
-                // If the project name contains the search query
-                if (value.repo_name.toLowerCase().includes(searchQuery.toLowerCase())) {
+                if (
+                    value.repo_name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+                    (selectedTopics.includes('all') || selectedTopics.some(topic => value.gh_topics.includes(topic))) &&
+                    (selectedIssues.includes('all') || selectedIssues.some(issue => value.gh_issues_dict[issue] > 0))
+                ) {
+                    // If the project name contains the search query
+
                     // Create a new project-square
                     const projectCard = document.createElement('div');
                     projectCard.className = 'project-square';
@@ -314,6 +375,7 @@ function renderProjectCards(searchQuery) {
                     projectContainer.appendChild(projectCard);
                 }
             }
+
         })
         .catch((error) => {
             if (error.name === 'AbortError') {
@@ -337,13 +399,13 @@ window.addEventListener('load', () => {
     // JavaScript to handle form submission and filtering projects from projects.json
     document.getElementById('search-form').addEventListener('input', (e) => {
         e.preventDefault();
-        
+
         // make the window scroll down to the project container
         // window.scrollTo({
         //     top: document.getElementById('project-search-text').offsetTop,
         //     behavior: 'smooth' // Add smooth scrolling animation
         // });
-        
+
         const searchQuery = document.getElementById('search-input').value;
         debounce(renderProjectCards(searchQuery), 300)(searchQuery);
     });

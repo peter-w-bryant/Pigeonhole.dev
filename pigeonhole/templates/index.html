@@ -26,9 +26,15 @@
             <input type="text" id="search-input" class="search-input" placeholder="Search by project name..." 
             list="project-names">
             <datalist id="project-names">
-
             </datalist>
-            <!-- <button type="submit">Search</button> -->
+            <!-- Create multi-select input to search by topics and issues with the select inputs side-by-side -->
+            <div class="search-select-container">
+                <select id="topic-select" class="search-select" multiple>
+                    <option value="all">All</option>
+                </select>
+                <select id="issue-select" class="search-select" multiple>
+                    <option value="all">All</option>
+                </select>
         </form>
     </div>
 </section>
