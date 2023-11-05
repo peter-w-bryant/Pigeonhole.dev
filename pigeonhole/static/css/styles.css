@@ -605,3 +605,21 @@ body {
 #back-to-top-button:hover {
     background-color: #0056b3;
 }
+
+/* Start search filters */
+/* Increase the width of the select elements */
+.search-select {
+    width: 200px;
+    height: 130px;
+}
+
+/* Increase the font size for the options */
+.search-select option {
+    font-size: 16px;
+}
+
+/* Improve selection style (add checkmark) for selected options */
+.search-select option:checked::before {
+    content: '\2713'; /* Unicode checkmark character */
+    padding-right: 5px;
+}

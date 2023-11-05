@@ -116,8 +116,8 @@ function renderProjectCards(searchQuery, selectedTopics, selectedIssues) {
             for (const [key, value] of Object.entries(data)) {
                 if (
                     value.repo_name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-                    (selectedTopics.includes('all') || selectedTopics.some(topic => value.gh_topics.includes(topic))) &&
-                    (selectedIssues.includes('all') || selectedIssues.some(issue => value.gh_issues_dict[issue] > 0))
+                    (selectedTopics.length === 0 || selectedTopics.some(topic => value.gh_topics.includes(topic))) &&
+                    (selectedIssues.length === 0 || selectedIssues.some(issue => value.gh_issues_dict[issue] > 0))
                 ) {
                     // If the project name contains the search query
 
