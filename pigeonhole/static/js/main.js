@@ -341,38 +341,48 @@ function renderProjectCards(searchQuery, selectedTopics, selectedIssues) {
 
                     // Add watchers
                     const viewsIcon = document.createElement('i');
-                    viewsIcon.className = 'fas fa-eye views-icon';
+                    viewsIcon.className = 'fas fa-eye views-icon project-icon';
                     viewsIcon.title = `${value.gh_watchers_count} Watchers`;
-                    viewsIcon.innerText = value.gh_watchers_count;
                     projectIcons.appendChild(viewsIcon);
+                    const viewsText = document.createElement('p');
+                    viewsText.innerText = value.gh_watchers_count;
+                    projectIcons.appendChild(viewsText);
 
                     // Add forks
                     const forksIcon = document.createElement('i');
-                    forksIcon.className = 'fas fa-code-branch forks-icon';
+                    forksIcon.className = 'fas fa-code-branch forks-icon project-icon';
                     forksIcon.title = `${value.gh_forks_count} Forks`;
-                    forksIcon.innerText = value.gh_forks_count;
                     projectIcons.appendChild(forksIcon);
+                    const forksText = document.createElement('p');
+                    forksText.innerText = value.gh_forks_count;
+                    projectIcons.appendChild(forksText);
 
                     // Add stargazers
                     const starsIcon = document.createElement('i');
-                    starsIcon.className = 'fas fa-star stars-icon';
+                    starsIcon.className = 'fas fa-star stars-icon project-icon';
                     starsIcon.title = `${value.gh_stargazers_count} Stargazers`;
-                    starsIcon.innerText = value.gh_stargazers_count;
                     projectIcons.appendChild(starsIcon);
+                    const starsText = document.createElement('p');
+                    starsText.innerText = value.gh_stargazers_count;
+                    projectIcons.appendChild(starsText);
 
                     // Add contributors
                     const usersIcon = document.createElement('i');
-                    usersIcon.className = 'fas fa-user users-icon';
+                    usersIcon.className = 'fas fa-user users-icon project-icon';
                     usersIcon.title = `${value.gh_num_contributors} Contributors`;
-                    usersIcon.innerText = value.gh_num_contributors;
                     projectIcons.appendChild(usersIcon);
+                    const usersText = document.createElement('p');
+                    usersText.innerText = value.gh_num_contributors;
+                    projectIcons.appendChild(usersText);
 
                     // Add commits
                     const codeIcon = document.createElement('i');
-                    codeIcon.className = 'fas fa-code code-icon';
+                    codeIcon.className = 'fas fa-code code-icon project-icon';
                     codeIcon.title = `${value.gh_num_commits} Commits`;
-                    codeIcon.innerText = value.gh_num_commits;
                     projectIcons.appendChild(codeIcon);
+                    const codeText = document.createElement('p');
+                    codeText.innerText = value.gh_num_commits;
+                    projectIcons.appendChild(codeText);
 
                     // Add project icons to project card
                     projectCard.appendChild(projectIcons);

@@ -112,19 +112,16 @@
                 <a href="{{ project.user_url }}" class="project-username">{{ project.username }}</a>
             </div>
             <div class="project-icons">
-                <i class="fas fa-eye views-icon" title="{{ project.gh_watchers_count }} Watchers"></i>&nbsp;{{
-                project.gh_watchers_count }}&nbsp;&nbsp;
-                <i class="fas fa-code-branch forks-icon" title="{{ project.gh_forks_count
-        }} Forks"></i>&nbsp;{{ project.gh_forks_count
-                }}&nbsp;&nbsp;
-                <i class="fas fa-star stars-icon" title="{{ project.gh_stargazers_count
-        }} Stargazers"></i>&nbsp;{{ project.gh_stargazers_count
-                }}&nbsp;&nbsp;
-                <i class="fas fa-user users-icon" title="{{ project.gh_num_contributors
-        }} Contributors"></i>&nbsp;{{ project.gh_num_contributors
-                }}&nbsp;&nbsp;
-                <i class="fas fa-code code-icon" title="{{ project.gh_num_commits }} Commits"></i>&nbsp;{{
-                project.gh_num_commits }}
+                <i class="fas fa-eye views-icon project-icon" title="{{ project.gh_watchers_count }} Watchers"></i>
+                <p>{{ project.gh_watchers_count }}</p>
+                <i class="fas fa-code-branch forks-icon project-icon" title="{{ project.gh_forks_count}} Forks"></i>
+                <p>{{ project.gh_forks_count }}</p>
+                <i class="fas fa-star stars-icon project-icon" title="{{ project.gh_stargazers_count}} Stargazers"></i>
+                <p>{{ project.gh_stargazers_count }}</p>
+                <i class="fas fa-user users-icon project-icon" title="{{ project.gh_num_contributors}} Contributors"></i>
+                <p>{{ project.gh_num_contributors }}</p>
+                <i class="fas fa-code code-icon project-icon" title="{{ project.gh_num_commits }} Commits"></i>
+                <p>{{ project.gh_num_commits }}</p>
             </div>
 
             <p class="project-description">{{ project.gh_description }}</p>
