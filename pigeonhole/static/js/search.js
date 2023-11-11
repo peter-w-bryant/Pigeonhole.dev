@@ -2,14 +2,14 @@ import { debounce } from './utils.js';
 import { createProjectCard } from './createProjectCard.js';
 
 
+
 // Global variables
 let abortController = new AbortController(); // AbortController, used for aborting fetch requests
-// Datalist element, used for autocomplete
 
 // Event listeners
-document.getElementById('search-input').addEventListener('input', handleSearchForm);
-// When the page is loaded, update the project data
 document.addEventListener('DOMContentLoaded', () => updateProjectData(''));
+document.getElementById('search-input').addEventListener('input', handleSearchForm);
+
 
 /**
  * The handleSearchForm function prevents the form from submitting, gets the search query from the
