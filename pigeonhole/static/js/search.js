@@ -4,7 +4,7 @@ import { createProjectCard } from './createProjectCard.js';
 
 // Global variables
 let abortController = new AbortController(); // AbortController, used for aborting fetch requests
-const datalist = document.getElementById('project-names'); // Datalist element, used for autocomplete
+// Datalist element, used for autocomplete
 
 // Event listeners
 document.getElementById('search-input').addEventListener('input', handleSearchForm);
@@ -30,9 +30,13 @@ function handleSearchForm(e) {
  * identifier for the project and the value is an object containing project details such as `repo_name`
  * and `username`.
  */
-function updateAutocompleteOptions(projectJSON) {
+function updateAutocompleteOptions(projectJSON, searchQuery, datalist) {
     // Create a new autocomplete option for each project
+    datalist.innerHTML = '';
     for (const value of Object.values(projectJSON)) {
+        if (!value.repo_name.toLowerCase().includes(searchQuery)) {
+            continue;
+        }
         const option = document.createElement('option');
         option.value = value.repo_name;
         option.text = value.username;
@@ -41,9 +45,11 @@ function updateAutocompleteOptions(projectJSON) {
 }
 
 function updateProjectData(searchQuery) {
+    searchQuery = searchQuery.trim().toLowerCase();
     console.log('Updating project data: updateProjectData()');
     const projectContainer = document.getElementById('project-container');
     const searchInput = document.getElementById('search-input');
+    const datalist = document.getElementById('project-names');
     projectContainer.innerHTML = '';
 
     // Abort the previous fetch request (if any)
@@ -61,17 +67,14 @@ function updateProjectData(searchQuery) {
         .then((response) => response.json())
         .then((data) => {
 
-            // Clear all project cards
-            datalist.innerHTML = '';
-
-            updateAutocompleteOptions(data);
+            updateAutocompleteOptions(data, searchQuery, datalist);
 
             // For each project in the full project list
             let projectCount = 0;
             for (const value of Object.values(data)) {
                 // If the project name contains the search query
                 if (
-                    value.repo_name.toLowerCase().includes(searchQuery.toLowerCase())
+                    value.repo_name.toLowerCase().includes(searchQuery)
                 ) {
                     // Create a new project card, and append it to the project container
                     const projectCard = createProjectCard(value);
