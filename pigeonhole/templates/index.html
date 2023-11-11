@@ -17,56 +17,18 @@
 </section>
 <!-- END HERO SECTION -->
 
-<br><br>
+<br>
 
 <!-- START PROJECT SEARCH SECTION -->
 <section class="project-search">
     <div id="project-search-text" class="project-search-text">
         <form id="search-form" class="search-form">
             <!-- Search Input -->
-            <input type="text" id="search-input" class="search-input" placeholder="Search by project name..."
-                list="project-names">
-            <datalist id="project-names">
-                <!-- Options will be dynamically inserted here -->
-            </datalist>
-
-            <!-- Topic Search Select -->
-            <!-- <div class="custom-select">
-                <input type="text" id="topic-search" class="search-input" placeholder="Search topics...">
-                <select id="topic-select" class="search-select" multiple>
-                </select>
-            </div> -->
-
-            <!-- Issue Search Select -->
-            <!-- <div class="custom-select">
-                <input type="text" id="issue-search" class="search-input" placeholder="Search issues...">
-                <select id="issue-select" class="search-select" multiple>
-                </select>
-            </div> -->
-
-            <!-- Selected Topics List with Clear Button -->
-            <!-- <div class="selected-options-container">
-                <div class="header-with-clear">
-                    <h3>Selected Topics</h3>
-                    <button type="button" class="clear-button" id="clear-topics">Clear</button>
-                </div>
-                <ul id="selected-topics-list" class="selected-list">
-                </ul>
-            </div> -->
-
-            <!-- Selected issues list with clear button -->
-            <!-- <div class="selected-options-container">
-                <div class="header-with-clear">
-                    <h3>Selected Issues</h3>
-                    <button class="clear-button" id="clear-issues">Clear Issues</button>
-
-                </div>
-                <ul id="selected-issues-list" class="selected-list">
-                </ul>
-            </div> -->
-            <!-- END SELECTED OPTIONS SECTION -->
-
-            <!-- Add other selected options lists and clear buttons as needed -->
+            <div class="search-input-container">
+                <input type="text" id="search-input" class="search-input" placeholder="Search by project name..."
+                    list="project-names">
+                <datalist id="project-names"></datalist>
+            </div>
         </form>
     </div>
 
@@ -75,115 +37,11 @@
 </section>
 <!-- END PROJECT SEARCH SECTION -->
 
-<br><br>
-
 <!-- START PROJECTS SECTION -->
-{% if projects %}
 <section class="projects">
     <div id="project-container" class="project-container">
-        {% for project in projects.values() %}
-        <div class="project-square">
-            <div class="project-top">
-                <a href="{{ project.repo_url }}" class="project-name">{{ project.repo_name }}</a>&nbsp;
-                {% if project.gh_contributing_url %}
-                <a class="project-label" style="text-decoration: none;" href="{{ project.gh_contributing_url }}"
-                    target="_blank">
-                    <p class="project-contributing-text">CONTRIBUTING.md&nbsp;<i class="fas fa-file-code"></i></p>
-                </a>
-                {% endif %}
-                {% if project.gh_has_bounty_label %}
-                <a class="project-label" style="text-decoration: none;" href="{{ project.gh_contributing_url }}"
-                    target="_blank">
-                    <p class="project-contributing-text">Bug Bounty&nbsp;<i class="fas fa-bug"
-                            style="color: #FFD700;"></i></p>
-                </a>
-                {% endif %}
-                <a href="{{ project.repo_url }}" target="_blank">
-                    <i class="fab fa-github github-icon"></i>
-                </a>
-            </div>
-            <div class="username-container">
-                <a href="{{ project.user_url }}" class="project-username">{{ project.username }}</a>
-            </div>
-            <div class="project-icons">
-                <i class="fas fa-eye views-icon project-icon" title="{{ project.gh_watchers_count }} Watchers"></i>
-                <p>{{ project.gh_watchers_count }}</p>
-                <i class="fas fa-code-branch forks-icon project-icon" title="{{ project.gh_forks_count}} Forks"></i>
-                <p>{{ project.gh_forks_count }}</p>
-                <i class="fas fa-star stars-icon project-icon" title="{{ project.gh_stargazers_count}} Stargazers"></i>
-                <p>{{ project.gh_stargazers_count }}</p>
-                <i class="fas fa-user users-icon project-icon"
-                    title="{{ project.gh_num_contributors}} Contributors"></i>
-                <p>{{ project.gh_num_contributors }}</p>
-                <i class="fas fa-code code-icon project-icon" title="{{ project.gh_num_commits }} Commits"></i>
-                <p>{{ project.gh_num_commits }}</p>
-            </div>
-
-            <p class="project-description">{{ project.gh_description }}</p>
-
-            <div class="card-section-container">
-                <p class="project-topic-title">Topics:</p>
-                <div class="topic-container">
-                    {% for topic in project.gh_topics %}
-                    <a href="https://github.com/search?q={{ topic }}&type=repositories" class="project-topic-text">{{
-                        topic
-                        }}</a>
-                    {% endfor %}
-                </div>
-            </div>
-
-            {% if project.gh_issues_dict %}
-            <div class="card-section-container">
-                <p class="project-issue-title">Issues ({{project.gh_num_open_issues}} open):</p>
-                <div class="issue-container">
-                    {% for issue_type, count in project.gh_issues_dict.items() %}
-                    <a href="{{ project.repo_url }}/issues?q=is%3Aissue+is%3Aopen+label%3A%22{{ issue_type }}%22"
-                        class="project-issue-text">{{ issue_type }} | {{ count }} </a>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
-
-            {% if project.gh_date_of_last_commit %}
-            <div style="display: flex; justify-content: left; margin-top: 10px;">
-                <div>
-                    <p class="last-commit-title">Last Commit:&nbsp;<a href="{{ project.repo_url }}/commits"
-                            class="last-commit-text">{{
-                            project.gh_date_of_last_commit }}</a></p>
-                </div>
-                <div>
-                    <p class="last-commit-title">Last Merged PR:&nbsp;<a
-                            href="{{ project.repo_url }}//pulls?q=is%3Apr+is%3Aclosed" class="last-commit-text">{{
-                            project.gh_date_of_last_commit }}</a></p>
-                </div>
-            </div>
-            {% endif %}
-
-            <div class="card-bottom">
-                <hr class="section-divider">
-                <div class="pigeonhole-analysis-container">
-                    <h3 class="pigeonhole-analysis-title">Pigeonhole Analysis</h3>
-
-                    <div class="analysis-item">
-                        <i class="fas fa-user-check analysis-icon"></i>
-                        <p>New Contributor Score:</p>&nbsp;
-                        <div class="score-badge">{{ project.gh_new_contributor_score }}</div>
-                    </div>
-
-                    <div class="analysis-item">
-                        <i class="fas fa-heartbeat analysis-icon"></i>
-                        <p>Project Collaboration Health:</p>&nbsp;
-                        <div class="score-badge">{{ project.gh_collaboration_health }}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
     </div>
 </section>
-
-{% endif %}
-
 <!-- START PROJECTS SECTION -->
 
 

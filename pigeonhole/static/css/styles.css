@@ -6,6 +6,12 @@ body {
     padding: 0;
 }
 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 /* Create a flex container to fill the remaining space */
 body {
     display: flex;
@@ -15,11 +21,6 @@ body {
 }
 
 /* Style the main content area */
-.content {
-    flex: 1;
-    /* Allow the content to grow and fill remaining space */
-    /* Add your content-specific styles here */
-}
 
 /* START NAV */
 /* Reset default list styles */
@@ -177,23 +178,6 @@ body {
 }
 
 
-.project-search {
-    background-color: #FEFBEA;
-    /* Set the background color of the section to white */
-    width: 90%;
-    /* Limit the section to 90% of the width */
-    margin: 0 auto;
-    /* Center the section horizontally */
-    padding: 10px 0 10px 0;
-    /* Add padding to the top and bottom of the section, and no left and right padding */
-    border: 1px solid #ccc;
-    /* Add a border around the white box */
-    border-radius: 10px;
-    /* Round the corners of the box */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    /* Add a subtle shadow for depth */
-}
-
 /* Style for the datalist options */
 .project-name-option {
     font-size: 18px;
@@ -220,29 +204,6 @@ body {
     /* Background color on hover */
     color: #fff;
     /* Text color on hover */
-}
-
-
-.project-search-text {
-    font-family: 'Roboto', sans-serif;
-    font-size: 1.1em;
-    padding: 0px 10px 0px 10px;
-    color: #333;
-    width: 40%;
-}
-
-.project-search-text h3 {
-    /* font-size: 1.5em; */
-    text-align: center;
-    /* Increase the font size of the heading */
-    margin: 0;
-    /* Remove the default margin for the heading */
-}
-
-.project-search-paragraph {
-    margin: 0;
-    text-align: center;
-    /* Remove default margin to eliminate space above and below the paragraph */
 }
 
 .projects {
@@ -306,7 +267,7 @@ body {
     transition: border-bottom 0.3s;
 }
 
-.project-description{
+.project-description {
     padding-top: 5px;
 }
 
@@ -596,154 +557,34 @@ body {
     background-color: #0056b3;
 }
 
-/* Start search filters */
-/* Resetting some default margins and paddings for a clean slate */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-/* Main search container */
-.project-search {
+.search-input-container {
     display: flex;
-    align-items: flex-start;
-    gap: 20px; /* space between elements */
-    padding: 20px; /* Padding around the entire section for spacing */
+    /* Ensure it's a flex container */
+    justify-content: center;
+    /* Center horizontally */
+    align-items: center;
+    /* Center vertically */
 }
 
 /* Search input styles */
 .search-input {
-    width: 100%; /* Full width */
-    padding: 0.5rem;
-    border: 1px solid #ccc; /* Subtle border */
-    border-radius: 4px; /* Rounded corners */
-    margin-bottom: 0.5rem; /* Space below inputs */
-}
-
-/* Style the custom selects and the search inputs to be similar in size */
-.custom-select, .search-select-container {
-    display: flex;
-    flex-direction: column;
-    gap: 5px; /* space between elements */
-}
-
-/* Style the multi-selects */
-.search-select {
-    width: 100%;
+    width: 400px;
+    /* Full width */
     padding: 0.5rem;
     border: 1px solid #ccc;
+    /* Subtle border */
+    background-color: #FEFBEA;
     border-radius: 4px;
-    background-color: white;
-    height: auto; /* Adjust height as needed or set a max-height */
+    /* Rounded corners */
+    margin-bottom: 0.5rem;
+    /* Space below inputs */
 }
 
-/* Improve selection style for selected options */
-.search-select option:checked {
-    background-color: #e0e0e0; /* Highlight for selected options */
-}
-
-/* Selected options list styling */
-.selected-options-container {
-    border-top: 1px solid #ccc; /* Separator */
-    padding-top: 1rem; /* Space above the content */
-}
-
-.selected-options-container h3 {
-    font-size: 1rem;
+.project-search-text {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.1em;
     color: #333;
-    margin: 0; /* Remove default margins */
-}
-
-.selected-list {
-    list-style-type: none;
     display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-}
-
-.selected-list li {
-    display: flex;
+    justify-content: center;
     align-items: center;
-    justify-content: space-between;
-    background-color: #f2f2f2;
-    padding: 5px 10px;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-}
-
-/* Style the header with the clear button */
-.header-with-clear {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem; /* Space below header */
-}
-
-.selected-list .remove-item-button {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.selected-list .remove-item-button::after {
-    content: '×'; /* Unicode multiplication sign as close icon */
-    color: #ff6666;
-    font-size: 14px;
-    padding-left: 10px;
-}
-
-/* Start project search form styling */
-.project-search {
-    display: flex;
-    align-items: center; /* Align vertically */
-    justify-content: space-between; /* Distribute space */
-    padding: 10px; /* Add some padding */
-}
-
-.project-search-text h3 {
-    width: 100%;
-    margin: 0;
-    font-size: 18px;
-}
-
-.search-form {
-    display: flex;
-    flex-direction: column;
-    /* width: 100%; */
-    gap: 1px; /* Spacing between children */
-}
-
-.custom-select {
-    display: flex;
-    flex-direction: column;
-}
-
-.header-with-clear {
-    display: flex;
-    align-items: center;
-    justify-content: space-between; /* Space between title and button */
-    margin-bottom: 5px; /* Spacing for consistency */
-}
-
-.clear-button {
-    padding: 0.25rem 0.5rem;
-    border: none;
-    background-color: #f44336; /* Red color for clear actions */
-    color: white;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.875rem;
-}
-
-.selected-list {
-    list-style: none;
-    padding-left: 1rem; /* Space for bullet points */
-}
-/* End project search form styling */
-@media screen and (max-width: 768px) {
-    .search-form {
-        flex-direction: column;
-    }
 }

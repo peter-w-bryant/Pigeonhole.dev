@@ -8,7 +8,8 @@ let abortController = new AbortController(); // AbortController, used for aborti
 
 // Event listeners
 document.getElementById('search-input').addEventListener('input', handleSearchForm);
-
+// When the page is loaded, update the project data
+document.addEventListener('DOMContentLoaded', () => updateProjectData(''));
 
 /**
  * The handleSearchForm function prevents the form from submitting, gets the search query from the
@@ -45,12 +46,11 @@ function updateAutocompleteOptions(projectJSON, searchQuery, datalist) {
 }
 
 function updateProjectData(searchQuery) {
-    searchQuery = searchQuery.trim().toLowerCase();
     console.log('Updating project data: updateProjectData()');
+    searchQuery = searchQuery.trim().toLowerCase();
     const projectContainer = document.getElementById('project-container');
     const searchInput = document.getElementById('search-input');
     const datalist = document.getElementById('project-names');
-    projectContainer.innerHTML = '';
 
     // Abort the previous fetch request (if any)
     if (abortController) {
@@ -71,6 +71,7 @@ function updateProjectData(searchQuery) {
 
             // For each project in the full project list
             let projectCount = 0;
+            projectContainer.innerHTML = '';
             for (const value of Object.values(data)) {
                 // If the project name contains the search query
                 if (
