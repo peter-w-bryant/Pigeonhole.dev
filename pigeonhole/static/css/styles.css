@@ -228,6 +228,7 @@ body {
     font-size: 1.1em;
     padding: 0px 10px 0px 10px;
     color: #333;
+    width: 40%;
 }
 
 .project-search-text h3 {
@@ -279,14 +280,8 @@ body {
 
 .github-icon {
     font-size: 30px;
-    /* Adjust the icon size as needed */
     color: #000;
-    /* Set the default color */
-
-    /* Add a hover effect */
     transition: color 0.3s;
-    /* Smooth color transition */
-    /* Make the icon on the right of the box */
     position: absolute;
     top: 10px;
     right: 10px;
@@ -619,12 +614,11 @@ body {
 
 /* Search input styles */
 .search-input {
-    padding: 10px;
-    margin-right: 10px; /* Spacing between search input and select containers */
-    width: 300px; /* You can adjust this based on your needs */
-    height: 40px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    width: 100%; /* Full width */
+    padding: 0.5rem;
+    border: 1px solid #ccc; /* Subtle border */
+    border-radius: 4px; /* Rounded corners */
+    margin-bottom: 0.5rem; /* Space below inputs */
 }
 
 /* Style the custom selects and the search inputs to be similar in size */
@@ -636,12 +630,12 @@ body {
 
 /* Style the multi-selects */
 .search-select {
-    padding: 10px;
+    width: 100%;
+    padding: 0.5rem;
     border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #fff;
-    overflow-y: auto; /* In case of many options, it will be scrollable */
-    font-size: 16px;
+    border-radius: 4px;
+    background-color: white;
+    height: auto; /* Adjust height as needed or set a max-height */
 }
 
 /* Improve selection style for selected options */
@@ -650,9 +644,15 @@ body {
 }
 
 /* Selected options list styling */
+.selected-options-container {
+    border-top: 1px solid #ccc; /* Separator */
+    padding-top: 1rem; /* Space above the content */
+}
+
 .selected-options-container h3 {
-    margin-bottom: 10px;
-    font-size: 18px;
+    font-size: 1rem;
+    color: #333;
+    margin: 0; /* Remove default margins */
 }
 
 .selected-list {
@@ -677,6 +677,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 0.5rem; /* Space below header */
 }
 
 .selected-list .remove-item-button {
@@ -701,26 +702,22 @@ body {
     padding: 10px; /* Add some padding */
 }
 
-.search-form {
-    display: flex;
+.project-search-text h3 {
     width: 100%;
-    gap: 10px; /* Spacing between children */
+    margin: 0;
+    font-size: 18px;
 }
 
-.search-input {
-    flex: 1; /* Allow the search input to grow */
+.search-form {
+    display: flex;
+    flex-direction: column;
+    /* width: 100%; */
+    gap: 1px; /* Spacing between children */
 }
 
 .custom-select {
     display: flex;
     flex-direction: column;
-    min-width: 150px; /* Minimum width */
-}
-
-.search-select {
-    height: auto;
-    max-height: 130px; /* Set max height */
-    overflow-y: auto; /* Add scroll for overflow */
 }
 
 .header-with-clear {
@@ -731,21 +728,22 @@ body {
 }
 
 .clear-button {
-    padding: 5px 10px;
-    cursor: pointer; /* Pointer on hover */
-    background-color: #f5f5f5; /* Light background for the button */
-    border: 1px solid #ddd; /* Border to distinguish the button */
-    border-radius: 4px; /* Rounded corners */
+    padding: 0.25rem 0.5rem;
+    border: none;
+    background-color: #f44336; /* Red color for clear actions */
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.875rem;
 }
 
 .selected-list {
     list-style: none;
-    padding: 0;
-    margin: 0;
-    background-color: #f9f9f9; /* Slightly different background */
-    border: 1px solid #ddd; /* Border to distinguish the list */
-    border-radius: 4px; /* Rounded corners */
-    overflow-y: auto; /* Scroll for overflow */
-    max-height: 100px; /* Maximum height before scrolling */
+    padding-left: 1rem; /* Space for bullet points */
 }
 /* End project search form styling */
+@media screen and (max-width: 768px) {
+    .search-form {
+        flex-direction: column;
+    }
+}

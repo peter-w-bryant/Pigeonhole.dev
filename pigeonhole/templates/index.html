@@ -31,45 +31,39 @@
             </datalist>
 
             <!-- Topic Search Select -->
-            <div class="custom-select">
+            <!-- <div class="custom-select">
                 <input type="text" id="topic-search" class="search-input" placeholder="Search topics...">
                 <select id="topic-select" class="search-select" multiple>
-                    <!-- Add your options here -->
                 </select>
-            </div>
+            </div> -->
 
             <!-- Issue Search Select -->
-            <div class="custom-select">
+            <!-- <div class="custom-select">
                 <input type="text" id="issue-search" class="search-input" placeholder="Search issues...">
                 <select id="issue-select" class="search-select" multiple>
-                    <!-- Add your options here -->
                 </select>
-            </div>
+            </div> -->
 
             <!-- Selected Topics List with Clear Button -->
-            <div class="selected-options-container">
+            <!-- <div class="selected-options-container">
                 <div class="header-with-clear">
                     <h3>Selected Topics</h3>
                     <button type="button" class="clear-button" id="clear-topics">Clear</button>
                 </div>
                 <ul id="selected-topics-list" class="selected-list">
-                    <!-- Dynamically filled list items will go here -->
                 </ul>
-            </div>
+            </div> -->
 
             <!-- Selected issues list with clear button -->
-            <div class="selected-options-container">
+            <!-- <div class="selected-options-container">
                 <div class="header-with-clear">
                     <h3>Selected Issues</h3>
-                    <!-- index.html -->
-
                     <button class="clear-button" id="clear-issues">Clear Issues</button>
 
                 </div>
                 <ul id="selected-issues-list" class="selected-list">
-                    <!-- Dynamically filled list items will go here -->
                 </ul>
-            </div>
+            </div> -->
             <!-- END SELECTED OPTIONS SECTION -->
 
             <!-- Add other selected options lists and clear buttons as needed -->
@@ -118,7 +112,8 @@
                 <p>{{ project.gh_forks_count }}</p>
                 <i class="fas fa-star stars-icon project-icon" title="{{ project.gh_stargazers_count}} Stargazers"></i>
                 <p>{{ project.gh_stargazers_count }}</p>
-                <i class="fas fa-user users-icon project-icon" title="{{ project.gh_num_contributors}} Contributors"></i>
+                <i class="fas fa-user users-icon project-icon"
+                    title="{{ project.gh_num_contributors}} Contributors"></i>
                 <p>{{ project.gh_num_contributors }}</p>
                 <i class="fas fa-code code-icon project-icon" title="{{ project.gh_num_commits }} Commits"></i>
                 <p>{{ project.gh_num_commits }}</p>
