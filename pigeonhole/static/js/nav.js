@@ -1,8 +1,8 @@
 // Add event listener to scroll and back-to-top button
-window.addEventListener('scroll', handleScroll);
+window.addEventListener('scroll', displayScrollBtn);
 document.getElementById('back-to-top-button').addEventListener('click', scrollToTop);
 
-function handleScroll() {
+function displayScrollBtn() {
     const button = document.getElementById('back-to-top-button');
     if (window.scrollY > 200) {
         button.style.display = 'block'; // Show the button when scroll position is greater than 200px

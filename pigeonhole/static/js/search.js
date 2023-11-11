@@ -43,6 +43,7 @@ function updateAutocompleteOptions(projectJSON) {
 function updateProjectData(searchQuery) {
     console.log('Updating project data: updateProjectData()');
     const projectContainer = document.getElementById('project-container');
+    const searchInput = document.getElementById('search-input');
     projectContainer.innerHTML = '';
 
     // Abort the previous fetch request (if any)
@@ -66,6 +67,7 @@ function updateProjectData(searchQuery) {
             updateAutocompleteOptions(data);
 
             // For each project in the full project list
+            let projectCount = 0;
             for (const value of Object.values(data)) {
                 // If the project name contains the search query
                 if (
@@ -74,16 +76,24 @@ function updateProjectData(searchQuery) {
                     // Create a new project card, and append it to the project container
                     const projectCard = createProjectCard(value);
                     projectContainer.appendChild(projectCard);
+                    projectCount++;
                 }
             }
 
+            // If no projects were found
+            if (projectCount === 0) {
+                const noResults = document.createElement('p');
+                noResults.textContent = 'No results found.';
+                projectContainer.appendChild(noResults);
+            }
+
+            searchInput.scrollIntoView(); // Set focus on the search input
         })
         .catch((error) => {
             if (error.name === 'AbortError') {
                 // Request was aborted, no action needed
             } else {
                 // Handle other errors
-                console.error(error);
             }
         });
 }
