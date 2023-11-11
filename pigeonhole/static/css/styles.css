@@ -588,3 +588,16 @@ body {
     justify-content: center;
     align-items: center;
 }
+
+.topics-input {
+    width: 400px;
+    /* Full width */
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    /* Subtle border */
+    background-color: #FEFBEA;
+    border-radius: 4px;
+    /* Rounded corners */
+    margin-bottom: 0.5rem;
+    /* Space below inputs */
+}

@@ -5,10 +5,46 @@ import { createProjectCard } from './createProjectCard.js';
 
 // Global variables
 let abortController = new AbortController(); // AbortController, used for aborting fetch requests
+const datalist = document.getElementById('project-names');
+const topicSelect = document.getElementById('topic-select');
 
 // Event listeners
 document.addEventListener('DOMContentLoaded', () => updateProjectData(''));
+document.addEventListener('DOMContentLoaded', () => updateTopicSelect());
 document.getElementById('search-input').addEventListener('input', handleSearchForm);
+document.getElementById('topic-select').addEventListener('change', handleTopicSelect);
+
+/**
+ * The function `updateTopicSelect` fetches data from a JSON file, extracts unique topics from the
+ * data, and dynamically populates a select element with options for each topic.
+ */
+function updateTopicSelect() {
+    const topicSelect = document.getElementById('topic-select');
+    const topicSet = new Set();
+    fetch('api/static_data/projects.json')
+        .then((response) => response.json())
+        .then((data) => {
+            for (const value of Object.values(data)) {
+                for (const topic of value.gh_topics) {
+                    topicSet.add(topic);
+                }
+            }
+            // Create an option for each topic
+            topicSelect.innerHTML = '';
+            for (const topic of topicSet) {
+                const option = document.createElement('option');
+                option.value = topic;
+                option.text = topic;
+                topicSelect.appendChild(option);
+            }
+        });
+}
+
+function handleTopicSelect() {
+    const searchQuery = document.getElementById('search-input').value;
+    const selectedTopics = Array.from(topicSelect.selectedOptions).map(option => option.value);
+    updateProjectData(searchQuery, selectedTopics);
+}
 
 
 /**
@@ -31,11 +67,12 @@ function handleSearchForm(e) {
  * identifier for the project and the value is an object containing project details such as `repo_name`
  * and `username`.
  */
-function updateAutocompleteOptions(projectJSON, searchQuery, datalist) {
+function updateAutocompleteOptions(projectJSON, searchQuery, selectedTopics = []) {
     // Create a new autocomplete option for each project
     datalist.innerHTML = '';
     for (const value of Object.values(projectJSON)) {
-        if (!value.repo_name.toLowerCase().includes(searchQuery)) {
+        if (!value.repo_name.toLowerCase().includes(searchQuery)
+        ) {
             continue;
         }
         const option = document.createElement('option');
@@ -45,12 +82,11 @@ function updateAutocompleteOptions(projectJSON, searchQuery, datalist) {
     }
 }
 
-function updateProjectData(searchQuery) {
+function updateProjectData(searchQuery, selectedTopics = []) {
     console.log('Updating project data: updateProjectData()');
     searchQuery = searchQuery.trim().toLowerCase();
     const projectContainer = document.getElementById('project-container');
     const searchInput = document.getElementById('search-input');
-    const datalist = document.getElementById('project-names');
 
     // Abort the previous fetch request (if any)
     if (abortController) {
@@ -67,7 +103,7 @@ function updateProjectData(searchQuery) {
         .then((response) => response.json())
         .then((data) => {
 
-            updateAutocompleteOptions(data, searchQuery, datalist);
+            updateAutocompleteOptions(data, searchQuery, selectedTopics);
 
             // For each project in the full project list
             let projectCount = 0;
@@ -75,7 +111,8 @@ function updateProjectData(searchQuery) {
             for (const value of Object.values(data)) {
                 // If the project name contains the search query
                 if (
-                    value.repo_name.toLowerCase().includes(searchQuery)
+                    value.repo_name.toLowerCase().includes(searchQuery) &&
+                    selectedTopics.every(topic => value.gh_topics.includes(topic))
                 ) {
                     // Create a new project card, and append it to the project container
                     const projectCard = createProjectCard(value);
